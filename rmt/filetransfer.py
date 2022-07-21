@@ -672,7 +672,7 @@ class FileTransfer:
         # 总结
         log.info("【RMT】%s 处理完成，总数：%s，失败：%s" % (in_path, total_count, failed_count))
         if alert_count > 0:
-            self.message.sendmsg(title="有 %s 个文件转移失败，请登录NASTool查看" % alert_count)
+            self.message.sendmsg(title="%s 有 %s 个文件转移失败，请登录NASTool查看" % (in_path, alert_count))
         return success_flag, error_message
 
     def transfer_manually(self, s_path, t_path):
@@ -971,6 +971,7 @@ class FileTransfer:
             return {}
         return {
             "title": media.title,
+            "en_title": media.en_name,
             "year": media.year,
             "edition": media.resource_type,
             "videoFormat": media.resource_pix,

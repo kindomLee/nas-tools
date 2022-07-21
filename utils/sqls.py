@@ -343,19 +343,16 @@ def get_site_by_id(tid):
 
 
 # 插入站点信息
-def insert_config_site(name, site_pri, rssurl, signurl, cookie, include, exclude, size, note):
+def insert_config_site(name, site_pri, rssurl, signurl, cookie, note):
     if not name:
         return
-    sql = "INSERT INTO CONFIG_SITE(NAME,PRI,RSSURL,SIGNURL,COOKIE,INCLUDE,EXCLUDE,SIZE,NOTE) VALUES " \
-          "(?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    sql = "INSERT INTO CONFIG_SITE(NAME,PRI,RSSURL,SIGNURL,COOKIE,NOTE) VALUES " \
+          "(?, ?, ?, ?, ?, ?)"
     return update_by_sql(sql, (str_sql(name),
                                str_sql(site_pri),
                                str_sql(rssurl),
                                str_sql(signurl),
                                str_sql(cookie),
-                               str_sql(include),
-                               str_sql(exclude),
-                               str_sql(size),
                                str_sql(note)))
 
 
@@ -367,36 +364,42 @@ def delete_config_site(tid):
 
 
 # 更新站点信息
-def update_config_site(tid, name, site_pri, rssurl, signurl, cookie, include, exclude, size, note):
-    delete_config_site(tid)
-    insert_config_site(name, site_pri, rssurl, signurl, cookie, include, exclude, size, note)
+def update_config_site(tid, name, site_pri, rssurl, signurl, cookie, note):
+    if not tid:
+        return
+    sql = "UPDATE CONFIG_SITE SET NAME=?,PRI=?,RSSURL=?,SIGNURL=?,COOKIE=?,NOTE=? WHERE ID=?"
+    return update_by_sql(sql, (str_sql(name),
+                               str_sql(site_pri),
+                               str_sql(rssurl),
+                               str_sql(signurl),
+                               str_sql(cookie),
+                               str_sql(note),
+                               tid))
 
 
-# 查询搜索过滤规则
-def get_config_search_rule():
-    return select_by_sql("SELECT INCLUDE,EXCLUDE,NOTE,SIZE FROM CONFIG_SEARCH_RULE")
+# 查询过滤规则组
+def get_config_filter_group():
+    return select_by_sql("SELECT ID,GROUP_NAME,IS_DEFAULT,NOTE FROM CONFIG_FILTER_GROUP")
 
 
-# 更新搜索过滤规则
-def update_config_search_rule(include, exclude, note, size):
-    update_by_sql("DELETE FROM CONFIG_SEARCH_RULE")
-    return update_by_sql(
-        "INSERT INTO CONFIG_SEARCH_RULE(INCLUDE,EXCLUDE,NOTE,SIZE) VALUES "
-        "(?, ?, ?, ?)", (str_sql(include),
-                         str_sql(exclude),
-                         str_sql(note),
-                         str_sql(size)))
+# 查询过滤规则
+def get_config_filter_rule(groupid=None):
+    if not groupid:
+        return select_by_sql("SELECT "
+                             "ID,GROUP_ID,ROLE_NAME,PRIORITY,INCLUDE,EXCLUDE,SIZE_LIMIT,NOTE "
+                             "FROM CONFIG_FILTER_RULES "
+                             "ORDER BY GROUP_ID, CAST(PRIORITY AS DECIMAL) ASC")
+    else:
+        return select_by_sql("SELECT "
+                             "ID,GROUP_ID,ROLE_NAME,PRIORITY,INCLUDE,EXCLUDE,SIZE_LIMIT,NOTE "
+                             "FROM CONFIG_FILTER_RULES "
+                             "WHERE GROUP_ID = ? "
+                             "ORDER BY CAST(PRIORITY AS DECIMAL) ASC", (groupid,))
 
 
-# 查询RSS全局过滤规则
-def get_config_rss_rule():
-    return select_by_sql("SELECT ID,NOTE FROM CONFIG_RSS_RULE")
-
-
-# 更新RSS全局过滤规则
-def update_config_rss_rule(note):
-    update_by_sql("DELETE FROM CONFIG_RSS_RULE")
-    return update_by_sql("INSERT INTO CONFIG_RSS_RULE(NOTE) VALUES (?)", (str_sql(note),))
+# 更新过滤规则
+def update_config_filter_rule(ruleid, item):
+    pass
 
 
 # 查询订阅电影信息
@@ -463,7 +466,7 @@ def insert_rss_movie(media_info: MetaBase,
                      over_edition=False,
                      rss_restype=None,
                      rss_pix=None,
-                     rss_keyword=None):
+                     rss_rule=None):
     if not media_info:
         return False
     if not media_info.title:
@@ -476,7 +479,7 @@ def insert_rss_movie(media_info: MetaBase,
                      "Y" if over_edition else "N",
                      "%s@%s@%s" % (str_sql(rss_restype),
                                    str_sql(rss_pix),
-                                   str_sql(rss_keyword))])
+                                   str_sql(rss_rule))])
     return update_by_sql(sql, (str_sql(media_info.title),
                                str_sql(media_info.year),
                                str_sql(media_info.tmdb_id),
@@ -587,7 +590,7 @@ def insert_rss_tv(media_info: MetaBase, total, lack=0, state="D",
                   over_edition=False,
                   rss_restype=None,
                   rss_pix=None,
-                  rss_keyword=None,
+                  rss_rule=None,
                   match=False
                   ):
     if not media_info:
@@ -607,7 +610,7 @@ def insert_rss_tv(media_info: MetaBase, total, lack=0, state="D",
                      "Y" if over_edition else "N",
                      "@".join([str_sql(rss_restype),
                                str_sql(rss_pix),
-                               str_sql(rss_keyword)])])
+                               str_sql(rss_rule)])])
     return update_by_sql(sql, (str_sql(media_info.title),
                                str_sql(media_info.year),
                                season_str,
@@ -781,33 +784,9 @@ def get_transfer_statistics(days=30):
     return select_by_sql(sql, (begin_date,))
 
 
-# 插入消息中心
-def insert_system_message(level, title, content):
-    if not level or not title:
-        return
-    if title:
-        title = title.replace("\n", "<br/>")
-    if content:
-        content = content.replace("\n", "<br/>")
-    timestr = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-    sql = "INSERT INTO MESSAGES(LEVEL, TITLE, CONTENT, DATE) VALUES (?, ?, ?, ?)"
-    return update_by_sql(sql, (str_sql(level), str_sql(title), str_sql(content), timestr))
-
-
-# 查询消息中心
-def get_system_messages(num=20, lst_time=None):
-    if not lst_time:
-        sql = "SELECT ID, LEVEL, TITLE, CONTENT, DATE FROM MESSAGES ORDER BY DATE DESC LIMIT ?"
-        return select_by_sql(sql, (num,))
-    else:
-        sql = "SELECT ID, LEVEL, TITLE, CONTENT, DATE FROM MESSAGES WHERE DATE > ? ORDER BY DATE DESC"
-        return select_by_sql(sql, (lst_time,))
-
-
 # 更新站点用户粒度数据
-def update_site_user_statistics(site, username, upload, download, ratio, seeding, leeching, bonus, url, seeding_size=0,
-                                user_level="", join_at=""):
-    if not site or not url:
+def update_site_user_statistics(site_user_infos: list):
+    if not site_user_infos:
         return
     update_at = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
     sql = "INSERT OR REPLACE INTO SITE_USER_STATISTICS(SITE, USERNAME, USER_LEVEL," \
@@ -817,9 +796,26 @@ def update_site_user_statistics(site, username, upload, download, ratio, seeding
           " BONUS," \
           " URL) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
-    return update_by_sql(sql, (
-        str_sql(site), username, user_level, join_at, update_at, upload, download, ratio, seeding, leeching,
-        seeding_size, bonus, url))
+    data_list = []
+
+    for site_user_info in site_user_infos:
+        site = site_user_info.site_name
+        username = site_user_info.username
+        user_level = site_user_info.user_level
+        join_at = site_user_info.join_at
+        upload = site_user_info.upload
+        download = site_user_info.download
+        ratio = site_user_info.ratio
+        seeding = site_user_info.seeding
+        seeding_size = site_user_info.seeding_size
+        leeching = site_user_info.leeching
+        bonus = site_user_info.bonus
+        url = site_user_info.site_url
+
+        data_list.append((
+            str_sql(site), username, user_level, join_at, update_at, upload, download, ratio, seeding, leeching,
+            seeding_size, bonus, url))
+    return update_by_sql_batch(sql, data_list)
 
 
 # 判断站点用户数据是否存在
@@ -869,24 +865,40 @@ def is_site_statistics_history_exists(url, date):
 
 
 # 插入站点数据
-def insert_site_statistics_history(site, upload, download, ratio, url, seeding, leeching, bonus, seeding_size=0,
-                                   user_level=""):
-    if not site or not url:
+def insert_site_statistics_history(site_user_infos: list):
+    if not site_user_infos:
         return
+
     date_now = time.strftime('%Y-%m-%d', time.localtime(time.time()))
     sql = "INSERT OR REPLACE INTO SITE_STATISTICS_HISTORY(SITE, USER_LEVEL, DATE, UPLOAD, DOWNLOAD, RATIO," \
           " SEEDING, LEECHING, SEEDING_SIZE," \
           " BONUS," \
           " URL) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
-    return update_by_sql(sql, (str_sql(site), user_level, date_now, upload, download, ratio, seeding, leeching,
-                               seeding_size, bonus, url))
+    data_list = []
+    for site_user_info in site_user_infos:
+        site = site_user_info.site_name
+        upload = site_user_info.upload
+        user_level = site_user_info.user_level
+        download = site_user_info.download
+        ratio = site_user_info.ratio
+        seeding = site_user_info.seeding
+        seeding_size = site_user_info.seeding_size
+        leeching = site_user_info.leeching
+        bonus = site_user_info.bonus
+        url = site_user_info.site_url
+
+        data_list.append((str_sql(site), user_level, date_now, upload, download, ratio, seeding, leeching,
+                          seeding_size, bonus, url))
+
+    return update_by_sql_batch(sql, data_list)
 
 
 # 查询站点数据历史
-def get_site_statistics_history(days=30):
-    sql = "SELECT DATE, SUM(UPLOAD), SUM(DOWNLOAD) FROM SITE_STATISTICS_HISTORY GROUP BY DATE ORDER BY DATE ASC LIMIT ?"
-    return select_by_sql(sql, (days,))
+def get_site_statistics_history(site, days=30):
+    sql = "SELECT DATE, UPLOAD, DOWNLOAD, BONUS, SEEDING, SEEDING_SIZE " \
+          "FROM SITE_STATISTICS_HISTORY WHERE SITE = ? ORDER BY DATE ASC LIMIT ?"
+    return select_by_sql(sql, (site, days,))
 
 
 # 查询近期上传下载量
@@ -985,7 +997,7 @@ def insert_download_history(media_info: MetaBase):
 
 
 # 查询下载历史
-def get_download_history(date=None, hid=None, num=100):
+def get_download_history(date=None, hid=None, num=30, page=1):
     if hid:
         sql = "SELECT ID,TITLE,YEAR,TYPE,TMDBID,VOTE,POSTER,OVERVIEW,TORRENT,ENCLOSURE,DESC,DATE,SITE FROM DOWNLOAD_HISTORY WHERE ID = ?"
         return select_by_sql(sql, (hid,))
@@ -993,8 +1005,9 @@ def get_download_history(date=None, hid=None, num=100):
         sql = "SELECT ID,TITLE,YEAR,TYPE,TMDBID,VOTE,POSTER,OVERVIEW,TORRENT,ENCLOSURE,DESC,DATE,SITE FROM DOWNLOAD_HISTORY WHERE DATE > ? ORDER BY DATE DESC"
         return select_by_sql(sql, (date,))
     else:
-        sql = "SELECT ID,TITLE,YEAR,TYPE,TMDBID,VOTE,POSTER,OVERVIEW,TORRENT,ENCLOSURE,DESC,DATE,SITE FROM DOWNLOAD_HISTORY ORDER BY DATE DESC LIMIT ?"
-        return select_by_sql(sql, (num,))
+        offset = (int(page)-1) * int(num)
+        sql = "SELECT ID,TITLE,YEAR,TYPE,TMDBID,VOTE,POSTER,OVERVIEW,TORRENT,ENCLOSURE,DESC,DATE,SITE FROM DOWNLOAD_HISTORY ORDER BY DATE DESC LIMIT ? OFFSET ?"
+        return select_by_sql(sql, (num, offset))
 
 
 # 根据标题和年份检查是否下载过
@@ -1111,7 +1124,7 @@ def get_brushtasks(brush_id=None):
 def get_brushtask_totalsize(brush_id):
     if not brush_id:
         return 0
-    sql = "SELECT SUM(CAST(S.TORRENT_SIZE AS DECIMAL)) FROM SITE_BRUSH_TORRENTS S WHERE S.TASK_ID = ?"
+    sql = "SELECT SUM(CAST(S.TORRENT_SIZE AS DECIMAL)) FROM SITE_BRUSH_TORRENTS S WHERE S.TASK_ID = ? AND S.DOWNLOAD_ID <> '0'"
     ret = select_by_sql(sql, (brush_id,))
     if ret and ret[0][0]:
         return int(ret[0][0])
@@ -1129,14 +1142,27 @@ def add_brushtask_download_count(brush_id, size):
     return update_by_sql(sql, (int(size), time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())), brush_id))
 
 
+# 获取已删除种子的上传量
+def get_brushtask_remove_upload(brush_id):
+    if not brush_id:
+        return 0
+    sql = "SELECT SUM(CAST(S.TORRENT_SIZE AS DECIMAL)) FROM SITE_BRUSH_TORRENTS S WHERE S.TASK_ID = ? AND S.DOWNLOAD_ID = '0'"
+    ret = select_by_sql(sql, (brush_id,))
+    if ret and ret[0][0]:
+        return int(ret[0][0])
+    else:
+        return 0
+
+
 # 更新上传量
 def add_brushtask_upload_count(brush_id, size, count):
     if not brush_id:
         return
     if not str(size).isdigit():
         return
+    delete_size = get_brushtask_remove_upload(brush_id)
     sql = "UPDATE SITE_BRUSH_TASK SET REMOVE_COUNT = REMOVE_COUNT + ?, UPLOAD_SIZE = ? WHERE ID = ?"
-    return update_by_sql(sql, (count, int(size), brush_id))
+    return update_by_sql(sql, (count, int(size) + delete_size, brush_id))
 
 
 # 增加刷流下载的种子信息
@@ -1173,7 +1199,8 @@ def get_brushtask_torrents(brush_id):
         return []
     sql = "SELECT ID,TASK_ID,TORRENT_NAME,TORRENT_SIZE,ENCLOSURE,DOWNLOADER,DOWNLOAD_ID,LST_MOD_DATE " \
           "FROM SITE_BRUSH_TORRENTS " \
-          "WHERE TASK_ID = ? "
+          "WHERE TASK_ID = ? " \
+          "AND DOWNLOAD_ID <> '0'"
     return select_by_sql(sql, (brush_id,))
 
 
@@ -1187,6 +1214,14 @@ def is_brushtask_torrent_exists(brush_id, title, enclosure):
         return True
     else:
         return False
+
+
+# 更新刷流种子的状态
+def update_brushtask_torrent_state(ids: list):
+    if not ids:
+        return
+    sql = "UPDATE SITE_BRUSH_TORRENTS SET TORRENT_SIZE = ?, DOWNLOAD_ID = '0' WHERE TASK_ID = ? AND DOWNLOAD_ID = ?"
+    return update_by_sql_batch(sql, ids)
 
 
 # 查询自定义下载器
@@ -1217,3 +1252,58 @@ def insert_user_downloader(name, dtype, user_config, note):
 def delete_user_downloader(did):
     sql = "DELETE FROM SITE_BRUSH_DOWNLOADERS WHERE ID = ?"
     return update_by_sql(sql, (did,))
+
+
+# 新增规则组
+def add_filter_group(name, default='N'):
+    if default == 'Y':
+        set_default_filtergroup(0)
+    sql = "INSERT INTO CONFIG_FILTER_GROUP (GROUP_NAME, IS_DEFAULT) VALUES (?, ?)"
+    update_by_sql(sql, (str_sql(name), default))
+    return True
+
+
+# 设置默认的规则组
+def set_default_filtergroup(groupid):
+    sql = "UPDATE CONFIG_FILTER_GROUP SET IS_DEFAULT = 'Y' WHERE ID = ?"
+    update_by_sql(sql, (groupid,))
+    sql = "UPDATE CONFIG_FILTER_GROUP SET IS_DEFAULT = 'N' WHERE ID <> ?"
+    return update_by_sql(sql, (groupid,))
+
+
+# 删除规则组
+def delete_filtergroup(groupid):
+    sql = "DELETE FROM CONFIG_FILTER_RULES WHERE GROUP_ID = ?"
+    update_by_sql(sql, (groupid,))
+    sql = "DELETE FROM CONFIG_FILTER_GROUP WHERE ID = ?"
+    return update_by_sql(sql, (groupid,))
+
+
+# 删除规则
+def delete_filterrule(ruleid):
+    sql = "DELETE FROM CONFIG_FILTER_RULES WHERE ID = ?"
+    return update_by_sql(sql, (ruleid,))
+
+
+# 新增规则
+def insert_filter_rule(ruleid, item):
+    if ruleid:
+        sql = "UPDATE CONFIG_FILTER_RULES " \
+              "SET ROLE_NAME=?,PRIORITY=?,INCLUDE=?,EXCLUDE=?,SIZE_LIMIT=? " \
+              "WHERE ID=?"
+        return update_by_sql(sql, (item.get("name"),
+                                   item.get("pri"),
+                                   item.get("include"),
+                                   item.get("exclude"),
+                                   item.get("size"),
+                                   ruleid))
+    else:
+        sql = "INSERT INTO CONFIG_FILTER_RULES " \
+              "(GROUP_ID, ROLE_NAME, PRIORITY, INCLUDE, EXCLUDE, SIZE_LIMIT)" \
+              "VALUES (?, ?, ?, ?, ?, ?)"
+        return update_by_sql(sql, (item.get("group"),
+                                   item.get("name"),
+                                   item.get("pri"),
+                                   item.get("include"),
+                                   item.get("exclude"),
+                                   item.get("size")))

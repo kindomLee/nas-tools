@@ -21,10 +21,14 @@ class NexusPhpSiteUserInfo(ISiteUserInfo):
         if user_detail and user_detail.group().strip():
             self._user_detail_page = user_detail.group().strip().lstrip('/')
             self.userid = user_detail.group(1)
+            self._torrent_seeding_page = f"getusertorrentlistajax.php?userid={self.userid}&type=seeding"
+        else:
+            user_detail = re.search(r"(userdetails)", html_text)
+            self._user_detail_page = user_detail.group().strip().lstrip('/')
+            self.userid = None
+            self._torrent_seeding_page = None
 
-        self._torrent_seeding_page = f"getusertorrentlistajax.php?userid={self.userid}&type=seeding"
-
-        if not self.userid:
+        if not self._user_detail_page:
             self.err_msg = "获取不到用户信息，请检查cookies是否过期"
 
     def _parse_user_base_info(self, html_text):
@@ -40,23 +44,28 @@ class NexusPhpSiteUserInfo(ISiteUserInfo):
         html = etree.HTML(html_text)
         if not html:
             return
+        ret = html.xpath('//a[contains(@href, "userdetails")]//strong//text()')
+        if ret:
+            self.username = str(ret[0])
+            return
+
         ret = html.xpath('//a[contains(@href, "userdetails")]//b//text()')
         if ret:
-            self.username = str(ret[-1])
+            self.username = str(ret[0])
             return
         ret = html.xpath('//a[contains(@href, "userdetails")]//text()')
         if ret:
-            self.username = str(ret[-1])
+            self.username = str(ret[0])
 
     def __parse_user_traffic_info(self, html_text):
         html_text = self._prepare_html_text(html_text)
-        upload_match = re.search(r"[^总]上[传傳]量?[:：<>/a-zA-Z-=\"'\s#;]+([0-9,.\s]+[KMGTPI]*B)", html_text, re.IGNORECASE)
+        upload_match = re.search(r"[^总]上[传傳]量?[:：_<>/a-zA-Z-=\"'\s#;]+([\d,.\s]+[KMGTPI]*B)", html_text, re.IGNORECASE)
         self.upload = num_filesize(upload_match.group(1).strip()) if upload_match else 0
-        download_match = re.search(r"[^总]下[载載]量?[:：<>/a-zA-Z-=\"'\s#;]+([0-9,.\s]+[KMGTPI]*B)", html_text,
+        download_match = re.search(r"[^总子影力]下[载載]量?[:：_<>/a-zA-Z-=\"'\s#;]+([\d,.\s]+[KMGTPI]*B)", html_text,
                                    re.IGNORECASE)
         self.download = num_filesize(download_match.group(1).strip()) if download_match else 0
-        ratio_match = re.search(r"分享率[:：<>/a-zA-Z-=\"'\s#;]+([0-9.\s]+)", html_text)
-        self.ratio = float(ratio_match.group(1).strip()) if (ratio_match and ratio_match.group(1).strip()) else 0.0
+        ratio_match = re.search(r"分享率[:：_<>/a-zA-Z-=\"'\s#;]+([\d,.\s]+)", html_text)
+        self.ratio = float(ratio_match.group(1).strip().replace(',', '')) if (ratio_match and ratio_match.group(1).strip()) else 0.0
         leeching_match = re.search(r"(Torrents leeching|下载中)[\u4E00-\u9FA5\D\s]+(\d+)[\s\S]+<", html_text)
         self.leeching = int(leeching_match.group(2).strip()) if leeching_match and leeching_match.group(
             2).strip() else 0
@@ -64,17 +73,24 @@ class NexusPhpSiteUserInfo(ISiteUserInfo):
         tmps = html.xpath('//span[@class = "ucoin-symbol ucoin-gold"]//text()') if html else None
         if tmps:
             self.bonus = float(str(tmps[-1]).strip())
-        else:
-            bonus_match = re.search(r"mybonus.[\[\]:：<>/a-zA-Z_\-=\"'\s#;.(使用魔力值豆]+\s*([\d,.]+)[<()&\s]", html_text)
-            try:
-                if bonus_match and bonus_match.group(1).strip():
-                    self.bonus = float(bonus_match.group(1).strip().replace(',', ''))
-                bonus_match = re.search(r"[魔力值|\]][\[\]:：<>/a-zA-Z_\-=\"'\s#;]+\s*([\d,.]+)[<()&\s]", html_text,
-                                        flags=re.S)
-                if bonus_match and bonus_match.group(1).strip():
-                    self.bonus = float(bonus_match.group(1).strip().replace(',', ''))
-            except Exception as err:
-                print(str(err))
+            return
+        tmps = html.xpath('//a[contains(@href,"mybonus")]/text()') if html else None
+        if tmps:
+            bonus_text = str(tmps[0]).strip()
+            bonus_match = re.search(r"([\d,.]+)", bonus_text)
+            if bonus_match and bonus_match.group(1).strip():
+                self.bonus = float(bonus_match.group(1).strip().replace(',', ''))
+                return
+        bonus_match = re.search(r"mybonus.[\[\]:：<>/a-zA-Z_\-=\"'\s#;.(使用魔力值豆]+\s*([\d,.]+)[<()&\s]", html_text)
+        try:
+            if bonus_match and bonus_match.group(1).strip():
+                self.bonus = float(bonus_match.group(1).strip().replace(',', ''))
+            bonus_match = re.search(r"[魔力值|\]][\[\]:：<>/a-zA-Z_\-=\"'\s#;]+\s*([\d,.]+)[<()&\s]", html_text,
+                                    flags=re.S)
+            if bonus_match and bonus_match.group(1).strip():
+                self.bonus = float(bonus_match.group(1).strip().replace(',', ''))
+        except Exception as err:
+            print(str(err))
 
     def _parse_user_traffic_info(self, html_text):
         """
@@ -136,15 +152,8 @@ class NexusPhpSiteUserInfo(ISiteUserInfo):
         html = etree.HTML(html_text)
         if not html:
             return
-        # 等级 获取同一行等级数据，图片格式等级，取title信息，否则取文本信息
-        user_levels_text = html.xpath('//tr/td[text()="等級" or text()="等级" or *[text()="等级"]]/'
-                                      'following-sibling::td[1]/img[1]/@title'
-                                      '|//tr/td[text()="等級" or text()="等级"]/'
-                                      'following-sibling::td[1 and img[not(@title)]]/text()'
-                                      '|//tr/td[text()="等級" or text()="等级"]/'
-                                      'following-sibling::td[1]//text()')
-        if user_levels_text:
-            self.user_level = user_levels_text[0].strip()
+
+        self.__get_user_level(html)
 
         # 加入日期
         join_at_text = html.xpath('//tr/td[text()="加入日期" or text()="注册日期" or *[text()="加入日期"]]/following-sibling::td[1]//text()')
@@ -165,8 +174,64 @@ class NexusPhpSiteUserInfo(ISiteUserInfo):
         if not self.seeding:
             self.seeding = tmp_seeding
 
+        seeding_sizes = html.xpath('//tr/td[text()="做种统计"]/following-sibling::td[1]//text()')
+        if seeding_sizes:
+            seeding_match = re.search(r"总做种数:\s+(\d+)", seeding_sizes[0], re.IGNORECASE)
+            seeding_size_match = re.search(r"总做种体积:\s+([\d,.\s]+[KMGTPI]*B)", seeding_sizes[0], re.IGNORECASE)
+            tmp_seeding = int(seeding_match.group(1).strip()) if (seeding_match and seeding_match.group(1)) else 0
+            tmp_seeding_size = num_filesize(seeding_size_match.group(1).strip()) if seeding_size_match else 0
+        if not self.seeding_size:
+            self.seeding_size = tmp_seeding_size
+        if not self.seeding:
+            self.seeding = tmp_seeding
+
+        self.__fixup_torrent_seeding_page(html)
+
+    def __fixup_torrent_seeding_page(self, html):
+        """
+        修正种子页面链接
+        :param html:
+        :return:
+        """
         # 单独的种子页面
         seeding_url_text = html.xpath('//a[contains(@href,"getusertorrentlist.php") '
                                       'and contains(@href,"seeding")]/@href')
         if seeding_url_text:
             self._torrent_seeding_page = seeding_url_text[0].strip()
+        # 从JS调用种获取用户ID
+        seeding_url_text = html.xpath('//a[contains(@href, "javascript: getusertorrentlistajax") '
+                                      'and contains(@href,"seeding")]/@href')
+        csrf_text = html.xpath('//meta[@name="x-csrf"]/@content')
+        if not self._torrent_seeding_page and seeding_url_text:
+            user_js = re.search(r"javascript: getusertorrentlistajax\(\s*'(\d+)", seeding_url_text[0])
+            if user_js and user_js.group(1).strip():
+                self.userid = user_js.group(1).strip()
+                self._torrent_seeding_page = f"getusertorrentlistajax.php?userid={self.userid}&type=seeding"
+        elif seeding_url_text and csrf_text:
+            if csrf_text[0].strip():
+                self._torrent_seeding_page \
+                    = f"ajax_getusertorrentlist.php"
+                self._torrent_seeding_params = {'userid': self.userid, 'type': 'seeding', 'csrf': csrf_text[0].strip()}
+
+    def __get_user_level(self, html):
+        # 等级 获取同一行等级数据，图片格式等级，取title信息，否则取文本信息
+        user_levels_text = html.xpath('//tr/td[text()="等級" or text()="等级" or *[text()="等级"]]/'
+                                      'following-sibling::td[1]/img[1]/@title'
+                                      '|//tr/td[text()="等級" or text()="等级"]/'
+                                      'following-sibling::td[1 and not(img)]//text()'
+                                      '|//tr/td[text()="等級" or text()="等级"]/'
+                                      'following-sibling::td[1 and img[not(@title)]]//text()')
+        if user_levels_text:
+            self.user_level = user_levels_text[0].strip()
+        user_levels_text = html.xpath('//tr/td[text()="等級" or text()="等级"]/'
+                                      'following-sibling::td[1]//text()')
+        if not self.user_level and user_levels_text:
+            self.user_level = user_levels_text[0].strip()
+        user_levels_text = html.xpath('//a[contains(@href, "userdetails")]/text()')
+        if not self.user_level and user_levels_text:
+            for user_level_text in user_levels_text:
+                user_level_match = re.search(r"\[(.*)]", user_level_text)
+                if user_level_match and user_level_match.group(1).strip():
+                    self.user_level = user_level_match.group(1).strip()
+                    break
+

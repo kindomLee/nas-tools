@@ -7,88 +7,33 @@ from utils.types import MediaType
 
 
 class Qbittorrent(IDownloadClient):
-    __user_config = {}
-    __qbhost = None
-    __qbport = None
-    __qbusername = None
-    __qbpassword = None
+
     __force_upload = False
-    __tv_save_path = None
-    __tv_save_containerpath = None
-    __tv_category = None
-    __movie_save_path = None
-    __movie_save_containerpath = None
-    __movie_category = None
-    __anime_save_path = None
-    __anime_save_containerpath = None
-    __anime_category = None
     qbc = None
 
-    def __init__(self, user_config=None):
-        if user_config:
-            self.__user_config = user_config
-        self.init_config()
+    def get_config(self):
+        """
+        获取配置
+        """
+        # 读取配置文件
+        config = Config()
+        qbittorrent = config.get_config('qbittorrent')
+        if qbittorrent:
+            self.host = qbittorrent.get('qbhost')
+            self.port = int(qbittorrent.get('qbport'))
+            self.username = qbittorrent.get('qbusername')
+            self.password = qbittorrent.get('qbpassword')
+            # 强制做种开关
+            self.__force_upload = qbittorrent.get('force_upload')
+            # 解析下载目录
+            self.save_path = qbittorrent.get('save_path')
+            self.save_containerpath = qbittorrent.get('save_containerpath')
 
-    def init_config(self):
-        if not self.__user_config:
-            # 读取配置文件
-            config = Config()
-            qbittorrent = config.get_config('qbittorrent')
-            if qbittorrent:
-                self.__qbhost = qbittorrent.get('qbhost')
-                self.__qbport = int(qbittorrent.get('qbport'))
-                self.__qbusername = qbittorrent.get('qbusername')
-                self.__qbpassword = qbittorrent.get('qbpassword')
-                # 强制做种开关
-                self.__force_upload = qbittorrent.get('force_upload')
-                # 解释下载目录
-                save_path = qbittorrent.get('save_path')
-                if save_path:
-                    if isinstance(save_path, str):
-                        self.__tv_save_path = save_path
-                        self.__movie_save_path = save_path
-                        self.__anime_save_path = save_path
-                    else:
-                        if save_path.get('tv'):
-                            tv_save_path = save_path.get('tv').split("|")
-                            self.__tv_save_path = tv_save_path[0]
-                            if len(tv_save_path) > 1:
-                                self.__tv_category = tv_save_path[1]
-                        if save_path.get('movie'):
-                            movie_save_path = save_path.get('movie').split("|")
-                            self.__movie_save_path = movie_save_path[0]
-                            if len(movie_save_path) > 1:
-                                self.__movie_category = movie_save_path[1]
-                        if save_path.get('anime'):
-                            anime_save_path = save_path.get('anime').split("|")
-                            self.__anime_save_path = anime_save_path[0]
-                            if len(anime_save_path) > 1:
-                                self.__anime_category = anime_save_path[1]
-                        if not self.__anime_save_path:
-                            self.__anime_save_path = self.__tv_save_path
-                            self.__anime_category = self.__tv_category
-                save_containerpath = qbittorrent.get('save_containerpath')
-                if save_containerpath:
-                    if isinstance(save_containerpath, str):
-                        self.__tv_save_containerpath = save_containerpath
-                        self.__movie_save_containerpath = save_containerpath
-                        self.__anime_save_containerpath = save_containerpath
-                    else:
-                        self.__tv_save_containerpath = save_containerpath.get('tv')
-                        self.__movie_save_containerpath = save_containerpath.get('movie')
-                        self.__anime_save_containerpath = save_containerpath.get('anime')
-                        # 没有配置anime目录则使用tv目录
-                        if not self.__anime_save_containerpath:
-                            self.__anime_save_containerpath = self.__tv_save_containerpath
-        else:
-            # 使用输入配置
-            self.__qbhost = self.__user_config.get("host")
-            self.__qbport = self.__user_config.get("port")
-            self.__qbusername = self.__user_config.get("username")
-            self.__qbpassword = self.__user_config.get("password")
-            self.__movie_save_path = self.__tv_save_path = self.__anime_save_path = self.__user_config.get("save_dir")
-
-        if self.__qbhost and self.__qbport:
+    def connect(self):
+        """
+        连接
+        """
+        if self.host and self.port:
             self.qbc = self.__login_qbittorrent()
 
     def __login_qbittorrent(self):
@@ -98,10 +43,10 @@ class Qbittorrent(IDownloadClient):
         """
         try:
             # 登录
-            qbt = qbittorrentapi.Client(host=self.__qbhost,
-                                        port=self.__qbport,
-                                        username=self.__qbusername,
-                                        password=self.__qbpassword,
+            qbt = qbittorrentapi.Client(host=self.host,
+                                        port=self.port,
+                                        username=self.username,
+                                        password=self.password,
                                         VERIFY_WEBUI_CERTIFICATE=False)
             return qbt
         except Exception as err:
@@ -202,12 +147,7 @@ class Qbittorrent(IDownloadClient):
             true_path = torrent.get('content_path', os.path.join(torrent.get('save_path'), torrent.get('name')))
             if not true_path:
                 continue
-            if self.__tv_save_containerpath and true_path.startswith(self.__tv_save_path):
-                true_path = true_path.replace(str(self.__tv_save_path), str(self.__tv_save_containerpath))
-            if self.__movie_save_containerpath and true_path.startswith(self.__movie_save_path):
-                true_path = true_path.replace(str(self.__movie_save_path), str(self.__movie_save_containerpath))
-            if self.__anime_save_containerpath and true_path.startswith(self.__anime_save_path):
-                true_path = true_path.replace(str(self.__anime_save_path), str(self.__anime_save_containerpath))
+            true_path = self.get_replace_path(true_path)
             trans_tasks.append({'path': true_path, 'id': torrent.get('hash')})
         return trans_tasks
 
@@ -255,14 +195,14 @@ class Qbittorrent(IDownloadClient):
             return False
         self.qbc.auth_log_in()
         if mtype == MediaType.TV:
-            save_path = self.__tv_save_path
-            category = self.__tv_category
+            save_path = self.tv_save_path
+            category = self.tv_category
         elif mtype == MediaType.MOVIE:
-            save_path = self.__movie_save_path
-            category = self.__movie_category
+            save_path = self.movie_save_path
+            category = self.movie_category
         else:
-            save_path = self.__anime_save_path
-            category = self.__anime_category
+            save_path = self.anime_save_path
+            category = self.anime_category
         if isinstance(content, str):
             qbc_ret = self.qbc.torrents_add(urls=content,
                                             save_path=save_path,
@@ -299,6 +239,8 @@ class Qbittorrent(IDownloadClient):
         删除种子
         """
         if not self.qbc:
+            return False
+        if not ids:
             return False
         self.qbc.auth_log_in()
         ret = self.qbc.torrents_delete(delete_files=delete_file, torrent_hashes=ids)

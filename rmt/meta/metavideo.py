@@ -22,15 +22,16 @@ class MetaVideo(MetaBase):
     _season_re = r"S(\d{2})|^S(\d{1,2})"
     _episode_re = r"EP?(\d{2,4})|^EP?(\d{1,4})"
     _part_re = r"(^PART[0-9]{0,2}$|^CD[0-9]{0,2}$|^DVD[0-9]{0,2}$|^DISK[0-9]{0,2}$|^DISC[0-9]{0,2}$)"
+    _roman_numerals = r"^(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})$"
     _resources_type_re = r"^BLURAY$|^REMUX$|^HDTV$|^UHDTV$|^HDDVD$|^WEBRIP$|^DVDRIP$|^BDRIP$|^UHD$|^SDR$|^HDR\d*$|^DOLBY$|^BLU$|^WEB$|^BD$"
     _name_no_begin_re = r"^\[.+?]"
     _name_se_words = ['共', '第', '季', '集', '话', '話']
-    _name_nostring_re = r"^JADE|^AOD|^[A-Z]{1,4}TV[\-0-9UVHDK]*|HBO|\d{1,2}th|NETFLIX|IMAX|^CHC|^3D|\s+3D|^BBC|DISNEY\+|XXX" \
+    _name_nostring_re = r"^JADE|^AOD|^CHC|^[A-Z]{1,4}TV[\-0-9UVHDK]*|HBO|\d{1,2}th|\d{1,2}bit|NETFLIX|AMAZON|IMAX|^3D|\s+3D|BBC|DISNEY\+?|XXX|\s+DC$" \
                         r"|[第\s共]+[0-9一二三四五六七八九十\-\s]+季" \
                         r"|[第\s共]+[0-9一二三四五六七八九十\-\s]+[集话話]" \
                         r"|S\d{2}\s*-\s*S\d{2}|S\d{2}|\s+S\d{1,2}|EP?\d{2,4}\s*-\s*EP?\d{2,4}|EP?\d{2,4}|\s+EP?\d{1,4}" \
                         r"|连载|日剧|美剧|电视剧|动画片|动漫|欧美|西德|日韩|超高清|高清|蓝光|翡翠台" \
-                        r"|最终季|合集|[中国英葡法俄日韩德意西印泰台港粤双文语简繁体特效内封官译外挂]+字幕" \
+                        r"|最终季|合集|[多中国英葡法俄日韩德意西印泰台港粤双文语简繁体特效内封官译外挂]+字幕|版本|出品|台版|港版" \
                         r"|未删减版|UNCUT$|UNRATE$|WITH EXTRAS$|RERIP$|SUBBED$|PROPER$|REPACK$|SEASON$|EPISODE$" \
                         r"|PART[\s.]*[1-9]|CD[\s.]*[1-9]|DVD[\s.]*[1-9]|DISK[\s.]*[1-9]|DISC[\s.]*[1-9]" \
                         r"|BLU-?RAY$|REMUX$|UHD$|U?HDTV$|HDDVD$|WEBRIP$|DVDRIP$|BDRIP$|SDR$|HDR\d*$|DOLBY$|WEB$|BD$" \
@@ -53,16 +54,19 @@ class MetaVideo(MetaBase):
         title = re.sub(r'%s' % self._name_no_begin_re, "", title, count=1)
         # 把xxxx-xxxx年份换成前一个年份，常出现在季集上
         title = re.sub(r'([\s.]+)(\d{4})-(\d{4})', r'\1\2', title)
+        # 把大小去掉
+        title = re.sub(r'[0-9.]+\s*[MGT]i?B', "", title, flags=re.IGNORECASE)
         # 拆分tokens
         tokens = Tokens(title)
+        self.tokens = tokens
         # 解析名称、年份、季、集、资源类型、分辨率等
         token = tokens.get_next()
         while token:
-            # 标题
-            self.__init_name(token)
             # Part
+            self.__init_part(token)
+            # 标题
             if self._continue_flag:
-                self.__init_part(token)
+                self.__init_name(token)
             # 年份
             if self._continue_flag:
                 self.__init_year(token)
@@ -95,26 +99,22 @@ class MetaVideo(MetaBase):
         if not self.type:
             self.type = MediaType.MOVIE
         # 去掉名字中不需要的干扰字符，过短的纯数字不要
-        if self.cn_name:
-            self.cn_name = re.sub(r'%s' % self._name_nostring_re, '', self.cn_name,
-                                  flags=re.IGNORECASE).strip()
-            self.cn_name = re.sub(r'\s+', ' ', self.cn_name)
-            if self.cn_name.isdigit() and int(self.cn_name) < 1800:
-                if self.begin_episode is None:
-                    self.begin_episode = int(self.cn_name)
-                    self.cn_name = None
-                elif self.is_in_episode(int(self.cn_name)):
-                    self.cn_name = None
-        if self.en_name:
-            self.en_name = re.sub(r'%s' % self._name_nostring_re, '', self.en_name,
-                                  flags=re.IGNORECASE).strip()
-            self.en_name = re.sub(r'\s+', ' ', self.en_name)
-            if self.en_name.isdigit() and int(self.en_name) < 1800:
-                if self.begin_episode is None:
-                    self.begin_episode = int(self.en_name)
-                    self.en_name = None
-                elif self.is_in_episode(int(self.en_name)):
-                    self.en_name = None
+        self.cn_name = self.__fix_name(self.cn_name)
+        self.en_name = self.__fix_name(self.en_name)
+
+    def __fix_name(self, name):
+        if not name:
+            return name
+        name = re.sub(r'%s' % self._name_nostring_re, '', name,
+                      flags=re.IGNORECASE).strip()
+        name = re.sub(r'\s+', ' ', name)
+        if name.isdigit() and int(name) < 1800:
+            if self.begin_episode is None:
+                self.begin_episode = int(name)
+                name = None
+            elif self.is_in_episode(int(name)):
+                name = None
+        return name
 
     def __init_name(self, token):
         if not token:
@@ -140,8 +140,9 @@ class MetaVideo(MetaBase):
                 self.cn_name = token
                 self._last_token_type = "cnname"
         else:
-            # 数字
-            if token.isdigit():
+            is_roman_digit = re.search(self._roman_numerals, token)
+            # 阿拉伯数字或者罗马数字
+            if token.isdigit() or is_roman_digit:
                 # 第季集后面的不要
                 if self._last_token_type == 'name_se_words':
                     return
@@ -151,14 +152,14 @@ class MetaVideo(MetaBase):
                         return
                     # 名称后面跟着的数字，停止查找名称
                     self._stop_name_flag = True
-                    if len(token) < 4:
-                        # 4位以下的数字，拼装到已有标题中
+                    if (token.isdigit() and len(token) < 4) or is_roman_digit:
+                        # 4位以下的数字或者罗马数字，拼装到已有标题中
                         if self._last_token_type == "cnname":
                             self.cn_name = "%s %s" % (self.cn_name, token)
                         elif self._last_token_type == "enname":
                             self.en_name = "%s %s" % (self.en_name, token)
                         self._continue_flag = False
-                    elif len(token) == 4:
+                    elif token.isdigit() and len(token) == 4:
                         # 4位数字，可能是年份，也可能真的是标题的一部分，也有可能是集
                         if token.startswith('0') or not 1900 < int(token) < 2050:
                             return
@@ -183,20 +184,18 @@ class MetaVideo(MetaBase):
         if not self.get_name():
             return
         re_res = re.search(r"%s" % self._part_re, token, re.IGNORECASE)
-        if re_res:
-            self._last_token_type = "part"
-            self._continue_flag = False
-            self._stop_name_flag = True
+        nextv = self.tokens.cur()
+        if re_res \
+                and nextv \
+                and nextv.isdigit() \
+                and (len(nextv) == 1 or len(nextv) == 2 and nextv.startswith('0')):
+            self.tokens.get_next()
             if not self.part:
                 self.part = re_res.group(1)
-        else:
-            # 单个数字加入part
-            if self._last_token_type == "part" \
-                    and token.isdigit() \
-                    and (len(token) == 1 or len(token) == 2 and token.startswith('0')):
-                self.part = "%s%s" % (self.part, token)
-                self._continue_flag = False
-                self._stop_name_flag = True
+            self.part = "%s%s" % (self.part, nextv)
+            self._last_token_type = "part"
+            self._continue_flag = False
+            self._stop_name_flag = False
 
     def __init_year(self, token):
         if not self.get_name():
@@ -331,7 +330,7 @@ class MetaVideo(MetaBase):
                 self._continue_flag = False
             elif self.begin_episode is None \
                     and 1 < len(token) < 5 \
-                    and self._last_token_type != "year"\
+                    and self._last_token_type != "year" \
                     and self._last_token_type != "videoencode":
                 self.begin_episode = int(token)
                 self.total_episodes = 1

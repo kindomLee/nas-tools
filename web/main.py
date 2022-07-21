@@ -12,6 +12,7 @@ import xml.dom.minidom
 
 import log
 from pt.douban import DouBan
+from pt.filterrules import FilterRule
 from pt.sites import Sites
 from pt.downloader import Downloader
 from pt.searcher import Searcher
@@ -46,7 +47,7 @@ def create_flask_app(config):
         "id": 0,
         "name": admin_user,
         "password": admin_password[6:],
-        "pris": "我的媒体库,资源搜索,推荐,站点管理,订阅管理,下载管理,媒体识别,服务,系统设置"
+        "pris": "我的媒体库,资源搜索,推荐,站点管理,订阅管理,下载管理,媒体整理,服务,系统设置"
     }]
 
     App = Flask(__name__)
@@ -500,15 +501,17 @@ def create_flask_app(config):
     @login_required
     def movie_rss():
         RssItems = get_rss_movies()
-        RssSites = get_config_site()
+        RssSites = Sites().get_sites()
         SearchSites = [item[1] for item in Searcher().indexer.get_indexers()]
+        RuleGroups = FilterRule().get_rule_groups()
         return render_template("rss/movie_rss.html",
                                Count=len(RssItems),
                                Items=RssItems,
                                Sites=RssSites,
                                SearchSites=SearchSites,
                                RestypeDict=TORRENT_SEARCH_PARAMS.get("restype").keys(),
-                               PixDict=TORRENT_SEARCH_PARAMS.get("pix").keys()
+                               PixDict=TORRENT_SEARCH_PARAMS.get("pix").keys(),
+                               RuleGroups=RuleGroups
                                )
 
     # 电视剧订阅页面
@@ -516,15 +519,17 @@ def create_flask_app(config):
     @login_required
     def tv_rss():
         RssItems = get_rss_tvs()
-        RssSites = get_config_site()
+        RssSites = Sites().get_sites()
         SearchSites = [item[1] for item in Searcher().indexer.get_indexers() or []]
+        RuleGroups = FilterRule().get_rule_groups()
         return render_template("rss/tv_rss.html",
                                Count=len(RssItems),
                                Items=RssItems,
                                Sites=RssSites,
                                SearchSites=SearchSites,
                                RestypeDict=TORRENT_SEARCH_PARAMS.get("restype").keys(),
-                               PixDict=TORRENT_SEARCH_PARAMS.get("pix").keys()
+                               PixDict=TORRENT_SEARCH_PARAMS.get("pix").keys(),
+                               RuleGroups=RuleGroups
                                )
 
     # 订阅日历页面
@@ -543,119 +548,23 @@ def create_flask_app(config):
     @App.route('/site', methods=['POST', 'GET'])
     @login_required
     def site():
-        CfgSites = get_config_site()
+        CfgSites = Sites().get_sites()
+        RuleGroups = FilterRule().get_rule_groups()
         return render_template("site/site.html",
-                               Sites=CfgSites)
+                               Sites=CfgSites,
+                               RuleGroups=RuleGroups)
 
     # 推荐页面
     @App.route('/recommend', methods=['POST', 'GET'])
     @login_required
     def recommend():
         RecommendType = request.args.get("t")
-        if RecommendType in ['hm', 'ht', 'nm', 'nt']:
-            CurrentPage = request.args.get("page")
-            if not CurrentPage:
-                CurrentPage = 1
-            else:
-                CurrentPage = int(CurrentPage)
-
-            if CurrentPage < 5:
-                StartPage = 1
-                EndPage = 6
-            else:
-                StartPage = CurrentPage - 2
-                EndPage = CurrentPage + 3
-            PageRange = range(StartPage, EndPage)
-        else:
-            PageRange = None
-            CurrentPage = 0
-        if RecommendType == "hm":
-            # TMDB热门电影
-            res_list = Media().get_tmdb_hot_movies(CurrentPage)
-        elif RecommendType == "ht":
-            # TMDB热门电视剧
-            res_list = Media().get_tmdb_hot_tvs(CurrentPage)
-        elif RecommendType == "nm":
-            # TMDB最新电影
-            res_list = Media().get_tmdb_new_movies(CurrentPage)
-        elif RecommendType == "nt":
-            # TMDB最新电视剧
-            res_list = Media().get_tmdb_new_tvs(CurrentPage)
-        elif RecommendType == "dbom":
-            # 豆瓣正在上映
-            res_list = DoubanHot().get_douban_online_movie()
-        elif RecommendType == "dbhm":
-            # 豆瓣热门电影
-            res_list = DoubanHot().get_douban_hot_movie()
-        elif RecommendType == "dbht":
-            # 豆瓣热门电视剧
-            res_list = DoubanHot().get_douban_hot_tv()
-        elif RecommendType == "dbdh":
-            # 豆瓣热门动画
-            res_list = DoubanHot().get_douban_hot_anime()
-        elif RecommendType == "dbnm":
-            # 豆瓣最新电影
-            res_list = DoubanHot().get_douban_new_movie()
-        elif RecommendType == "dbzy":
-            # 豆瓣最新电视剧
-            res_list = DoubanHot().get_douban_hot_show()
-        else:
-            res_list = []
-
-        Items = []
-        TvKeys = ["%s" % key[0] for key in get_rss_tvs()]
-        MovieKeys = ["%s" % key[0] for key in get_rss_movies()]
-        for res in res_list:
-            rid = res.get('id')
-            if RecommendType in ['hm', 'nm', 'dbom', 'dbhm', 'dbnm']:
-                title = res.get('title')
-                date = res.get('release_date')
-                if date:
-                    year = date[0:4]
-                else:
-                    year = ''
-                if title in MovieKeys:
-                    # 已订阅
-                    fav = 1
-                elif is_media_downloaded(title, year):
-                    # 已下载
-                    fav = 2
-                else:
-                    # 未订阅、未下载
-                    fav = 0
-            else:
-                title = res.get('name')
-                date = res.get('first_air_date')
-                if date:
-                    year = date[0:4]
-                else:
-                    year = ''
-                if MetaInfo(title=title).get_name() in TvKeys:
-                    # 已订阅
-                    fav = 1
-                elif is_media_downloaded(MetaInfo(title=title).get_name(), year):
-                    # 已下载
-                    fav = 2
-                else:
-                    # 未订阅、未下载
-                    fav = 0
-            image = res.get('poster_path')
-            if RecommendType in ['hm', 'nm', 'ht', 'nt']:
-                image = "https://image.tmdb.org/t/p/original/%s" % image if image else ""
-            else:
-                # 替换图片分辨率
-                image = image.replace("s_ratio_poster", "m_ratio_poster")
-            vote = res.get('vote_average')
-            overview = res.get('overview')
-            item = {'id': rid, 'title': title, 'fav': fav, 'date': date, 'vote': vote,
-                    'image': image, 'overview': overview, 'year': year}
-            Items.append(item)
-
+        CurrentPage = request.args.get("page") or 1
+        Items = WebAction().get_recommend({"type": RecommendType, "page": CurrentPage}).get("Items")
         return render_template("recommend.html",
                                Items=Items,
                                RecommendType=RecommendType,
-                               CurrentPage=CurrentPage,
-                               PageRange=PageRange)
+                               CurrentPage=CurrentPage)
 
     # 正在下载页面
     @App.route('/downloading', methods=['POST', 'GET'])
@@ -727,7 +636,7 @@ def create_flask_app(config):
     @App.route('/downloaded', methods=['POST', 'GET'])
     @login_required
     def downloaded():
-        Items = get_download_history()
+        Items = WebAction().get_downloaded({"page": 1}).get("Items")
         return render_template("download/downloaded.html",
                                Count=len(Items),
                                Items=Items)
@@ -809,7 +718,7 @@ def create_flask_app(config):
     @login_required
     def brushtask():
         # 站点列表
-        CfgSites = get_config_site()
+        CfgSites = Sites().get_sites()
         # 下载器列表
         downloaders = get_user_downloaders()
         # 任务列表
@@ -874,10 +783,9 @@ def create_flask_app(config):
                      <polyline points="9 19 12 22 15 19"></polyline>
                 </svg>
             '''
-            color = "blue"
             scheduler_cfg_list.append(
                 {'name': 'RSS订阅', 'time': tim_rssdownload, 'state': rss_state, 'id': 'rssdownload', 'svg': svg,
-                 'color': color})
+                 'color': "blue"})
 
             # PT文件转移
             pt_monitor = pt.get('pt_monitor')
@@ -896,10 +804,9 @@ def create_flask_app(config):
                  <path d="M3 13v3a2 2 0 0 0 2 2h6l-3 -3m0 6l3 -3"></path>
             </svg>
             '''
-            color = "green"
             scheduler_cfg_list.append(
                 {'name': 'PT下载转移', 'time': tim_pttransfer, 'state': sta_pttransfer, 'id': 'pttransfer', 'svg': svg,
-                 'color': color})
+                 'color': "green"})
 
             # PT删种
             pt_seeding_config_time = pt.get('pt_seeding_time')
@@ -916,10 +823,9 @@ def create_flask_app(config):
                      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
                 </svg>
                 '''
-                color = "twitter"
                 scheduler_cfg_list.append(
                     {'name': 'PT删种', 'time': pt_seeding_time, 'state': sta_autoremovetorrents,
-                     'id': 'autoremovetorrents', 'svg': svg, 'color': color})
+                     'id': 'autoremovetorrents', 'svg': svg, 'color': "twitter"})
 
             # PT自动签到
             tim_ptsignin = pt.get('ptsignin_cron')
@@ -935,10 +841,9 @@ def create_flask_app(config):
                      <path d="M16 11l2 2l4 -4"></path>
                 </svg>
                 '''
-                color = "facebook"
                 scheduler_cfg_list.append(
                     {'name': 'PT站签到', 'time': tim_ptsignin, 'state': sta_ptsignin, 'id': 'ptsignin', 'svg': svg,
-                     'color': color})
+                     'color': "facebook"})
 
         # 目录同步
         sync = config.get_config('sync')
@@ -953,9 +858,8 @@ def create_flask_app(config):
                      <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path>
                 </svg>
                 '''
-                color = "orange"
                 scheduler_cfg_list.append(
-                    {'name': '目录同步', 'time': '实时监控', 'state': sta_sync, 'id': 'sync', 'svg': svg, 'color': color})
+                    {'name': '目录同步', 'time': '实时监控', 'state': sta_sync, 'id': 'sync', 'svg': svg, 'color': "orange"})
         # 豆瓣同步
         douban_cfg = config.get_config('douban')
         if douban_cfg:
@@ -970,20 +874,8 @@ def create_flask_app(config):
                    <path d="M9.265 4a2 2 0 0 1 1.735 -1h6a2 2 0 0 1 2 2v12l-1 -.6"></path>
                 </svg>
                 '''
-                color = "pink"
                 scheduler_cfg_list.append(
-                    {'name': '豆瓣想看', 'time': interval, 'state': sta_douban, 'id': 'douban', 'svg': svg, 'color': color})
-
-        # 实时日志
-        svg = '''
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-terminal" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-           <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-           <path d="M5 7l5 5l-5 5"></path>
-           <line x1="12" y1="19" x2="19" y2="19"></line>
-        </svg>
-        '''
-        scheduler_cfg_list.append(
-            {'name': '实时日志', 'time': '', 'state': 'OFF', 'id': 'logging', 'svg': svg, 'color': 'indigo'})
+                    {'name': '豆瓣想看', 'time': interval, 'state': sta_douban, 'id': 'douban', 'svg': svg, 'color': "pink"})
 
         # 清理文件整理缓存
         svg = '''
@@ -995,6 +887,47 @@ def create_flask_app(config):
         '''
         scheduler_cfg_list.append(
             {'name': '清理文件缓存', 'time': '手动', 'state': 'OFF', 'id': 'blacklist', 'svg': svg, 'color': 'red'})
+
+        # 名称识别测试
+        svg = '''
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alphabet-greek" width="40" height="40" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+           <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+           <path d="M10 10v7"></path>
+           <rect x="5" y="10" width="5" height="7" rx="2"></rect>
+           <path d="M14 20v-11a2 2 0 0 1 2 -2h1a2 2 0 0 1 2 2v1a2 2 0 0 1 -2 2a2 2 0 0 1 2 2v1a2 2 0 0 1 -2 2"></path>
+        </svg>
+        '''
+        scheduler_cfg_list.append(
+            {'name': '名称识别测试', 'time': '', 'state': 'OFF', 'id': 'nametest', 'svg': svg, 'color': 'lime'})
+
+        # 过滤规则测试
+        svg = '''
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-adjustments-horizontal" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+           <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+           <circle cx="14" cy="6" r="2"></circle>
+           <line x1="4" y1="6" x2="12" y2="6"></line>
+           <line x1="16" y1="6" x2="20" y2="6"></line>
+           <circle cx="8" cy="12" r="2"></circle>
+           <line x1="4" y1="12" x2="6" y2="12"></line>
+           <line x1="10" y1="12" x2="20" y2="12"></line>
+           <circle cx="17" cy="18" r="2"></circle>
+           <line x1="4" y1="18" x2="15" y2="18"></line>
+           <line x1="19" y1="18" x2="20" y2="18"></line>
+        </svg>
+        '''
+        scheduler_cfg_list.append(
+            {'name': '过滤规则测试', 'time': '', 'state': 'OFF', 'id': 'ruletest', 'svg': svg, 'color': 'yellow'})
+
+        # 实时日志
+        svg = '''
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-terminal" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+           <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+           <path d="M5 7l5 5l-5 5"></path>
+           <line x1="12" y1="19" x2="19" y2="19"></line>
+        </svg>
+        '''
+        scheduler_cfg_list.append(
+            {'name': '实时日志', 'time': '', 'state': 'OFF', 'id': 'logging', 'svg': svg, 'color': 'indigo'})
 
         return render_template("service.html",
                                Count=len(scheduler_cfg_list),
@@ -1309,6 +1242,15 @@ def create_flask_app(config):
             Users.append({"id": user[0], "name": user[1], "pris": pris})
         return render_template("setting/users.html", Users=Users, UserCount=user_count)
 
+    # 过滤规则设置页面
+    @App.route('/filterrule', methods=['POST', 'GET'])
+    @login_required
+    def filterrule():
+        RuleGroups = FilterRule().get_rule_infos()
+        return render_template("setting/filterrule.html",
+                               Count=len(RuleGroups),
+                               RuleGroups=RuleGroups)
+
     # 事件响应
     @App.route('/do', methods=['POST'])
     @login_required
@@ -1342,6 +1284,8 @@ def create_flask_app(config):
         sVerifyNonce = request.args.get("nonce")
 
         if request.method == 'GET':
+            if not sVerifyMsgSig and not sVerifyTimeStamp and not sVerifyNonce:
+                return "放心吧，服务是正常的！"
             sVerifyEchoStr = request.args.get("echostr")
             log.debug("收到微信验证请求: echostr= %s" % sVerifyEchoStr)
             ret, sEchoStr = wxcpt.VerifyURL(sVerifyMsgSig, sVerifyTimeStamp, sVerifyNonce, sVerifyEchoStr)

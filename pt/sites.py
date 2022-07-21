@@ -5,11 +5,12 @@ from threading import Lock
 
 import log
 from message.send import Message
+from pt.filterrules import FilterRule
 from pt.siteuserinfo.site_user_info_factory import SiteUserInfoFactory
 from utils.functions import singleton
 from utils.http_utils import RequestUtils
 from utils.sqls import get_config_site, insert_site_statistics_history, update_site_user_statistics, \
-    get_site_statistics_recent_sites, get_site_user_statistics
+    get_site_statistics_recent_sites, get_site_user_statistics, get_site_statistics_history
 
 lock = Lock()
 
@@ -17,6 +18,7 @@ lock = Lock()
 @singleton
 class Sites:
     message = None
+    filtersites = None
     __sites_data = {}
     __pt_sites = None
     __last_update_time = None
@@ -27,9 +29,40 @@ class Sites:
 
     def init_config(self):
         self.message = Message()
+        self.filtersites = FilterRule()
         self.__pt_sites = get_config_site()
         self.__sites_data = {}
         self.__last_update_time = None
+
+    def get_sites(self, siteid=None):
+        """
+        获取站点配置
+        """
+        ret_sites = []
+        for site in self.__pt_sites:
+            rule_groupid = str(site[9]).split("|")[1] if site[9] and len(str(site[9]).split("|")) > 1 else ""
+            if rule_groupid:
+                rule_name = self.filtersites.get_rule_groups(rule_groupid).get("name") or ""
+            else:
+                rule_name = ""
+            site_info = {
+                "id": site[0],
+                "name": site[1],
+                "pri": site[2],
+                "rssurl": site[3],
+                "signurl": site[4],
+                "cookie": site[5],
+                "free": str(site[9]).split("|")[0] if site[9] and str(site[9]).split("|")[0] in ["FREE",
+                                                                                                 "2XFREE"] else "",
+                "rule": rule_groupid,
+                "rule_name": rule_name
+            }
+            if siteid and int(site[0]) == int(siteid):
+                return site_info
+            ret_sites.append(site_info)
+        if siteid:
+            return {}
+        return ret_sites
 
     def refresh_all_pt_data(self, force=False, specify_sites=None):
         """
@@ -51,7 +84,13 @@ class Sites:
             refresh_sites = [site for site in self.__pt_sites if site[1] in refresh_site_names]
 
             with ThreadPool(min(len(refresh_sites), self._MAX_CONCURRENCY)) as p:
-                p.map(self.__refresh_pt_data, refresh_sites)
+                site_user_infos = p.map(self.__refresh_pt_data, refresh_sites)
+                site_user_infos = [info for info in site_user_infos if info]
+
+                # 登记历史数据
+                insert_site_statistics_history(site_user_infos)
+                # 实时用户数据
+                update_site_user_statistics(site_user_infos)
 
         # 更新时间
         if refresh_all:
@@ -94,24 +133,7 @@ class Sites:
                                                       "err_msg": site_user_info.err_msg}
                                           })
 
-                # 登记历史数据
-                insert_site_statistics_history(site=site_name, upload=site_user_info.upload,
-                                               user_level=site_user_info.user_level,
-                                               download=site_user_info.download,
-                                               ratio=site_user_info.ratio,
-                                               seeding=site_user_info.seeding,
-                                               seeding_size=site_user_info.seeding_size,
-                                               leeching=site_user_info.leeching, bonus=site_user_info.bonus,
-                                               url=site_url)
-                # 实时用户数据
-                update_site_user_statistics(site=site_name, username=site_user_info.username,
-                                            user_level=site_user_info.user_level,
-                                            join_at=site_user_info.join_at,
-                                            upload=site_user_info.upload, download=site_user_info.download,
-                                            ratio=site_user_info.ratio, seeding=site_user_info.seeding,
-                                            seeding_size=site_user_info.seeding_size,
-                                            leeching=site_user_info.leeching, bonus=site_user_info.bonus,
-                                            url=site_url)
+                return site_user_info
 
         except Exception as e:
             log.error("【PT】站点 %s 获取流量数据失败：%s - %s" % (site_name, str(e), traceback.format_exc()))
@@ -228,3 +250,23 @@ class Sites:
             specify_sites = [specify_sites]
 
         self.refresh_all_pt_data(force=True, specify_sites=specify_sites)
+
+    @staticmethod
+    def get_pt_site_activity_history(site, days=365*2):
+        """
+        查询站点 上传，下载，做种数据
+        :param site: 站点名称
+        :param days: 最大数据量
+        :return:
+        """
+        site_activities = {"upload": [], "download": [], "bonus": [], "seeding": [], "seeding_size": []}
+        sql_site_activities = get_site_statistics_history(site=site, days=days)
+        for sql_site_activity in sql_site_activities:
+            timestamp = datetime.strptime(sql_site_activity[0], '%Y-%m-%d').timestamp() * 1000
+            site_activities["upload"].append([timestamp, sql_site_activity[1]])
+            site_activities["download"].append([timestamp, sql_site_activity[2]])
+            site_activities["bonus"].append([timestamp, sql_site_activity[3]])
+            site_activities["seeding"].append([timestamp, sql_site_activity[4]])
+            site_activities["seeding_size"].append([timestamp, sql_site_activity[5]])
+
+        return site_activities

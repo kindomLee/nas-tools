@@ -224,7 +224,7 @@
               </div>
             </li>
             {% endif %}
-            {% if "媒体识别" in UserPris %}
+            {% if "媒体整理" in UserPris %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false" >
                 <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -241,7 +241,7 @@
                   </svg>
                 </span>
                 <span class="nav-link-title">
-                  媒体识别
+                  媒体整理
                 </span>
               </a>
               <div class="dropdown-menu">
@@ -298,6 +298,9 @@
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('notification')">
                   消息通知
+                </a>
+                <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('filterrule')">
+                  过滤规则
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('indexer')">
                   索引器
@@ -559,7 +562,7 @@
             <div class="ribbon ribbon-top ribbon-bookmark bg-purple" id="system_media_vote"></div>
             <div class="row row-0">
               <div class="col-3 d-none d-lg-block">
-                <img id="system_media_poster" src="" class="w-100 h-100 object-cover">
+                <img id="system_media_poster" src="" onerror="this.src='../static/img/no-image.png'" class="w-100 h-100 object-cover">
               </div>
               <div class="col">
                 <div class="card-body">
@@ -714,7 +717,7 @@
               $("#system_media_rss_btn").attr("href", 'javascript:add_rss_media("'+ret.title+'","'+ret.year+'","'+ret.type+'","'+ret.tmdbid+'","'+ret.doubanid+'","'+ret.page+'")');
               //搜索按钮
               $("#system_media_search_btn").text("搜索");
-              $("#system_media_search_btn").attr("href", 'javascript:search_mediainfo_media("'+ret.title+'")');
+              $("#system_media_search_btn").attr("href", 'javascript:search_mediainfo_media("'+ret.tmdbid+'", "'+ret.doubanid+'", "'+ret.title+'", "'+ret.type_str+'")');
               $("#system_media_search_btn").show();
               //详情按钮
               $("#system_media_url_btn").text("详情");
@@ -758,6 +761,7 @@
         });
         $("#navbar-menu").collapse('hide');
         show_wait_process();
+        $(window).unbind('scroll');
         page = page.replaceAll(" ", "%20");
         $("#page_content").load(page, {}, function(response,status,xhr){
           hide_wait_process();
@@ -812,9 +816,21 @@
       }
 
       //搜索
-      function search_mediainfo_media(title){
+      function search_mediainfo_media(tmdbid, doubanid, title, typestr){
         hide_mediainfo_modal();
-        navmenu('search?s='+title+'&f=1');
+        if(!tmdbid && doubanid){
+          tmdbid = "DB:" + doubanid;
+        }
+        var param = {"tmdbid": tmdbid, "search_word": title, "media_type":typestr};
+        show_wait_process();
+        ajax_post("search", param, function (ret) {
+          hide_wait_process();
+          if(ret.code == 0){
+            navmenu('search?s=' + title);
+          }else{
+            show_fail_modal(ret.msg);
+          }
+        });
       }
     </script>
     <script type="text/javascript">

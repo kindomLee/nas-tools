@@ -9,6 +9,9 @@ from utils.http_utils import RequestUtils
 
 
 class ISiteUserInfo(metaclass=ABCMeta):
+    # 站点信息
+    site_name = None
+    site_url = None
     # 用户信息
     username = None
     userid = None
@@ -49,10 +52,13 @@ class ISiteUserInfo(metaclass=ABCMeta):
     _user_detail_page = "userdetails.php?id="
     _user_traffic_page = "index.php"
     _torrent_seeding_page = "getusertorrentlistajax.php?userid="
+    _torrent_seeding_params = None
 
-    def __init__(self, url, site_cookie, index_html, session=None):
+    def __init__(self, site_name, url, site_cookie, index_html, session=None):
         super().__init__()
         split_url = urlsplit(url)
+        self.site_name = site_name
+        self.site_url = url
         self._base_url = f"{split_url.scheme}://{split_url.netloc}"
         self._site_cookie = site_cookie
         self._index_html = index_html
@@ -80,12 +86,13 @@ class ISiteUserInfo(metaclass=ABCMeta):
         if self._torrent_seeding_page:
             # 第一页
             next_page = self._parse_user_torrent_seeding_info(
-                self._get_page_content(urljoin(self._base_url, self._torrent_seeding_page)))
+                self._get_page_content(urljoin(self._base_url, self._torrent_seeding_page), self._torrent_seeding_params))
 
             # 其他页处理
             while next_page:
                 next_page = self._parse_user_torrent_seeding_info(
-                    self._get_page_content(urljoin(urljoin(self._base_url, self._torrent_seeding_page), next_page)),
+                    self._get_page_content(urljoin(urljoin(self._base_url, self._torrent_seeding_page), next_page),
+                                           self._torrent_seeding_params),
                     multi_page=True)
 
     @staticmethod
@@ -95,12 +102,17 @@ class ISiteUserInfo(metaclass=ABCMeta):
         """
         return re.sub(r"#\d+", "", re.sub(r"\d+px", "", html_text))
 
-    def _get_page_content(self, url):
+    def _get_page_content(self, url, params=None):
         """
-        :param url:
+        :param url: 网页地址
+        :param params: post参数
         :return:
         """
-        res = RequestUtils(cookies=self._site_cookie, session=self._session, timeout=60).get_res(url=url)
+        if params:
+            res = RequestUtils(cookies=self._site_cookie, session=self._session, timeout=60).post_res(url=url,
+                                                                                                      params=params)
+        else:
+            res = RequestUtils(cookies=self._site_cookie, session=self._session, timeout=60).get_res(url=url)
         if res and res.status_code == 200:
             if "charset=utf-8" in res.text or "charset=UTF-8" in res.text:
                 res.encoding = "UTF-8"

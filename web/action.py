@@ -15,6 +15,7 @@ from pt.client.qbittorrent import Qbittorrent
 from pt.client.transmission import Transmission
 from pt.douban import DouBan
 from pt.downloader import Downloader
+from pt.filterrules import FilterRule
 from pt.mediaserver.jellyfin import Jellyfin
 from pt.mediaserver.plex import Plex
 from pt.rss import Rss
@@ -35,8 +36,10 @@ from utils.functions import *
 from utils.http_utils import RequestUtils
 from utils.meta_helper import MetaHelper
 from utils.sqls import *
+from utils.sysmsg_helper import MessageCenter
 from utils.thread_helper import ThreadHelper
 from utils.types import MediaType, SearchType, DownloaderType, SyncType
+from web.backend.douban_hot import DoubanHot
 from web.backend.search_torrents import search_medias_for_web, search_media_by_message
 from web.backend.subscribe import add_rss_subscribe
 
@@ -64,10 +67,6 @@ class WebAction:
             "update_site": self.__update_site,
             "get_site": self.__get_site,
             "del_site": self.__del_site,
-            "get_search_rule": self.__get_search_rule,
-            "update_search_rule": self.__update_search_rule,
-            "get_rss_rule": self.__get_rss_rule,
-            "update_rss_rule": self.__update_rss_rule,
             "restart": self.__restart,
             "update_system": self.__update_system,
             "logout": self.__logout,
@@ -91,7 +90,19 @@ class WebAction:
             "del_brushtask": self.__del_brushtask,
             "brushtask_detail": self.__brushtask_detail,
             "add_downloader": self.__add_downloader,
-            "delete_downloader": self.__delete_downloader
+            "delete_downloader": self.__delete_downloader,
+            "name_test": self.__name_test,
+            "rule_test": self.__rule_test,
+            "add_filtergroup": self.__add_filtergroup,
+            "set_default_filtergroup": self.__set_default_filtergroup,
+            "del_filtergroup": self.__del_filtergroup,
+            "add_filterrule": self.__add_filterrule,
+            "del_filterrule": self.__del_filterrule,
+            "filterrule_detail": self.__filterrule_detail,
+            "get_site_activity": self.__get_site_activity,
+            "get_site_history": self.__get_site_history,
+            "get_recommend": self.get_recommend,
+            "get_downloaded": self.get_downloaded
         }
 
     def action(self, cmd, data):
@@ -617,10 +628,7 @@ class WebAction:
         rssurl = data.get('site_rssurl')
         signurl = data.get('site_signurl')
         cookie = data.get('site_cookie')
-        include = data.get('site_include')
-        exclude = data.get('site_exclude')
         note = data.get('site_note')
-        size = data.get('site_size')
         if tid:
             ret = update_config_site(tid=tid,
                                      name=name,
@@ -628,9 +636,6 @@ class WebAction:
                                      rssurl=rssurl,
                                      signurl=signurl,
                                      cookie=cookie,
-                                     include=include,
-                                     exclude=exclude,
-                                     size=size,
                                      note=note)
         else:
             ret = insert_config_site(name=name,
@@ -638,9 +643,6 @@ class WebAction:
                                      rssurl=rssurl,
                                      signurl=signurl,
                                      cookie=cookie,
-                                     include=include,
-                                     exclude=exclude,
-                                     size=size,
                                      note=note)
         # 生效站点配置
         Sites().init_config()
@@ -656,9 +658,9 @@ class WebAction:
         site_2xfree = False
         site_hr = False
         if tid:
-            ret = get_site_by_id(tid)
-            if ret[0][3]:
-                url_host = parse.urlparse(ret[0][3]).netloc
+            ret = Sites().get_sites(siteid=tid)
+            if ret.get("rssurl"):
+                url_host = parse.urlparse(ret.get("rssurl")).netloc
                 if url_host in RSS_SITE_GRAP_CONF.keys():
                     if RSS_SITE_GRAP_CONF[url_host].get("FREE"):
                         site_free = True
@@ -682,43 +684,6 @@ class WebAction:
             return {"code": ret}
         else:
             return {"code": 0}
-
-    @staticmethod
-    def __get_search_rule(data):
-        """
-        查询搜索过滤规则
-        """
-        ret = get_config_search_rule()
-        return {"code": 0, "rule": ret}
-
-    @staticmethod
-    def __update_search_rule(data):
-        """
-        更新搜索过滤规则
-        """
-        include = data.get('search_include')
-        exclude = data.get('search_exclude')
-        note = data.get('search_note')
-        size = data.get('search_size')
-        ret = update_config_search_rule(include=include, exclude=exclude, note=note, size=size)
-        return {"code": ret}
-
-    @staticmethod
-    def __get_rss_rule(data):
-        """
-        查询RSS全局过滤规则
-        """
-        ret = get_config_rss_rule()
-        return {"code": 0, "rule": ret}
-
-    @staticmethod
-    def __update_rss_rule(data):
-        """
-        更新搜索过滤规则
-        """
-        note = data.get('rss_note')
-        ret = update_config_rss_rule(note=note)
-        return {"code": ret}
 
     def __restart(self, data):
         """
@@ -779,10 +744,6 @@ class WebAction:
                 jellyfin_reload = True
             if key.startswith("plex"):
                 plex_reload = True
-            if key.startswith("qbittorrent"):
-                qbittorrent_reload = True
-            if key.startswith("transmission"):
-                transmission_reload = True
             if key.startswith("message.telegram"):
                 telegram_reload = True
             if key.startswith("message.wechat"):
@@ -875,7 +836,7 @@ class WebAction:
         over_edition = data.get("over_edition")
         rss_restype = data.get("rss_restype")
         rss_pix = data.get("rss_pix")
-        rss_keyword = data.get("rss_keyword")
+        rss_rule = data.get("rss_rule")
         rssid = data.get("rssid")
         if name and mtype:
             if mtype in ['nm', 'hm', 'dbom', 'dbhm', 'dbnm', 'MOV']:
@@ -894,7 +855,7 @@ class WebAction:
                                                   over_edition=over_edition,
                                                   rss_restype=rss_restype,
                                                   rss_pix=rss_pix,
-                                                  rss_keyword=rss_keyword,
+                                                  rss_rule=rss_rule,
                                                   rssid=rssid)
         return {"code": code, "msg": msg, "page": page, "name": name}
 
@@ -977,6 +938,7 @@ class WebAction:
             return {
                 "code": 0,
                 "type": mtype,
+                "type_str": media_type.value,
                 "page": page,
                 "title": title,
                 "vote_average": vote_average,
@@ -1019,11 +981,10 @@ class WebAction:
             if not rssid:
                 rssid = get_rss_tv_id(title=title, year=year)
 
-            # 查下载信息
-
             return {
                 "code": 0,
                 "type": mtype,
+                "type_str": media_type.value,
                 "page": page,
                 "title": title,
                 "vote_average": vote_average,
@@ -1103,13 +1064,14 @@ class WebAction:
         刷新首页消息中心
         """
         lst_time = data.get("lst_time")
-        messages = get_system_messages(lst_time=lst_time)
+        messages = MessageCenter().get_system_messages(lst_time=lst_time)
         message_html = []
         for message in list(reversed(messages)):
-            lst_time = message[4]
-            level = "bg-red" if message[1] == "ERROR" else ""
+            lst_time = message.get("time")
+            level = "bg-red" if message.get("level") == "ERROR" else ""
             content = re.sub(r"[#]+", "<br>",
-                             re.sub(r"<[^>]+>", "", re.sub(r"<br/?>", "####", message[3], flags=re.IGNORECASE)))
+                             re.sub(r"<[^>]+>", "",
+                                    re.sub(r"<br/?>", "####", message.get("content"), flags=re.IGNORECASE)))
             message_html.append(f"""
             <div class="list-group-item">
               <div class="row align-items-center">
@@ -1117,9 +1079,9 @@ class WebAction:
                   <span class="status-dot {level} d-block"></span>
                 </div>
                 <div class="col text-truncate">
-                  <span class="text-wrap">{message[2]}</span>
+                  <span class="text-wrap">{message.get("title")}</span>
                   <div class="d-block text-muted text-truncate mt-n1 text-wrap">{content}</div>
-                  <div class="d-block text-muted text-truncate mt-n1 text-wrap">{message[4]}</div>
+                  <div class="d-block text-muted text-truncate mt-n1 text-wrap">{message.get("time")}</div>
                 </div>
               </div>
             </div>
@@ -1315,6 +1277,7 @@ class WebAction:
         brushtask_seedtime = data.get("brushtask_seedtime")
         brushtask_seedratio = data.get("brushtask_seedratio")
         brushtask_seedsize = data.get("brushtask_seedsize")
+        brushtask_dltime = data.get("brushtask_dltime")
         # 选种规则
         rss_rule = {
             "free": brushtask_free,
@@ -1328,7 +1291,8 @@ class WebAction:
         remove_rule = {
             "time": brushtask_seedtime,
             "ratio": brushtask_seedratio,
-            "uploadsize": brushtask_seedsize
+            "uploadsize": brushtask_seedsize,
+            "dltime": brushtask_dltime
         }
         # 添加记录
         item = {
@@ -1430,6 +1394,242 @@ class WebAction:
         return {"code": 0}
 
     @staticmethod
+    def __name_test(data):
+        """
+        名称识别测试
+        """
+        name = data.get("name")
+        if not name:
+            return {"code": -1}
+        media_info = Media().get_media_info(title=name)
+        return {"code": 0, "data": {
+            "type": media_info.type.value,
+            "name": media_info.get_name(),
+            "title": media_info.title,
+            "year": media_info.year,
+            "season_episode": media_info.get_season_episode_string(),
+            "tmdbid": media_info.tmdb_id,
+            "category": media_info.category,
+            "restype": media_info.resource_type,
+            "pix": media_info.resource_pix,
+            "video_codec": media_info.video_encode,
+            "audio_codec": media_info.audio_encode
+        }}
+
+    @staticmethod
+    def __rule_test(data):
+        title = data.get("title")
+        subtitle = data.get("subtitle")
+        size = data.get("size")
+        if size:
+            size = float(size) * 1024 ** 3
+        if not title:
+            return {"code": -1}
+        meta_info = MetaInfo(title=title, subtitle=subtitle)
+        match_flag, res_order, rule_name = FilterRule().check_rules(meta_info=meta_info,
+                                                                    torrent_size=size)
+        return {
+            "code": 0,
+            "flag": match_flag,
+            "text": "匹配" if match_flag else "未匹配",
+            "name": rule_name if rule_name else "未设置默认规则",
+            "order": 100 - res_order if res_order else 0
+        }
+
+    @staticmethod
+    def __get_site_activity(data):
+        """
+        查询site活动[上传，下载，魔力值]
+        :param data: {"name":site_name}
+        :return:
+        """
+        if not data or "name" not in data:
+            return {"code": 1, "msg": "查询参数错误"}
+
+        resp = {"code": 0}
+        resp.update(Sites().get_pt_site_activity_history(data["name"]))
+        return resp
+
+    @staticmethod
+    def __get_site_history(data):
+        """
+        查询site 历史[上传，下载]
+        :param data: {"days":累计时间}
+        :return:
+        """
+        if not data or "days" not in data or not isinstance(data["days"], int):
+            return {"code": 1, "msg": "查询参数错误"}
+
+        resp = {"code": 0}
+        _, _, site, upload, download = Sites().get_pt_site_statistics_history(data["days"]+1)
+        resp.update({"site": site, "upload": upload, "download": download})
+        return resp
+
+    @staticmethod
+    def __add_filtergroup(data):
+        """
+        新增规则组
+        """
+        name = data.get("name")
+        default = data.get("default")
+        if not name:
+            return {"code": -1}
+        add_filter_group(name, default)
+        FilterRule().init_config()
+        return {"code": 0}
+
+    @staticmethod
+    def __set_default_filtergroup(data):
+        groupid = data.get("id")
+        if not groupid:
+            return {"code": -1}
+        set_default_filtergroup(groupid)
+        FilterRule().init_config()
+        return {"code": 0}
+
+    @staticmethod
+    def __del_filtergroup(data):
+        groupid = data.get("id")
+        delete_filtergroup(groupid)
+        FilterRule().init_config()
+        return {"code": 0}
+
+    @staticmethod
+    def __add_filterrule(data):
+        rule_id = data.get("rule_id")
+        item = {
+            "group": data.get("group_id"),
+            "name": data.get("rule_name"),
+            "pri": data.get("rule_pri"),
+            "include": data.get("rule_include"),
+            "exclude": data.get("rule_exclude"),
+            "size": data.get("rule_sizelimit")
+        }
+        insert_filter_rule(rule_id, item)
+        FilterRule().init_config()
+        return {"code": 0}
+
+    @staticmethod
+    def __del_filterrule(data):
+        ruleid = data.get("id")
+        delete_filterrule(ruleid)
+        FilterRule().init_config()
+        return {"code": 0}
+
+    @staticmethod
+    def __filterrule_detail(data):
+        rid = data.get("ruleid")
+        groupid = data.get("groupid")
+        ruleinfo = FilterRule().get_rules(groupid=groupid, ruleid=rid)
+        if ruleinfo:
+            ruleinfo['include'] = "\n".join(ruleinfo.get("include"))
+            ruleinfo['exclude'] = "\n".join(ruleinfo.get("exclude"))
+        return {"code": 0, "info": ruleinfo}
+
+    @staticmethod
+    def get_recommend(data):
+        RecommendType = data.get("type")
+        CurrentPage = data.get("page")
+        if not CurrentPage:
+            CurrentPage = 1
+        else:
+            CurrentPage = int(CurrentPage)
+        if RecommendType == "hm":
+            # TMDB热门电影
+            res_list = Media().get_tmdb_hot_movies(CurrentPage)
+        elif RecommendType == "ht":
+            # TMDB热门电视剧
+            res_list = Media().get_tmdb_hot_tvs(CurrentPage)
+        elif RecommendType == "nm":
+            # TMDB最新电影
+            res_list = Media().get_tmdb_new_movies(CurrentPage)
+        elif RecommendType == "nt":
+            # TMDB最新电视剧
+            res_list = Media().get_tmdb_new_tvs(CurrentPage)
+        elif RecommendType == "dbom":
+            # 豆瓣正在上映
+            res_list = DoubanHot().get_douban_online_movie(CurrentPage)
+        elif RecommendType == "dbhm":
+            # 豆瓣热门电影
+            res_list = DoubanHot().get_douban_hot_movie(CurrentPage)
+        elif RecommendType == "dbht":
+            # 豆瓣热门电视剧
+            res_list = DoubanHot().get_douban_hot_tv(CurrentPage)
+        elif RecommendType == "dbdh":
+            # 豆瓣热门动画
+            res_list = DoubanHot().get_douban_hot_anime(CurrentPage)
+        elif RecommendType == "dbnm":
+            # 豆瓣最新电影
+            res_list = DoubanHot().get_douban_new_movie(CurrentPage)
+        elif RecommendType == "dbzy":
+            # 豆瓣最新电视剧
+            res_list = DoubanHot().get_douban_hot_show(CurrentPage)
+        else:
+            res_list = []
+
+        Items = []
+        TvKeys = ["%s" % key[0] for key in get_rss_tvs()]
+        MovieKeys = ["%s" % key[0] for key in get_rss_movies()]
+        for res in res_list:
+            rid = res.get('id')
+            if RecommendType in ['hm', 'nm', 'dbom', 'dbhm', 'dbnm']:
+                title = res.get('title')
+                date = res.get('release_date')
+                if date:
+                    year = date[0:4]
+                else:
+                    year = ''
+                if title in MovieKeys:
+                    # 已订阅
+                    fav = 1
+                elif is_media_downloaded(title, year):
+                    # 已下载
+                    fav = 2
+                else:
+                    # 未订阅、未下载
+                    fav = 0
+            else:
+                title = res.get('name')
+                date = res.get('first_air_date')
+                if date:
+                    year = date[0:4]
+                else:
+                    year = ''
+                if MetaInfo(title=title).get_name() in TvKeys:
+                    # 已订阅
+                    fav = 1
+                elif is_media_downloaded(MetaInfo(title=title).get_name(), year):
+                    # 已下载
+                    fav = 2
+                else:
+                    # 未订阅、未下载
+                    fav = 0
+            image = res.get('poster_path')
+            if RecommendType in ['hm', 'nm', 'ht', 'nt']:
+                image = "https://image.tmdb.org/t/p/original/%s" % image if image else ""
+            else:
+                # 替换图片分辨率
+                image = image.replace("s_ratio_poster", "m_ratio_poster")
+            vote = res.get('vote_average')
+            overview = res.get('overview')
+            item = {'id': rid,
+                    'title': title,
+                    'fav': fav,
+                    'date': date,
+                    'vote': vote,
+                    'image': image,
+                    'overview': overview,
+                    'year': year}
+            Items.append(item)
+        return {"code": 0, "Items": Items}
+
+    @staticmethod
+    def get_downloaded(data):
+        page = data.get("page")
+        Items = get_download_history(page=page) or []
+        return {"code": 0, "Items": Items}
+
+    @staticmethod
     def parse_sites_string(notes):
         if not notes:
             return ""
@@ -1449,9 +1649,15 @@ class WebAction:
         filter_htmls = []
         if over_edition:
             filter_htmls.append('<span class="badge badge-outline text-red me-1 mb-1" title="已开启洗版">洗版</span>')
-        filter_htmls += ['<span class="badge badge-outline text-orange me-1 mb-1">%s</span>' % v for v in
-                         filter_map.values() if v]
-
+        if filter_map.get("restype"):
+            filter_htmls.append(
+                '<span class="badge badge-outline text-orange me-1 mb-1">%s</span>' % filter_map.get("restype"))
+        if filter_map.get("pix"):
+            filter_htmls.append(
+                '<span class="badge badge-outline text-orange me-1 mb-1">%s</span>' % filter_map.get("pix"))
+        if filter_map.get("rule"):
+            filter_htmls.append('<span class="badge badge-outline text-orange me-1 mb-1">%s</span>' %
+                                FilterRule().get_rule_groups(groupid=filter_map.get("rule")).get("name") or "")
         return "".join(filter_htmls)
 
     @staticmethod
@@ -1481,8 +1687,9 @@ class WebAction:
         if rules.get("time"):
             times = rules.get("time").split("#")
             if times[0]:
-                rule_htmls.append('<span class="badge badge-outline text-orange me-1 mb-1" title="做种时间">做种%s: %s 小时</span>'
-                                  % (rule_filter_string.get(times[0]), times[1]))
+                rule_htmls.append(
+                    '<span class="badge badge-outline text-orange me-1 mb-1" title="做种时间">做种%s: %s 小时</span>'
+                    % (rule_filter_string.get(times[0]), times[1]))
         if rules.get("ratio"):
             ratios = rules.get("ratio").split("#")
             if ratios[0]:
@@ -1491,7 +1698,14 @@ class WebAction:
         if rules.get("uploadsize"):
             uploadsizes = rules.get("uploadsize").split("#")
             if uploadsizes[0]:
-                rule_htmls.append('<span class="badge badge-outline text-orange me-1 mb-1" title="上传量">上传量%s: %s GB</span>'
-                                  % (rule_filter_string.get(uploadsizes[0]), uploadsizes[1]))
+                rule_htmls.append(
+                    '<span class="badge badge-outline text-orange me-1 mb-1" title="上传量">上传量%s: %s GB</span>'
+                    % (rule_filter_string.get(uploadsizes[0]), uploadsizes[1]))
+        if rules.get("dltime"):
+            dltimes = rules.get("dltime").split("#")
+            if dltimes[0]:
+                rule_htmls.append(
+                    '<span class="badge badge-outline text-orange me-1 mb-1" title="下载耗时">下载耗时%s: %s 小时</span>'
+                    % (rule_filter_string.get(dltimes[0]), dltimes[1]))
 
         return "<br>".join(rule_htmls)

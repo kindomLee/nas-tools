@@ -9,7 +9,8 @@ from message.channel.telegram import Telegram
 from message.channel.wechat import WeChat
 from rmt.meta.metabase import MetaBase
 from utils.functions import str_filesize
-from utils.sqls import insert_system_message, insert_download_history
+from utils.sqls import insert_download_history
+from utils.sysmsg_helper import MessageCenter
 from utils.types import SearchType, MediaType
 
 
@@ -18,9 +19,11 @@ class Message:
     __webhook_ignore = None
     __domain = None
     client = None
+    messagecenter = None
 
     def __init__(self):
         self.init_config()
+        self.messagecenter = MessageCenter()
         if self.__msg_channel == "wechat":
             self.client = WeChat()
         elif self.__msg_channel == "serverchan":
@@ -69,7 +72,7 @@ class Message:
                 url = self.__domain
         else:
             url = ""
-        insert_system_message(level="INFO", title=title, content=text)
+        self.messagecenter.insert_system_message(level="INFO", title=title, content=text)
         state, ret_msg = self.client.send_msg(title, text, image, url, user_id)
         if not state:
             log.error("【MSG】发送消息失败：%s" % ret_msg)
@@ -208,7 +211,7 @@ class Message:
         """
         self.sendmsg(
             title="添加下载任务失败：%s %s" % (item.get_title_string(), item.get_season_episode_string()),
-            text=f"种子：{item.org_string}\n错误信息：{error_msg}",
+            text=f"种子：{item.org_string}\n错误信息：{error_msg or '请检查下载任务是否已存在'}",
             image=item.get_message_image())
 
     def send_rss_success_message(self, in_from: Enum, media_info: MetaBase, user_id=""):

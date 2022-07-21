@@ -77,7 +77,7 @@
     </div>
   </div>
 </div>
-<div class="modal modal-blur fade" id="modal-user" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal modal-blur fade" id="modal-user" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="card border-top-0">
@@ -129,8 +129,8 @@
                   <span class="form-selectgroup-label">下载管理</span>
                 </label>
                 <label class="form-selectgroup-item">
-                  <input type="checkbox" name="user_pris" value="媒体识别" class="form-selectgroup-input">
-                  <span class="form-selectgroup-label">媒体识别</span>
+                  <input type="checkbox" name="user_pris" value="媒体整理" class="form-selectgroup-input">
+                  <span class="form-selectgroup-label">媒体整理</span>
                 </label>
                 <label class="form-selectgroup-item">
                   <input type="checkbox" name="user_pris" value="服务" class="form-selectgroup-input">
@@ -146,7 +146,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-white me-auto" data-bs-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-link me-auto" data-bs-dismiss="modal">取消</button>
         <a href="javascript:add_user()" id="add_user_btn" class="btn btn-primary">确定</a>
       </div>
     </div>
