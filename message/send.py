@@ -118,7 +118,7 @@ class Message:
         if channel == SearchType.TG:
             state, ret_msg = Telegram().send_list_msg(title, medias, user_id)
         elif channel == SearchType.WX:
-            WeChat().send_msg(title)
+            WeChat().send_msg(title, user_id=user_id)
             state, ret_msg = WeChat().send_list_msg(medias, self.__domain, user_id)
         else:
             return False
@@ -211,7 +211,7 @@ class Message:
         """
         self.sendmsg(
             title="添加下载任务失败：%s %s" % (item.get_title_string(), item.get_season_episode_string()),
-            text=f"种子：{item.org_string}\n错误信息：{error_msg or '请检查下载任务是否已存在'}",
+            text=f"种子：{item.org_string}\n错误信息：{error_msg}",
             image=item.get_message_image())
 
     def send_rss_success_message(self, in_from: Enum, media_info: MetaBase, user_id=""):

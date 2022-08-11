@@ -2,6 +2,7 @@ import base64
 import logging
 import os.path
 import traceback
+import urllib
 from math import floor
 from urllib import parse
 
@@ -27,7 +28,6 @@ from utils.sqls import *
 from utils.types import *
 from version import APP_VERSION
 from web.action import WebAction
-from web.backend.douban_hot import DoubanHot
 from web.backend.web_utils import get_random_discover_backdrop
 from web.backend.webhook_event import WebhookEvent
 from utils.WXBizMsgCrypt3 import WXBizMsgCrypt
@@ -538,7 +538,8 @@ def create_flask_app(config):
     def rss_calendar():
         Today = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d')
         RssMovieIds = [movie[2] for movie in get_rss_movies()]
-        RssTvItems = [{"id": tv[3], "season": int(str(tv[2]).replace("S", "")), "name": tv[0]} for tv in get_rss_tvs() if tv[2]]
+        RssTvItems = [{"id": tv[3], "season": int(str(tv[2]).replace("S", "")), "name": tv[0]} for tv in get_rss_tvs()
+                      if tv[2]]
         return render_template("rss/rss_calendar.html",
                                Today=Today,
                                RssMovieIds=RssMovieIds,
@@ -592,6 +593,16 @@ def create_flask_app(config):
                         speed = "%s%sB/s %s%sB/s %s" % (chr(8595), dlspeed, chr(8593), upspeed, eta)
                 # 主键
                 key = torrent.get('hash')
+            elif Client == DownloaderType.Cloud:
+                name = torrent.get('name')
+                # 进度
+                progress = round(torrent.get('percentDone'), 1)
+                state = "Downloading"
+                dlspeed = str_filesize(torrent.get('peers'))
+                upspeed = str_filesize(torrent.get('rateDownload'))
+                speed = "%s%sB/s %s%sB/s" % (chr(8595), dlspeed, chr(8593), upspeed)
+                # 主键
+                key = torrent.get('info_hash')
             else:
                 name = torrent.name
                 if torrent.status in ['stopped']:
@@ -875,7 +886,8 @@ def create_flask_app(config):
                 </svg>
                 '''
                 scheduler_cfg_list.append(
-                    {'name': '豆瓣想看', 'time': interval, 'state': sta_douban, 'id': 'douban', 'svg': svg, 'color': "pink"})
+                    {'name': '豆瓣想看', 'time': interval, 'state': sta_douban, 'id': 'douban', 'svg': svg,
+                     'color': "pink"})
 
         # 清理文件整理缓存
         svg = '''
@@ -1101,7 +1113,7 @@ def create_flask_app(config):
     def downloader():
         # Qbittorrent
         qbittorrent = config.get_config('qbittorrent')
-        save_path = qbittorrent.get("save_path")
+        save_path = qbittorrent.get("save_path", {})
         if isinstance(save_path, str):
             paths = save_path.split("|")
             if len(paths) > 1:
@@ -1154,7 +1166,7 @@ def create_flask_app(config):
                 path = ""
                 tag = ""
             QbAnimeSavePath = {"path": path, "tag": tag}
-        contianer_path = qbittorrent.get('save_containerpath')
+        contianer_path = qbittorrent.get('save_containerpath', {})
         if isinstance(contianer_path, str):
             QbMovieContainerPath = QbTvContainerPath = QbAnimeContainerPath = contianer_path
         else:
@@ -1167,14 +1179,14 @@ def create_flask_app(config):
 
         # Transmission
         transmission = config.get_config('transmission')
-        save_path = transmission.get("save_path")
+        save_path = transmission.get("save_path", {})
         if isinstance(save_path, str):
             TrMovieSavePath = TrTvSavePath = TrAnimeSavePath = save_path
         else:
             TrMovieSavePath = save_path.get("movie")
             TrTvSavePath = save_path.get("tv")
             TrAnimeSavePath = save_path.get("anime")
-        contianer_path = transmission.get('save_containerpath')
+        contianer_path = transmission.get('save_containerpath', {})
         if isinstance(contianer_path, str):
             TrMovieContainerPath = TrTvContainerPath = TrAnimeContainerPath = contianer_path
         else:
@@ -1185,20 +1197,46 @@ def create_flask_app(config):
             else:
                 TrMovieContainerPath = TrTvContainerPath = TrAnimeContainerPath = ""
 
+        # Cloudtorrent
+        cloudtorrent = config.get_config('cloudtorrent')
+        save_path = cloudtorrent.get("save_path", {})
+        if isinstance(save_path, str):
+            CloudMovieSavePath = CloudTvSavePath = CloudAnimeSavePath = save_path
+        else:
+            CloudMovieSavePath = save_path.get("movie")
+            CloudTvSavePath = save_path.get("tv")
+            CloudAnimeSavePath = save_path.get("anime")
+        contianer_path = cloudtorrent.get('save_containerpath', {})
+        if isinstance(contianer_path, str):
+            CloudMovieContainerPath = CloudTvContainerPath = CloudAnimeContainerPath = contianer_path
+        else:
+            if contianer_path:
+                CloudMovieContainerPath = contianer_path.get("movie")
+                CloudTvContainerPath = contianer_path.get("tv")
+                CloudAnimeContainerPath = contianer_path.get("anime")
+            else:
+                CloudMovieContainerPath = CloudTvContainerPath = CloudAnimeContainerPath = ""
+
         return render_template("setting/downloader.html",
                                Config=config.get_config(),
                                QbMovieSavePath=QbMovieSavePath,
                                QbTvSavePath=QbTvSavePath,
                                QbAnimeSavePath=QbAnimeSavePath,
-                               TrMovieSavePath=TrMovieSavePath,
-                               TrTvSavePath=TrTvSavePath,
-                               TrAnimeSavePath=TrAnimeSavePath,
                                QbMovieContainerPath=QbMovieContainerPath,
                                QbTvContainerPath=QbTvContainerPath,
                                QbAnimeContainerPath=QbAnimeContainerPath,
+                               TrMovieSavePath=TrMovieSavePath,
+                               TrTvSavePath=TrTvSavePath,
+                               TrAnimeSavePath=TrAnimeSavePath,
                                TrMovieContainerPath=TrMovieContainerPath,
                                TrTvContainerPath=TrTvContainerPath,
-                               TrAnimeContainerPath=TrAnimeContainerPath)
+                               TrAnimeContainerPath=TrAnimeContainerPath,
+                               CloudMovieSavePath=CloudMovieSavePath,
+                               CloudTvSavePath=CloudTvSavePath,
+                               CloudAnimeSavePath=CloudAnimeSavePath,
+                               CloudMovieContainerPath=CloudMovieContainerPath,
+                               CloudTvContainerPath=CloudTvContainerPath,
+                               CloudAnimeContainerPath=CloudAnimeContainerPath)
 
     # 索引器页面
     @App.route('/indexer', methods=['POST', 'GET'])
@@ -1264,6 +1302,31 @@ def create_flask_app(config):
             data = json.loads(data)
         return WebAction().action(cmd, data)
 
+    # 目录事件响应
+    @App.route('/dirlist', methods=['POST'])
+    @login_required
+    def dirlist():
+        r = ['<ul class="jqueryFileTree" style="display: none;">']
+        try:
+            r = ['<ul class="jqueryFileTree" style="display: none;">']
+            d = os.path.normpath(urllib.parse.unquote(request.form.get('dir', '/')))
+            ft = request.form.get("filter")
+            if not os.path.isdir(d):
+                d = os.path.dirname(d)
+            for f in os.listdir(d):
+                ff = os.path.join(d, f)
+                if os.path.isdir(ff):
+                    r.append('<li class="directory collapsed"><a rel="%s/">%s</a></li>' % (ff, f))
+                else:
+                    if ft != "HIDE_FILES_FILTER":
+                        e = os.path.splitext(f)[1][1:]
+                        r.append('<li class="file ext_%s"><a rel="%s">%s</a></li>' % (e, ff, f))
+            r.append('</ul>')
+        except Exception as e:
+            r.append('加载路径失败: %s' % str(e))
+        r.append('</ul>')
+        return make_response(''.join(r), 200)
+
     # 禁止搜索引擎
     @App.route('/robots.txt', methods=['GET', 'POST'])
     def robots():
@@ -1285,7 +1348,7 @@ def create_flask_app(config):
 
         if request.method == 'GET':
             if not sVerifyMsgSig and not sVerifyTimeStamp and not sVerifyNonce:
-                return "放心吧，服务是正常的！"
+                return "放心吧，服务是正常的！<br>微信回调配置步聚：<br>1、在微信企业应用接收消息设置页面生成Token和EncodingAESKey并填入设置->消息通知->微信对应项。<br>2、保存并重启本工具，保存并重启本工具，保存并重启本工具。<br>3、在微信企业应用接收消息设置页面输入此地址：http(s)://IP:PORT/wechat（IP、PORT替换为本工具的外网访问地址及端口，需要有公网IP并做好端口转发，最好有域名）。"
             sVerifyEchoStr = request.args.get("echostr")
             log.debug("收到微信验证请求: echostr= %s" % sVerifyEchoStr)
             ret, sEchoStr = wxcpt.VerifyURL(sVerifyMsgSig, sVerifyTimeStamp, sVerifyNonce, sVerifyEchoStr)

@@ -134,8 +134,8 @@ RSS_SITE_GRAP_CONF = {
         'HR': []
     },
     'ourbits.club': {
-        'FREE': ["//font[@class='free'][text()='免费']"],
-        '2XFREE': ["//font[@class='twoupfree'][text()='2X免费']"],
+        'FREE': ["//font[@class='free']"],
+        '2XFREE': ["//font[@class='twoupfree']"],
         'HR': []
     },
     'pt.btschool.club': {
@@ -181,6 +181,16 @@ RSS_SITE_GRAP_CONF = {
     'u2.dmhy.org': {
         'FREE': ["//img[@class='pro_free']"],
         '2XFREE': [],
+        'HR': []
+    },
+    'www.hdarea.co': {
+        'FREE': ["//img[@class='pro_free'][@title='免费']"],
+        '2XFREE': ["//img[@class='pro_free'][@title='2X免费']"],
+        'HR': []
+    },
+    'hdatmos.club': {
+        'FREE': ["//font[@class='free'][text()='免费']"],
+        '2XFREE': ["//font[@class='twoupfree'][text()='2X免费']"],
         'HR': []
     }
 }

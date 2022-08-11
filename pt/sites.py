@@ -1,3 +1,4 @@
+import json
 import traceback
 from datetime import datetime
 from multiprocessing.dummy import Pool as ThreadPool
@@ -10,7 +11,8 @@ from pt.siteuserinfo.site_user_info_factory import SiteUserInfoFactory
 from utils.functions import singleton
 from utils.http_utils import RequestUtils
 from utils.sqls import get_config_site, insert_site_statistics_history, update_site_user_statistics, \
-    get_site_statistics_recent_sites, get_site_user_statistics, get_site_statistics_history
+    get_site_statistics_recent_sites, get_site_user_statistics, get_site_statistics_history, get_site_seeding_info, \
+    update_site_seed_info
 
 lock = Lock()
 
@@ -40,6 +42,7 @@ class Sites:
         """
         ret_sites = []
         for site in self.__pt_sites:
+            # 站点过滤规则为|分隔的第2位，第1位暂时未使用
             rule_groupid = str(site[9]).split("|")[1] if site[9] and len(str(site[9]).split("|")) > 1 else ""
             if rule_groupid:
                 rule_name = self.filtersites.get_rule_groups(rule_groupid).get("name") or ""
@@ -52,8 +55,6 @@ class Sites:
                 "rssurl": site[3],
                 "signurl": site[4],
                 "cookie": site[5],
-                "free": str(site[9]).split("|")[0] if site[9] and str(site[9]).split("|")[0] in ["FREE",
-                                                                                                 "2XFREE"] else "",
                 "rule": rule_groupid,
                 "rule_name": rule_name
             }
@@ -91,6 +92,8 @@ class Sites:
                 insert_site_statistics_history(site_user_infos)
                 # 实时用户数据
                 update_site_user_statistics(site_user_infos)
+                # 实时做种信息
+                update_site_seed_info(site_user_infos)
 
         # 更新时间
         if refresh_all:
@@ -183,10 +186,10 @@ class Sites:
                             status.append("%s 签到失败，Cookie已过期" % pt_task)
                         else:
                             status.append("%s 签到成功" % pt_task)
-                    elif not res:
-                        status.append("%s 签到失败，无法打开网站" % pt_task)
-                    else:
+                    elif res and res.status_code:
                         status.append("%s 签到失败，状态码：%s" % (pt_task, res.status_code))
+                    else:
+                        status.append("%s 签到失败，无法打开网站" % pt_task)
                 except Exception as e:
                     log.error("【PT】%s 签到出错：%s - %s" % (pt_task, str(e), traceback.format_exc()))
         if status:
@@ -270,3 +273,18 @@ class Sites:
             site_activities["seeding_size"].append([timestamp, sql_site_activity[5]])
 
         return site_activities
+
+    @staticmethod
+    def get_pt_site_seeding_info(site):
+        """
+        查询站点 做种分布信息
+        :param site: 站点名称
+        :return: seeding_info:[uploader_num, seeding_size]
+        """
+        site_seeding_info = {"seeding_info": []}
+        seeding_info = get_site_seeding_info(site=site)
+        if not seeding_info:
+            return site_seeding_info
+
+        site_seeding_info["seeding_info"] = json.loads(seeding_info[0][0])
+        return site_seeding_info

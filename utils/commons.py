@@ -2,6 +2,7 @@
 import parse
 import re
 from config import SPLIT_CHARS
+from utils.functions import singleton
 
 
 class EpisodeFormat(object):
@@ -65,7 +66,7 @@ class EpisodeFormat(object):
         if not self.__format:
             return None, None
         s, e = self.__handle_single(file_name)
-        return s + self.__offset if s else None, e + self.__offset if e else None
+        return s + self.__offset if s is not None else None, e + self.__offset if e is not None else None
 
     def __handle_single(self, file: str):
         if not self.__format:
@@ -83,3 +84,39 @@ class EpisodeFormat(object):
         else:
             return int(re.compile(r'[a-zA-Z]*', re.IGNORECASE).sub("", episode_splits[0])), int(
                 re.compile(r'[a-zA-Z]*', re.IGNORECASE).sub("", episode_splits[1]))
+
+
+@singleton
+class ProcessHandler(object):
+    _process_detail = None
+    _enable = False
+
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self._process_detail = {
+            "value": 0,
+            "text": "请稍候..."
+        }
+
+    def start(self):
+        self.reset()
+        self._enable = True
+
+    def end(self):
+        self._enable = False
+
+    def update(self, value=None, text=None):
+        if not self._enable:
+            return
+        if value:
+            self._process_detail['value'] = value
+        if text:
+            self._process_detail['text'] = text
+
+    def get_process(self):
+        if self._enable:
+            return self._process_detail
+        else:
+            return None

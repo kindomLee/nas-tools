@@ -11,6 +11,7 @@ from message.channel.telegram import Telegram
 from message.channel.wechat import WeChat
 from message.send import Message
 from pt.brushtask import BrushTask
+from pt.client.cloudtorrent import CloudTorrent
 from pt.client.qbittorrent import Qbittorrent
 from pt.client.transmission import Transmission
 from pt.douban import DouBan
@@ -31,7 +32,7 @@ from rmt.metainfo import MetaInfo
 from service.run import stop_scheduler, stop_monitor, restart_scheduler, restart_monitor
 from service.scheduler import Scheduler
 from service.sync import Sync
-from utils.commons import EpisodeFormat
+from utils.commons import EpisodeFormat, ProcessHandler
 from utils.functions import *
 from utils.http_utils import RequestUtils
 from utils.meta_helper import MetaHelper
@@ -102,7 +103,11 @@ class WebAction:
             "get_site_activity": self.__get_site_activity,
             "get_site_history": self.__get_site_history,
             "get_recommend": self.get_recommend,
-            "get_downloaded": self.get_downloaded
+            "get_downloaded": self.get_downloaded,
+            "get_site_seeding_info": self.__get_site_seeding_info,
+            "clear_tmdb_cache": self.__clear_tmdb_cache,
+            "check_site_attr": self.__check_site_attr,
+            "refresh_process": self.__refresh_process
         }
 
     def action(self, cmd, data):
@@ -315,32 +320,31 @@ class WebAction:
         dl_id = data.get("id")
         results = get_search_result_by_id(dl_id)
         for res in results:
-            if res[7] == "TV":
-                mtype = MediaType.TV
-            elif res[7] == "MOV":
-                mtype = MediaType.MOVIE
-            else:
-                mtype = MediaType.ANIME
-            msg_item = MetaInfo("%s" % res[8])
-            msg_item.type = mtype
-            msg_item.size = res[10]
-            msg_item.enclosure = res[0]
-            msg_item.site = res[14]
-            msg_item.upload_volume_factor = float(res[15] or 1.0)
-            msg_item.download_volume_factor = float(res[16] or 1.0)
             if res[11] and str(res[11]) != "0":
+                msg_item = MetaInfo("%s" % res[8])
+                if res[7] == "TV":
+                    mtype = MediaType.TV
+                elif res[7] == "MOV":
+                    mtype = MediaType.MOVIE
+                else:
+                    mtype = MediaType.ANIME
+                msg_item.type = mtype
                 msg_item.tmdb_id = res[11]
                 msg_item.title = res[1]
                 msg_item.vote_average = res[5]
                 msg_item.poster_path = res[6]
-                msg_item.description = res[9]
                 msg_item.poster_path = res[12]
                 msg_item.overview = res[13]
             else:
-                tmdbinfo = Media().get_tmdb_info(mtype=mtype, title=msg_item.get_name(), year=msg_item.year)
-                msg_item.set_tmdb_info(tmdbinfo)
+                msg_item = Media().get_media_info(title=res[8], subtitle=res[9])
+            msg_item.enclosure = res[0]
+            msg_item.description = res[9]
+            msg_item.size = res[10]
+            msg_item.site = res[14]
+            msg_item.upload_volume_factor = float(res[15] or 1.0)
+            msg_item.download_volume_factor = float(res[16] or 1.0)
             # 添加下载
-            ret, ret_msg = Downloader().add_pt_torrent(res[0], mtype)
+            ret, ret_msg = Downloader().add_pt_torrent(res[0], msg_item.type)
             if ret:
                 # 发送消息
                 Message().send_download_message(SearchType.WEB, msg_item)
@@ -401,6 +405,15 @@ class WebAction:
                 progress = round(torrent.get('progress') * 100)
                 # 主键
                 key = torrent.get('hash')
+            elif Client == DownloaderType.Cloud:
+                state = "Downloading"
+                dlspeed = str_filesize(torrent.get('peers'))
+                upspeed = str_filesize(torrent.get('rateDownload'))
+                speed = "%s%sB/s %s%sB/s" % (chr(8595), dlspeed, chr(8593), upspeed)
+                # 进度
+                progress = round(torrent.get('percentDone'), 1)
+                # 主键
+                key = torrent.get('info_hash')
             else:
                 if torrent.status in ['stopped']:
                     state = "Stoped"
@@ -602,9 +615,6 @@ class WebAction:
         """
         检查新版本
         """
-        version = ""
-        info = ""
-        code = 0
         try:
             response = RequestUtils(proxies=self.config.get_proxies()).get_res(
                 "https://api.github.com/repos/jxxghp/nas-tools/releases/latest")
@@ -612,10 +622,10 @@ class WebAction:
                 ver_json = response.json()
                 version = ver_json["tag_name"]
                 info = f'<a href="{ver_json["html_url"]}" target="_blank">{version}</a>'
+                return {"code": 0, "version": version, "info": info}
         except Exception as e:
-            log.console(str(e))
-            code = -1
-        return {"code": code, "version": version, "info": info}
+            print(str(e))
+        return {"code": -1, "version": "", "info": ""}
 
     @staticmethod
     def __update_site(data):
@@ -1278,6 +1288,7 @@ class WebAction:
         brushtask_seedratio = data.get("brushtask_seedratio")
         brushtask_seedsize = data.get("brushtask_seedsize")
         brushtask_dltime = data.get("brushtask_dltime")
+        brushtask_avg_upspeed = data.get("brushtask_avg_upspeed")
         # 选种规则
         rss_rule = {
             "free": brushtask_free,
@@ -1292,7 +1303,8 @@ class WebAction:
             "time": brushtask_seedtime,
             "ratio": brushtask_seedratio,
             "uploadsize": brushtask_seedsize,
-            "dltime": brushtask_dltime
+            "dltime": brushtask_dltime,
+            "avg_upspeed": brushtask_avg_upspeed
         }
         # 添加记录
         item = {
@@ -1372,6 +1384,8 @@ class WebAction:
             # 测试
             if dl_type == "qbittorrent":
                 downloader = Qbittorrent(user_config=user_config)
+            elif dl_type == "cloudtorrent":
+                downloader = CloudTorrent(user_config=user_config)
             else:
                 downloader = Transmission(user_config=user_config)
             if downloader.get_status():
@@ -1408,6 +1422,7 @@ class WebAction:
             "title": media_info.title,
             "year": media_info.year,
             "season_episode": media_info.get_season_episode_string(),
+            "part": media_info.part,
             "tmdbid": media_info.tmdb_id,
             "category": media_info.category,
             "restype": media_info.resource_type,
@@ -1421,13 +1436,11 @@ class WebAction:
         title = data.get("title")
         subtitle = data.get("subtitle")
         size = data.get("size")
-        if size:
-            size = float(size) * 1024 ** 3
         if not title:
             return {"code": -1}
         meta_info = MetaInfo(title=title, subtitle=subtitle)
-        match_flag, res_order, rule_name = FilterRule().check_rules(meta_info=meta_info,
-                                                                    torrent_size=size)
+        meta_info.size = float(size) * 1024 ** 3 if size else 0
+        match_flag, res_order, rule_name = FilterRule().check_rules(meta_info=meta_info)
         return {
             "code": 0,
             "flag": match_flag,
@@ -1463,6 +1476,20 @@ class WebAction:
         resp = {"code": 0}
         _, _, site, upload, download = Sites().get_pt_site_statistics_history(data["days"]+1)
         resp.update({"site": site, "upload": upload, "download": download})
+        return resp
+
+    @staticmethod
+    def __get_site_seeding_info(data):
+        """
+        查询site 做种分布信息 大小，做种数
+        :param data: {"name":site_name}
+        :return:
+        """
+        if not data or "name" not in data:
+            return {"code": 1, "msg": "查询参数错误"}
+
+        resp = {"code": 0}
+        resp.update(Sites().get_pt_site_seeding_info(data["name"]))
         return resp
 
     @staticmethod
@@ -1503,7 +1530,8 @@ class WebAction:
             "pri": data.get("rule_pri"),
             "include": data.get("rule_include"),
             "exclude": data.get("rule_exclude"),
-            "size": data.get("rule_sizelimit")
+            "size": data.get("rule_sizelimit"),
+            "free": data.get("rule_free")
         }
         insert_filter_rule(rule_id, item)
         FilterRule().init_config()
@@ -1707,5 +1735,51 @@ class WebAction:
                 rule_htmls.append(
                     '<span class="badge badge-outline text-orange me-1 mb-1" title="下载耗时">下载耗时%s: %s 小时</span>'
                     % (rule_filter_string.get(dltimes[0]), dltimes[1]))
+        if rules.get("avg_upspeed"):
+            avg_upspeeds = rules.get("avg_upspeed").split("#")
+            if avg_upspeeds[0]:
+                rule_htmls.append(
+                    '<span class="badge badge-outline text-orange me-1 mb-1" title="平均上传速度">平均上传速度%s: %s KB/S</span>'
+                    % (rule_filter_string.get(avg_upspeeds[0]), avg_upspeeds[1]))
 
         return "<br>".join(rule_htmls)
+
+    @staticmethod
+    def __clear_tmdb_cache(data):
+        """
+        清空TMDB缓存
+        """
+        try:
+            MetaHelper().clear_meta_data()
+            os.remove(MetaHelper().get_meta_data_path())
+        except Exception as e:
+            return {"code": 0, "msg": str(e)}
+        return {"code": 0}
+
+    @staticmethod
+    def __check_site_attr(data):
+        """
+        检查站点标识
+        """
+        url = data.get("url")
+        url_host = parse.urlparse(url).netloc
+        site_free = site_2xfree = site_hr = False
+        if url_host in RSS_SITE_GRAP_CONF.keys():
+            if RSS_SITE_GRAP_CONF[url_host].get("FREE"):
+                site_free = True
+            if RSS_SITE_GRAP_CONF[url_host].get("2XFREE"):
+                site_2xfree = True
+            if RSS_SITE_GRAP_CONF[url_host].get("HR"):
+                site_hr = True
+        return {"code": 0, "site_free": site_free, "site_2xfree": site_2xfree, "site_hr": site_hr}
+
+    @staticmethod
+    def __refresh_process(data):
+        """
+        刷新进度条
+        """
+        detail = ProcessHandler().get_process()
+        if detail:
+            return {"code": 0, "value": detail.get("value"), "text": detail.get("text")}
+        else:
+            return {"code": 1}

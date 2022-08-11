@@ -187,8 +187,12 @@ class DouBan:
                 # 随机休眠
                 sleep(round(random.uniform(1, 5), 1))
                 continue
+            if not douban_info.get("title"):
+                # 随机休眠
+                sleep(round(random.uniform(1, 5), 1))
+                continue
             # 组装媒体信息
-            if douban_info.get("title") == "未知电影" and not douban_info.get("year"):
+            if douban_info.get("title") == "未知电影":
                 douban_info = self.get_media_detail_from_web("https://movie.douban.com/subject/%s/" % doubanid)
                 if not douban_info:
                     log.warn("【DOUBAN】%s 无权限访问，需要配置豆瓣Cookie" % doubanid)
@@ -297,7 +301,7 @@ class DouBan:
         finally:
             lock.release()
 
-    def search_douban_medias(self, keyword, mtype: MediaType = None, num=20):
+    def search_douban_medias(self, keyword, mtype: MediaType = None, num=20, episode=None):
         """
         根据关键字搜索豆瓣，返回可能的标题和年份信息
         """
@@ -325,6 +329,8 @@ class DouBan:
                 meta_info.type = MediaType.MOVIE
             else:
                 meta_info.type = MediaType.TV
+            if episode:
+                meta_info.begin_episode = int(episode)
             if meta_info not in ret_medias:
                 ret_medias.append(meta_info)
 

@@ -11,6 +11,7 @@ class MediaType(Enum):
 class DownloaderType(Enum):
     QB = 'Qbittorrent'
     TR = 'Transmission'
+    Cloud = 'Cloudtorrent'
 
 
 class SyncType(Enum):
@@ -31,6 +32,7 @@ class RmtMode(Enum):
     LINK = "硬链接"
     SOFTLINK = "软链接"
     COPY = "复制"
+    MOVE = "移动"
 
 
 class MatchMode(Enum):

@@ -32,21 +32,33 @@ class MetaHelper(object):
         self.__meta_path = os.path.join(os.path.dirname(config.get_config_path()), 'meta.dat')
         self.__meta_data = self.__load_meta_data(self.__meta_path)
 
-    def __get_meta_data(self):
-        return self.__meta_data
+    def clear_meta_data(self):
+        """
+        清空所有TMDB缓存
+        """
+        with lock:
+            self.__meta_data = {}
+
+    def get_meta_data_path(self):
+        """
+        返回TMDB缓存文件路径
+        """
+        return self.__meta_path
 
     def get_meta_data_by_key(self, key):
+        """
+        根据KEY值获取缓存值
+        """
         with lock:
-            info: dict = self.__get_meta_data().get(key)
+            info: dict = self.__meta_data.get(key)
             if info:
                 expire = info.get(CACHE_EXPIRE_TIMESTAMP_STR)
                 if not expire or int(time.time()) < expire:
                     info[CACHE_EXPIRE_TIMESTAMP_STR] = int(time.time()) + EXPIRE_TIMESTAMP
                     ThreadHelper().start_thread(self.update_meta_data, ({key: info}))
-                    return info
                 elif expire and self.__tmdb_cache_expire:
                     ThreadHelper().start_thread(self.delete_meta_data, (key,))
-            return None
+            return info
 
     def dump_meta_data(self, search, page, num):
         """
@@ -65,7 +77,7 @@ class MetaHelper(object):
             search_metas = [(k, json_serializable(v),
                              str(k).replace("[电影]", "").replace("[电视剧]", "").replace("[未知]", "").replace("-None", ""))
                             for k, v in
-                            self.__get_meta_data().items() if search.lower() in k.lower() and v.get("id") != 0]
+                            self.__meta_data.items() if search.lower() in k.lower() and v.get("id") != 0]
             return len(search_metas), search_metas[begin_pos: begin_pos + num]
 
     def delete_meta_data(self, key):
@@ -76,6 +88,24 @@ class MetaHelper(object):
         """
         with lock:
             return self.__meta_data.pop(key, None)
+
+    def delete_meta_data_by_tmdbid(self, tmdbid):
+        """
+        清空对应TMDBID的所有缓存记录，以强制更新TMDB中最新的数据
+        """
+        for key in list(self.__meta_data):
+            if str(self.__meta_data.get(key, {}).get("id")) == str(tmdbid):
+                with lock:
+                    self.__meta_data.pop(key)
+
+    def delete_unknown_meta(self):
+        """
+        清除未识别的缓存记录，以便重新检索TMDB
+        """
+        for key in list(self.__meta_data):
+            if str(self.__meta_data.get(key, {}).get("id")) == '0':
+                with lock:
+                    self.__meta_data.pop(key)
 
     def modify_meta_data(self, key, title):
         """
@@ -95,15 +125,23 @@ class MetaHelper(object):
 
     @staticmethod
     def __load_meta_data(path):
+        """
+        从文件中加载缓存
+        """
         try:
-            with open(path, 'rb') as f:
-                data = pickle.load(f)
-            return data
+            if os.path.exists(path):
+                with open(path, 'rb') as f:
+                    data = pickle.load(f)
+                return data
+            return {}
         except Exception as e:
             print(str(e))
             return {}
 
     def update_meta_data(self, meta_data):
+        """
+        新增或更新缓存条目
+        """
         with lock:
             for key, item in meta_data.items():
                 if not self.__meta_data.get(key):
@@ -111,17 +149,22 @@ class MetaHelper(object):
                     self.__meta_data[key] = item
 
     def save_meta_data(self, force=False):
-        with lock:
-            meta_data = self.__load_meta_data(self.__meta_path)
-            new_meta_data = {k: v for k, v in self.__meta_data.items() if v.get("id") != 0}
+        """
+        保存缓存数据到文件
+        """
+        meta_data = self.__load_meta_data(self.__meta_path)
+        new_meta_data = {k: v for k, v in self.__meta_data.items() if str(v.get("id")) != '0'}
 
-            if not force and not self._random_sample(new_meta_data) and meta_data.keys() == new_meta_data.keys():
-                return
+        if not force and not self._random_sample(new_meta_data) and meta_data.keys() == new_meta_data.keys():
+            return
 
-            with open(self.__meta_path, 'wb') as f:
-                pickle.dump(new_meta_data, f, pickle.HIGHEST_PROTOCOL)
+        with open(self.__meta_path, 'wb') as f:
+            pickle.dump(new_meta_data, f, pickle.HIGHEST_PROTOCOL)
 
     def _random_sample(self, new_meta_data):
+        """
+        采样分析是否需要保存
+        """
         ret = False
         if len(new_meta_data) < 25:
             keys = list(new_meta_data.keys())
