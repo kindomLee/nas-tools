@@ -15,6 +15,18 @@
   <div class="container-xl">
     <div class="row row-cards">
       <div class="col-12 col-md-4 col-xl-3">
+        <a class="card card-link card-link-pop" href="#" data-bs-toggle="modal" data-bs-target="#modal-builtin">
+          <div class="card-cover card-cover-blurred text-center" style="background-color: #2E72B9">
+            <span class="avatar avatar-xl avatar-thumb avatar-rounded" style="background-image: url(../static/img/indexer.jpg)">
+            </span>
+          </div>
+          <div class="card-body text-center">
+            <div class="card-title mb-1">内建索引器</div>
+            <div class="text-muted">{% if Config.pt.search_indexer == "builtin" %}<span class="badge bg-green" title="已开启"></span> 正在使用{% endif %}</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-12 col-md-4 col-xl-3">
         <a class="card card-link card-link-pop" href="#" data-bs-toggle="modal" data-bs-target="#modal-jackett">
           <div class="card-cover card-cover-blurred text-center bg-black">
             <span class="avatar avatar-xl avatar-thumb avatar-rounded" style="background-image: url(../static/img/jackett.png)">
@@ -51,25 +63,29 @@
         </div>
         <div class="card-body">
           <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label required">API Key <span class="form-help bg-red-lt" title="Jackett管理界面右上角复制API Key" data-bs-toggle="tooltip">?</span></label>
+                <label class="form-label required">Jackett地址 <span class="form-help" title="Jackett访问地址和端口，如为https需加https://前缀" data-bs-toggle="tooltip">?</span></label>
+                <input type="text" value="{% if Config.jackett %}{{ Config.jackett.host or '' }}{% endif %}" id="jackett.host" class="form-control" placeholder="http://127.0.0.1:9117">
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label required">API Key <span class="form-help" title="Jackett管理界面右上角复制API Key" data-bs-toggle="tooltip">?</span></label>
                 <input type="text" value="{% if Config.jackett %}{{ Config.jackett.api_key or '' }}{% endif %}" id="jackett.api_key" class="form-control">
               </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label required">Torznab Feeds <span class="form-help bg-red-lt" title="Jackett管理界面Indexer中选择Copy Torznab Feed复制链接，一行配置一个地址，可配置多行" data-bs-toggle="tooltip">?</span></label>
-                <textarea rows="5" id="jackett.indexers" class="form-control">{% if Config.jackett.indexers %}{{ Config.jackett.indexers|join('\n') }}{% endif %}</textarea>
+                <label class="form-label required">密码 <span class="form-help" title="Jackett管理界面中配置的Admin password，如未配置可为空" data-bs-toggle="tooltip">?</span></label>
+                <input type="password" value="{% if Config.jackett %}{{ Config.jackett.password or '' }}{% endif %}" id="jackett.password" class="form-control">
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <a href="javascript:test_indexer_config('jackett')" id="jackett_test_btn" class="btn me-auto">
+        <a href="javascript:test_indexer_config('jackett')" id="jackett_test_btn" class="btn btn-secondary me-auto">
           测试
         </a>
         <a href="javascript:save_indexer_config('jackett')" id="jackett_save_btn" class="btn btn-primary">确定</a>
@@ -89,13 +105,13 @@
           <div class="row">
             <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label required">服务器地址 <span class="form-help bg-red-lt" title="Prowlarr访问地址，如为https需加https://前缀" data-bs-toggle="tooltip">?</span></label>
+                <label class="form-label required">Prowlarr地址 <span class="form-help" title="Prowlarr访问地址和端口，如为https需加https://前缀" data-bs-toggle="tooltip">?</span></label>
                 <input type="text" value="{% if Config.prowlarr %}{{ Config.prowlarr.host or '' }}{% endif %}" id="prowlarr.host" class="form-control" placeholder="http://127.0.0.1:9696">
               </div>
             </div>
             <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label required">API Key <span class="form-help bg-red-lt" title="在Prowlarr->Settings->General->Security-> API Key中获取" data-bs-toggle="tooltip">?</span></label>
+                <label class="form-label required">API Key <span class="form-help" title="在Prowlarr->Settings->General->Security-> API Key中获取" data-bs-toggle="tooltip">?</span></label>
                 <input type="text" value="{% if Config.prowlarr %}{{ Config.prowlarr.api_key or '' }}{% endif %}" id="prowlarr.api_key" class="form-control">
               </div>
             </div>
@@ -103,10 +119,69 @@
         </div>
       </div>
       <div class="modal-footer">
-        <a href="javascript:test_indexer_config('prowlarr')" id="prowlarr_test_btn" class="btn me-auto">
+        <a href="javascript:test_indexer_config('prowlarr')" id="prowlarr_test_btn" class="btn btn-secondary me-auto">
           测试
         </a>
         <a href="javascript:save_indexer_config('prowlarr')" id="prowlarr_save_btn" class="btn btn-primary">确定</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal modal-blur fade" id="modal-builtin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="card border-top-0">
+        <div class="card-header">
+          <h5 class="modal-title">内建索引器</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <div class="mb-3">
+                <label class="form-label required">私有站点 <span class="form-help" title="当前可以使用的私有站点清单，内建索引器支持私有站点的先决条件：1、在站点维护中正确配置站点地址和Cookie；2、站点己被支持" data-bs-toggle="tooltip">?</span></label>
+                <div class="form-selectgroup">
+                  {% if PrivateCount > 0 %}
+                  {% for Indexer in Indexers %}
+                  {% if not Indexer.public %}
+                  <label class="form-selectgroup-item">
+                    <input type="checkbox" name="indexer_site" value="{{ Indexer.id }}" class="form-selectgroup-input" {% if Config.pt.indexer_sites and Indexer.id in Config.pt.indexer_sites %}checked{% endif %}>
+                    <span class="form-selectgroup-label">{{ Indexer.name }}</span>
+                  </label>
+                  {% endif %}
+                  {% endfor %}
+                  {% else %}
+                  <label class="form-selectgroup-item">
+                    <span class="form-selectgroup-label">无</span>
+                  </label>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">公开站点 <span class="form-help" title="当前可用的公开站点，公开站点只要被内建索引器支持了就会在这里显示，无需维护站点信息" data-bs-toggle="tooltip">?</span></label>
+                <div class="form-selectgroup">
+                  {% if PublicCount > 0 %}
+                  {% for Indexer in Indexers %}
+                  {% if Indexer.public %}
+                  <label class="form-selectgroup-item">
+                    <input type="checkbox" name="indexer_site" value="{{ Indexer.id }}" class="form-selectgroup-input" {% if Config.pt.indexer_sites and Indexer.id in Config.pt.indexer_sites %}checked{% endif %}>
+                    <span class="form-selectgroup-label">{{ Indexer.name }}</span>
+                  </label>
+                  {% endif %}
+                  {% endfor %}
+                  {% else %}
+                  <label class="form-selectgroup-item">
+                    <span class="form-selectgroup-label">无</span>
+                  </label>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="javascript:save_indexer_config('builtin')" id="builtin_save_btn" class="btn btn-primary">确定</a>
       </div>
     </div>
   </div>
@@ -119,20 +194,32 @@
   function save_config(type, func, test){
     currType = type;
     var params = {"test": test||false};
-    $("#modal-"+ type +" input").each(function(){
-      var key = $(this).attr("id");
-      if($(this).attr("type")=="checkbox"){
-        var value = $(this).prop("checked") ? true:false;
-      }else{
+    if(type != "builtin"){
+      $("#modal-"+ type +" input").each(function(){
+        var key = $(this).attr("id");
+        if($(this).attr("type")=="checkbox"){
+          var value = $(this).prop("checked") ? true:false;
+        }else{
+          var value = $(this).val();
+        }
+        params[key] = value;
+      });
+      $("#modal-"+ type +" textarea").each(function(){
+        var key = $(this).attr("id");
         var value = $(this).val();
-      }
-      params[key] = value;
-    });
-    $("#modal-"+ type +" textarea").each(function(){
-      var key = $(this).attr("id");
-      var value = $(this).val();
-      params[key] = value;
-    });
+        params[key] = value;
+      });
+    }else{
+      var sites = [];
+      var i = 0;
+      $("input[name=indexer_site]").each(function(){
+        if($(this).prop("checked")){
+          sites[i] = $(this).val();
+          i = i + 1;
+        }
+      });
+      params['pt.indexer_sites'] = sites
+    }
     params['pt.search_indexer'] = type;
     ajax_post("update_config", params, func);
   }
@@ -150,9 +237,9 @@
     $("#" + type + "_test_btn").text("测试中...");
     save_config(type, function (ret) {
       if(currType == "jackett"){
-        command = "pt.indexer.jackett|Jackett";
+        command = "app.indexer.client.jackett|Jackett";
       }else if(currType == "prowlarr"){
-        command = "pt.indexer.prowlarr|Prowlarr";
+        command = "app.indexer.client.prowlarr|Prowlarr";
       }
       ajax_post("test_connection", {"command": command}, function(ret){
         if(ret.code == 0){

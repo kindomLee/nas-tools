@@ -1,3 +1,4 @@
+![image](https://raw.githubusercontent.com/jxxghp/nas-tools/a7e44dd95cda89f71664f766daa5f93e59543225/web/static/img/logo.svg) 
 # NAS媒体库资源归集整理工具
 
 [![GitHub stars](https://img.shields.io/github/stars/jxxghp/nas-tools?style=plastic)](https://github.com/jxxghp/nas-tools/stargazers)
@@ -7,14 +8,10 @@
 
 Docker：https://hub.docker.com/repository/docker/jxxghp/nas-tools
 
-群晖套件：https://github.com/jxxghp/nas-tools/releases
-
 TG频道：https://t.me/nastool
 
 WIKI：https://github.com/jxxghp/nas-tools/wiki
 
-配置文件模板：https://github.com/jxxghp/nas-tools/blob/master/config/config.yaml
-（现已可通过WEB界面配置，但里面的注释可以参考）
 
 ## 功能：
 
@@ -39,120 +36,21 @@ WIKI：https://github.com/jxxghp/nas-tools/wiki
 * Emby/Jellyfin/Plex播放状态通知。
 
 
-## 更新日志
-2022.7.11
-* 微信消息推送支持设置代理服务，更加强大的过滤规则设置
-
-2022.7.8
-* 新增自动化托管刷流功能
-
-2022.6.11
-* 新增订阅日历
-
-2022.6.1
-* 新增近期下载
-* 新增TMDB缓存管理
-
-2022.5.24
-* 新增站点数据统计
-
-2022.5.18
-* 支持Opensubtitles.org、ChineseSubFinder下载字幕
-
-2022.5.4
-* 支持Plex
-
-2022.5.1
-* 支持不识别重命名直接对目录进行硬链接同步
-
-2022.4.27
-* RSS支持全局优先规则
-* 程序所有设置可通过WEB进行配置
-
-2022.4.23
-* 支持设定优先规则检索和下载资源，实现字幕、配音等择优
-* RSS及资源检索的过滤规则现在通过WEB页面设置
-
-2022.4.19
-* 支持prowlarr做为检索器
-* 支持Jellyfin做为媒体服务器
-* 支持Telegram Bot远程运行服务及PT检索下载
-
-2022.4.17
-* 支持Windows运行
-* 优化媒体信息检索匹配
-
-2022.4.14
-* 媒体库支持多目录，支持多硬盘/存储空间组媒体库
-
-2022.4.12
-* 支持配置代理
-
-2022.4.8
-* RSS订阅及PT资源检索支持按关键字和文件大小灵活过滤
-
-2022.4.2
-* 支持对识别错误的记录手工重新识别转移
-* 支持自定义分类
-* 支持动漫识别（使用 <a href="https://github.com/igorcmoura/anitopy" target="_blank">anitopy</a>）
-
-2022.3.27
-* 支持查询识别转移历史记录
-* 对于自动识别失败的记录，支持手工识别转移
-
-2022.3.18
-* 全新的WEB UI，媒体库、搜索、推荐、下载、服务等功能上线
-
-2022.3.13
-* 整合 <a href="https://github.com/Qliangw/notion_sync_data" target="_blank">Qliangw</a> 提供的豆瓣同步部分代码，支持同步豆瓣收藏记录，后台自动下载。
-
-2022.3.9
-* 支持WEB资源检索，手动选种下载
-
-2022.3.4
-* 支持Jackett聚合检索，微信发送关键字直接检索下载
-
-2022.3.3
-* 优化文件名识别策略
-* RSS订阅机制优化
-* Docker启动时自动检查升级
-* 通知推送支持Bark
-
-2022.2.28
-* 支持RSS简单策略选种
-* 优化图文消息推送及媒体整理
-* 删除了原来打算整合的原开源代码
-
-2022.2.26
-* 新增版本号管理
-* 优化目录同步、文件识别、消息推送处理逻辑
-* 优化WEBUI RSS关键字设置操作体验
-
-2022.2.24
-* 新增下载、转移完成支持图文消息（微信、telegram）
-* 目录同步硬链接支持多对多，详情参考配置文件模板注释
-
-2022.2.19
-* 增加存量资源整理工具及说明，将已有的存量资源批量整理成媒体库
-
-
 ## 安装
 ### 1、Docker
 
 教程见 [这里](docker/readme.md) 。
 
 ### 2、本地运行
-python3版本
+python3版本，如发现缺少依赖包需额外安装
 ```
 python3 -m pip install -r requirements.txt
 export NASTOOL_CONFIG="/xxx/config/config.yaml"
 nohup python3 run.py & 
 ```
 
-### 3、群晖套件
-仅适用于dsm6，依赖python3套件。
-
-套件版本不支持自动升级且部分功能无法使用（比如WEB页面重启和更新），推荐使用Docker版本。
+### 3、Windows
+下载exe文件，双击运行即可，会自动生成配置文件目录
 
 https://github.com/jxxghp/nas-tools/releases
 
@@ -169,7 +67,7 @@ https://github.com/jxxghp/nas-tools/releases
 
 
 ### 2、基础配置
-* 文件转移模式说明：目前支持三种模式：复制、硬链接、软链接。复制模式下载做种和媒体库是两份，多占用存储（下载盘大小决定能保多少种），好处是媒体库的盘不用24小时运行可以休眠；硬链接模式不用额外增加存储空间，一份文件两份目录，但需要下载目录和媒体库目录在一个磁盘分区或者存储空间；软链接模式就是快捷方式，需要容器内路径与真实路径一致才能正常使用。
+* 文件转移模式说明：目前支持五种模式：复制、硬链接、软链接、移动、RCLONE。复制模式下载做种和媒体库是两份，多占用存储（下载盘大小决定能保多少种），好处是媒体库的盘不用24小时运行可以休眠；硬链接模式不用额外增加存储空间，一份文件两份目录，但需要下载目录和媒体库目录在一个磁盘分区或者存储空间；软链接模式就是快捷方式，需要容器内路径与真实路径一致才能正常使用；移动模式会移动和删除原文件及目录；RCLONE模式只针对RCLONE网盘使用场景。
 
 * 启动程序并配置：Docker默认使用3000端口启动（群晖套件默认3003端口），默认用户密码：admin/password（docker需要参考教程提前映射好端口、下载目录、媒体库目录），登录管理界面后，在设置中根据每个配置项的提示在WEB页面修改好配置并重启生效（基础设置中有标红星的是必须要配置的，如TMDB APIKEY等）。详细配置方法可参考默认配置文件的注释及WIKI中的教程。
 
@@ -192,7 +90,7 @@ https://github.com/jxxghp/nas-tools/releases
    >> 儿童
 
 ### 4、配置同步目录（可选）
-* 目录同步可以对多个分散的文件夹进行监控，文件夹中有新增媒体文件时会自动进行识别重命名，并按配置的转移方式转移到媒体库目录或指定的目录中。如将PT下载软件的下载目录也纳入目录同步范围的，建议关闭下载软件监控功能，否则会触发重复处理。
+* 目录同步可以对多个分散的文件夹进行监控，文件夹中有新增媒体文件时会自动进行识别重命名，并按配置的转移方式转移到媒体库目录或指定的目录中。如将下载软件的下载目录也纳入目录同步范围的，建议关闭下载软件监控功能，否则会触发重复处理。
 
 ### 5、配置微信菜单/Telegram机器人（推荐）
 配置好微信或Telegram机器人后，可以直接通过微信/Telegram机器人发送名字实现自动检索下载，以及控制程序运行。
@@ -227,7 +125,7 @@ https://github.com/jxxghp/nas-tools/releases
 2) Telegram Bot机器人
 
 * 在NASTool设置中设置好本程序的外网访问地址以及打开Telegram Webhook开关。
-* 在Telegram BotFather机器人中按下表维护好bot命令菜单（也可以不维护），选择菜单或输入命令运行对应服务，输入其它内容则启动PT聚合检索。
+* 在Telegram BotFather机器人中按下表维护好bot命令菜单（也可以不维护），选择菜单或输入命令运行对应服务，输入其它内容则启动聚合检索。
 * 注意：受Telegram限制，程序运行端口需要设置为以下端口之一：443, 80, 88, 8443，且需要有以网认证的Https证书。
 
 命令与功能对应关系：
@@ -235,9 +133,9 @@ https://github.com/jxxghp/nas-tools/releases
    |  命令   | 功能  |
    |  ----  | ----  |
    | /rss  | RSS订阅 |
-   | /ptt  | PT下载转移 |
-   | /ptr  | PT删种 |
-   | /pts | PT站签到 |
+   | /ptt  | 下载文件转移 |
+   | /ptr  | 删种 |
+   | /pts | 站点签到 |
    | /rst  | 目录同步 |
    | /db   | 豆瓣想看 |
    
@@ -258,17 +156,20 @@ Jackett/Prowlarr二选一，但推荐使用Jackett，支持并发且支持副标
 * Docker版本，宿主机上运行以下命令，nas-tools修改为你的docker名称，修改源目录和目的目录参数。
    ```
    docker exec -it nas-tools sh
-   python3 /nas-tools/rmt/filetransfer.py -s /from/path -d /to/path
+   python3 -m pip install -r third_party.txt
+   python3 /nas-tools/app/filetransfer.py -m link -s /from/path -d /to/path
    ```
 * 群晖套件版本，ssh到后台运行以下命令，同样修改配置文件路径以及源目录、目的目录参数。
    ```
-   export NASTOOL_CONFIG=/volume1/NASTOOL/config.yaml
-   /var/packages/py3k/target/usr/local/bin/python3 /var/packages/nastool/target/rmt/filetransfer.py -s /from/path -d /to/path
+   /var/packages/py3k/target/usr/local/bin/python3 -m pip install -r /var/packages/nastool/target/third_party.txt
+   export NASTOOL_CONFIG=/var/packages/nastool/target/config/config.yaml
+   /var/packages/py3k/target/usr/local/bin/python3 /var/packages/nastool/target/app/filetransfer.py -m link -s /from/path -d /to/path
    ```
 * 本地直接运行的，cd 到程序根目录，执行以下命令，修改配置文件、源目录和目的目录参数。
    ```
-   export NASTOOL_CONFIG=/xxx/config.yaml
-   python3 rmt/filetransfer.py -s /from/path -d /to/path
+   python3 -m pip install -r third_party.txt
+   export NASTOOL_CONFIG=config/config.yaml
+   python3 app/filetransfer.py -m link -s /from/path -d /to/path
    ```
 
 ## 鸣谢

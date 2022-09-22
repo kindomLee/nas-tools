@@ -1,19 +1,18 @@
 import re
 
+import cn2an
+
 import log
 from config import Config
-from message.send import Message
-from pt.douban import DouBan
-from pt.downloader import Downloader
-from pt.searcher import Searcher
-from pt.torrent import Torrent
-from rmt.doubanv2api.doubanapi import DoubanApi
-from rmt.media import Media
-from rmt.meta.metabase import MetaBase
-from rmt.metainfo import MetaInfo
-from utils.commons import ProcessHandler
-from utils.sqls import insert_search_results, delete_all_search_torrents
-from utils.types import SearchType, MediaType
+from app.message import Message
+from app.douban import DouBan
+from app.downloader import Downloader
+from app.searcher import Searcher
+from app.utils import ProgressController, StringUtils
+from app.media.doubanv2api import DoubanApi
+from app.media import MetaInfo, Media
+from app.db import SqlHelper
+from app.utils.types import SearchType, MediaType
 from web.backend.subscribe import add_rss_subscribe
 
 SEARCH_MEDIA_CACHE = []
@@ -30,14 +29,15 @@ def search_medias_for_web(content, ident_flag=True, filters=None, tmdbid=None, m
     :param media_type: 媒体类型，配合tmdbid传入
     :return: 错误码，错误原因，成功时直接插入数据库
     """
-    mtype, key_word, season_num, episode_num, year, content = Torrent.get_keyword_from_string(content)
+    mtype, key_word, season_num, episode_num, year, content = StringUtils.get_keyword_from_string(content)
     if not key_word:
         log.info("【WEB】%s 检索关键字有误！" % content)
         return -1, "%s 未识别到搜索关键字！" % content
     # 开始进度
-    ProcessHandler().start()
+    search_process = ProgressController()
+    search_process.start('search')
     # 识别媒体
-    match_words = None
+    media_info = None
     media_name = None
     if ident_flag:
         if tmdbid:
@@ -47,8 +47,11 @@ def search_medias_for_web(content, ident_flag=True, filters=None, tmdbid=None, m
                     doubaninfo = DoubanApi().movie_detail(doubanid)
                 else:
                     doubaninfo = DoubanApi().tv_detail(doubanid)
+                if not doubaninfo:
+                    return -1, "%s 查询不到豆瓣信息，请确认网络是否正常！" % content
+                title = doubaninfo.get("title")
                 media_info = Media().get_media_info(mtype=media_type,
-                                                    title="%s %s" % (doubaninfo.get("title"), doubaninfo.get("year")),
+                                                    title="%s %s" % (title, doubaninfo.get("year")),
                                                     strict=True)
                 if media_info and episode_num:
                     media_info.begin_episode = int(episode_num)
@@ -60,7 +63,7 @@ def search_medias_for_web(content, ident_flag=True, filters=None, tmdbid=None, m
         if not media_info or not media_info.tmdb_info:
             return -1, "%s 查询不到媒体信息，请确认名称是否正确！" % content
         # 查找的季
-        if not media_info.begin_season:
+        if media_info.begin_season is None:
             search_season = None
         else:
             search_season = media_info.get_season_list()
@@ -77,10 +80,6 @@ def search_medias_for_web(content, ident_flag=True, filters=None, tmdbid=None, m
                     key_word = en_info.get("title") if media_info.type == MediaType.MOVIE else en_info.get("name")
             else:
                 key_word = media_info.original_title
-        match_words = [media_info.title, key_word] if key_word != media_info.title else [media_info.title]
-        # 增加名称为匹配关键字
-        if media_info.get_name() and media_info.get_name() not in match_words:
-            match_words.append(media_info.get_name())
         media_name = media_info.get_name()
 
         filter_args = {"season": search_season,
@@ -101,20 +100,22 @@ def search_medias_for_web(content, ident_flag=True, filters=None, tmdbid=None, m
     media_list = Searcher().search_medias(key_word=key_word,
                                           filter_args=filter_args,
                                           match_type=1 if ident_flag else 2,
-                                          match_words=match_words)
+                                          match_media=media_info,
+                                          in_from=SearchType.WEB)
     # 使用名称重新搜索
     if ident_flag and len(media_list) == 0 and media_name and key_word != media_name:
-        ProcessHandler().start()
-        ProcessHandler().update(text="%s 未检索到资源,尝试通过 %s 重新检索 ..." % (key_word, media_name))
+        search_process.start('search')
+        search_process.update(ptype='search', text="%s 未检索到资源,尝试通过 %s 重新检索 ..." % (key_word, media_name))
         log.info("【SEARCHER】%s 未检索到资源,尝试通过 %s 重新检索 ..." % (key_word, media_name))
         media_list = Searcher().search_medias(key_word=media_name,
                                               filter_args=filter_args,
                                               match_type=1,
-                                              match_words=match_words)
+                                              match_media=media_info,
+                                              in_from=SearchType.WEB)
     # 清空缓存结果
-    delete_all_search_torrents()
+    SqlHelper.delete_all_search_torrents()
     # 结束进度
-    ProcessHandler().end()
+    search_process.end('search')
     if len(media_list) == 0:
         log.info("【WEB】%s 未检索到任何资源" % content)
         return 0, "%s 未检索到任何资源" % content
@@ -124,7 +125,7 @@ def search_medias_for_web(content, ident_flag=True, filters=None, tmdbid=None, m
         media_list = sorted(media_list, key=lambda x: "%s%s%s" % (str(x.res_order).rjust(3, '0'),
                                                                   str(x.site_order).rjust(3, '0'),
                                                                   str(x.seeders).rjust(10, '0')), reverse=True)
-        insert_search_results(media_list)
+        SqlHelper.insert_search_results(media_list)
         return 0, ""
 
 
@@ -156,12 +157,12 @@ def search_media_by_message(input_str, in_from: SearchType, user_id=None):
         if SEARCH_MEDIA_TYPE == "SEARCH":
             # 如果是豆瓣数据，需要重新查询TMDB的数据
             if media_info.douban_id:
+                _title = media_info.get_title_string()
                 media_info = Media().get_media_info(title="%s %s" % (media_info.title, media_info.year),
                                                     mtype=media_info.type, strict=True)
                 if not media_info or not media_info.tmdb_info:
                     Message().send_channel_msg(channel=in_from,
-                                               title="%s%s 从TMDB查询不到媒体信息！" % (
-                                                   media_info.get_name(), media_info.get_season_string()),
+                                               title="%s 从TMDB查询不到媒体信息！" % _title,
                                                user_id=user_id)
                     return
             # 搜索
@@ -178,7 +179,7 @@ def search_media_by_message(input_str, in_from: SearchType, user_id=None):
             SEARCH_MEDIA_TYPE = "SEARCH"
 
         # 去掉查询中的电影或电视剧关键字
-        mtype, _, _, _, _, content = Torrent.get_keyword_from_string(input_str)
+        mtype, _, _, _, _, content = StringUtils.get_keyword_from_string(input_str)
         # 识别媒体信息，列出匹配到的所有媒体
         log.info("【WEB】正在识别 %s 的媒体信息..." % content)
         media_info = MetaInfo(title=content, mtype=mtype)
@@ -190,21 +191,17 @@ def search_media_by_message(input_str, in_from: SearchType, user_id=None):
         # 搜索名称
         use_douban_titles = Config().get_config("laboratory").get("use_douban_titles")
         if use_douban_titles:
-            douban_search_key = media_info.get_name()
-            if media_info.begin_season:
-                douban_search_key = "%s第%s季" % (douban_search_key, media_info.begin_season)
-            if media_info.year:
-                douban_search_key = "%s %s" % (douban_search_key, media_info.year)
-            tmdb_infos = DouBan().search_douban_medias(keyword=douban_search_key,
+            tmdb_infos = DouBan().search_douban_medias(keyword=media_info.get_name() if not media_info.year else "%s %s" % (media_info.get_name(), media_info.year),
                                                        mtype=mtype,
                                                        num=6,
+                                                       season=media_info.begin_season,
                                                        episode=media_info.begin_episode)
         else:
             tmdb_infos = Media().get_tmdb_infos(title=media_info.get_name(), year=media_info.year, mtype=mtype)
         if not tmdb_infos:
             # 查询不到媒体信息
             Message().send_channel_msg(channel=in_from,
-                                       title="%s 查询不到媒体信息！" % media_info.get_name(),
+                                       title="%s 查询不到媒体信息！" % content,
                                        user_id=user_id)
             return
 
@@ -216,6 +213,10 @@ def search_media_by_message(input_str, in_from: SearchType, user_id=None):
             for tmdb_info in tmdb_infos:
                 meta_info = MetaInfo(title=content)
                 meta_info.set_tmdb_info(tmdb_info)
+                if meta_info.begin_season:
+                    meta_info.title = "%s 第%s季" % (meta_info.title, cn2an.an2cn(meta_info.begin_season, mode='low'))
+                if meta_info.begin_episode:
+                    meta_info.title = "%s 第%s集" % (meta_info.title, meta_info.begin_episode)
                 SEARCH_MEDIA_CACHE.append(meta_info)
 
         if 1 == len(SEARCH_MEDIA_CACHE):
@@ -224,12 +225,12 @@ def search_media_by_message(input_str, in_from: SearchType, user_id=None):
             if SEARCH_MEDIA_TYPE == "SEARCH":
                 # 如果是豆瓣数据，需要重新查询TMDB的数据
                 if media_info.douban_id:
+                    _title = media_info.get_title_string()
                     media_info = Media().get_media_info(title="%s %s" % (media_info.title, media_info.year),
                                                         mtype=media_info.type, strict=True)
                     if not media_info or not media_info.tmdb_info:
                         Message().send_channel_msg(channel=in_from,
-                                                   title="%s%s 从TMDB查询不到媒体信息！" % (
-                                                       media_info.get_name(), media_info.get_season_string()),
+                                                   title="%s 从TMDB查询不到媒体信息！" % _title,
                                                    user_id=user_id)
                         return
                 # 发送消息
@@ -251,7 +252,7 @@ def search_media_by_message(input_str, in_from: SearchType, user_id=None):
                                             user_id=user_id)
 
 
-def __search_media(in_from, media_info: MetaBase, user_id):
+def __search_media(in_from, media_info, user_id):
     """
     开始搜索和发送消息
     """
@@ -281,7 +282,7 @@ def __search_media(in_from, media_info: MetaBase, user_id):
         # 搜索到了但是没开自动下载
         if download_count is None:
             Message().send_channel_msg(channel=in_from,
-                                       title="%s 共搜索到%s个资源，点击选择下载" % (media_info.get_title_string(), search_count),
+                                       title="%s 共搜索到%s个资源，点击选择下载" % (media_info.title, search_count),
                                        image=media_info.get_message_image(),
                                        url="search",
                                        user_id=user_id)
@@ -304,7 +305,7 @@ def __search_media(in_from, media_info: MetaBase, user_id):
                     Message().send_rss_success_message(in_from=in_from, media_info=media_info, user_id=user_id)
 
 
-def __rss_media(in_from, media_info: MetaBase, user_id=None):
+def __rss_media(in_from, media_info, user_id=None):
     """
     开始添加订阅和发送消息
     """

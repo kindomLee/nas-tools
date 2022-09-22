@@ -50,7 +50,7 @@
       {% if Count > 8 %}
       <div class="col-md-3 col-lg-2 d-none d-md-block">
         <div class="accordion" id="filter_form_accordion"
-          style="position:-webkit-sticky;position:sticky;top:4rem;z-index:1;">
+          style="position:-webkit-sticky;position:sticky;top:1rem;z-index:1;max-height: 35rem; overflow-y:auto;">
           <div class="accordion-item">
             <h2 class="accordion-header" id="heading-filter_type">
               <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#filter_type"
@@ -201,49 +201,60 @@
       <div class="{% if Count > 8 %}col-sm-12 col-md-9 col-lg-10{% else %}col-12{% endif %}">
         <div class="row row-cards" id="media_cards">
           {% for Item in Items %}
-          <div class="col-12 {% if Count > 8 %}col-xl-4{% else %}col-md-4 col-xl-3{% endif %} media_card" id="media_card_{{ Item[0] }}">
+          <div class="col-12 {% if Count > 8 %}col-xl-4{% else %}col-md-4 col-xl-3{% endif %} media_card" id="media_card_{{ Item.id }}">
             <div class="card card-sm card-link-pop rounded-3">
-              {% if Item[11] > 0 %}
+              {% if Item.vote > 0 %}
               <div class="badge badge-pill bg-purple" style="position:absolute;top:10px;right:10px;">
-                {{ Item[11] }}</div>
+                {{ Item.vote }}</div>
               {% endif %}
-              {% if Item[9] %}
-              <a href='javascript:show_download_modal("{{ Item[0] }}","{{ Item[1] }}")' class="d-block">
-                <img src="{{ Item[9] }}" class="card-img-top" title="点击添加下载"
+              {% if Item.exist %}
+              <div class="badge badge-pill bg-green" style="position:absolute;top:10px;left:10px;padding:0;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="h-3 w-3 sm:h-4 sm:w-4"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+              </div>
+              {% endif %}
+              {% if Item.image %}
+              <a href='javascript:show_download_modal("{{ Item.id }}","{{ Item.title_string }}")' class="d-block">
+                <img src="{{ Item.image }}" class="card-img-top" title="点击添加下载"
                   style="border-top-left-radius:8px !important; border-top-right-radius:8px !important; object-fit:contain;">
               </a>
               {% endif %}
               <div class="card-body">
                 <div class="d-flex align-items-center mb-2">
-                  <input type="hidden" name="media_card_type" value="{{ Item[10] }}">
-                  <input type="hidden" name="media_card_spstate" value="{{ Item[19] }} {{ Item[20] }}">
-                  <input type="hidden" name="media_card_title" value="{{ Item[1] }}">
+                  <input type="hidden" name="media_card_type" value="{{ Item.type }}">
+                  <input type="hidden" name="media_card_spstate" value="{{ Item.uploadvalue }} {{ Item.downloadvalue }}">
+                  <input type="hidden" name="media_card_title" value="{{ Item.title_string }}">
                   <div>
                     <div>
                       <a
-                        href='{% if not Item[9] %}javascript:show_download_modal("{{ Item[0] }}","{{ Item[13] }}"){% else %}javascript:show_download_modal("{{ Item[0] }}","{{ Item[1] }}"){% endif %}'
+                        href='{% if not Item.image %}javascript:show_download_modal("{{ Item.id }}","{{ Item.description }}"){% else %}javascript:show_download_modal("{{ Item.id }}","{{ Item.title_string }}"){% endif %}'
                         title="点击添加下载">
-                      <strong>{% if Item[14] or not Item[13] %}{{ Item[1]|replace("()", "") }}{% else %} {{ Item[13] }} {% endif %}</strong></a>
-                      <span class="badge ms-2">{{ Item[4] }}</span>
-                        {% if Item[19] != 1.0 %}
-                            <span class="badge text-white bg-azure">{{ (Item[19] * 100) | int }}%UL</span>
-                        {% endif %}
-                        {% if Item[20] != 1.0 %}
-                            {% if Item[20] == 0.0 %}
-                                <span class="badge text-white bg-lime">FREE</span>
-                            {% else %}
-                                <span class="badge text-white bg-blue">{{ (Item[20] * 100) | int }}%DL</span>
-                            {% endif %}
-                        {% endif %}
+                      <strong>{% if Item.tmdbid or not Item.description %}{{ Item.title_string|replace("()", "") }}{% else %} {{ Item.description }} {% endif %}</strong></a>
+                      {% if Item.seeders %}
+                      <span class="badge ms-2">{{ Item.seeders }}{{ UPCHAR }}</span>
+                      {% endif %}
+                      {% if Item.uploadvalue != 1.0 %}
+                      <span class="badge text-white bg-azure">{{ (Item.uploadvalue * 100) | int }}%UL</span>
+                      {% endif %}
+                      {% if Item.downloadvalue != 1.0 %}
+                          {% if Item.downloadvalue == 0.0 %}
+                          <span class="badge text-white bg-lime">FREE</span>
+                          {% else %}
+                          <span class="badge text-white bg-blue">{{ (Item.downloadvalue * 100) | int }}%DL</span>
+                          {% endif %}
+                      {% endif %}
                     </div>
                     <div class="text-muted mt-1">
-                      <strong class="media_card_info"><span class="badge badge-outline text-blue">{{ Item[6]}}</span> <span class="badge badge-outline text-orange">{{ Item[2]}}</span> <span class="badge badge-outline text-yellow">{{ Item[3]}}</span></strong>
+                      <strong class="media_card_info"><span class="badge badge-outline text-blue">{{ Item.site}}</span> <span class="badge badge-outline text-orange">{{ Item.restype}}</span>
+                        {% if Item.size %}
+                        <span class="badge badge-outline text-yellow">{{ Item.size }}</span>
+                        {% endif %}
+                      </strong>
                     </div>
                   </div>
                 </div>
-                {% if Item[12] %}
+                {% if Item.torrent_name %}
                 <div class="text-muted border-top pt-2">
-                  {% if Item[10] == "MOV" %}
+                  {% if Item.type == "MOV" %}
                   <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-movie" width="24"
                     height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                     stroke-linecap="round" stroke-linejoin="round">
@@ -266,12 +277,16 @@
                     <polyline points="16 3 12 7 8 3"></polyline>
                   </svg>
                   {% endif %}
-                  <small><a href="{{ Item[17] }}" target="_blank">{{ Item[12] }}</a></small>
+                  {% if Item.pageurl %}
+                    <small><a href="{{ Item.pageurl }}" target="_blank">{{ Item.torrent_name }}</a></small>
+                  {% else %}
+                    <small>{{ Item.torrent_name }}</small>
+                  {% endif %}
                 </div>
                 {% endif %}
-                {% if Item[14] and Item[13] %}
+                {% if Item.tmdbid and Item.description %}
                 <div class="text-muted">
-                  <small>{{ Item[13] }}</small>
+                  <small>{{ Item.description }}</small>
                 </div>
                 {% endif %}
               </div>
@@ -344,7 +359,7 @@
               <select class="form-select" id="search_site">
                 <option value="" selected>全部</option>
                 {% for site in SiteDict %}
-                <option value="{{ site }}">{{ site }}</option>
+                <option value="{{ site.name }}">{{ site.name }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -401,6 +416,39 @@
     </div>
   </div>
 </div>
+<div class="modal modal-blur fade" id="modal-search-download" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    <input type="hidden" id="search_download_id">
+    <input type="hidden" id="search_download_name">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="modal-title">询问</div>
+        <div id="search_download_message">是否执行？</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">取消</button>
+        <div class="d-flex">
+          {% if SaveDirs %}
+          <button type="button" class="btn btn-danger" onclick="javascript:download_link()" title="自动选择目录下载"
+                  style="border-top-right-radius:0px;border-bottom-right-radius:0px;">自动下载</button>
+          <button data-bs-toggle="dropdown" type="button"
+              class="btn btn-danger dropdown-toggle dropdown-toggle-split" title="手动选择下载目录"
+            style="border-top-left-radius:0px;border-bottom-left-radius:0px;"></button>
+          <div class="dropdown-menu dropdown-menu-end">
+            {% for SaveDir in SaveDirs %}
+            <a class="dropdown-item" href="javascript:download_link('{{ SaveDir|safe }}')">
+              {{ SaveDir }}
+            </a>
+            {% endfor %}
+          </div>
+          {% else %}
+           <button type="button" class="btn btn-danger" onclick="javascript:download_link()" title="自动选择目录下载">确认下载</button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <script type="text/javascript">
   // 关键字
   var search_word = "{{ SearchWord }}";
@@ -417,10 +465,10 @@
   }
   // 显示下载提示框
   function show_download_modal(id, name) {
-    show_ask_modal("是否立即下载 " + name + "？", function () {
-      hide_ask_modal();
-      download_link(id, name);
-    });
+    $("#search_download_id").val(id);
+    $("#search_download_name").val(name);
+    $("#search_download_message").text("是否立即下载 " + name + "？");
+    $("#modal-search-download").modal('show');
   }
 
   // 搜索按钮
@@ -441,7 +489,7 @@
     $("#search_tip_title").text("正在搜索 " + keyword + "，请稍后...");
     $("#search_tip_text").text("正在搜索 " + keyword + " ...");
     var param = { "search_word": keyword, "unident": unident };
-    show_refresh_process();
+    show_refresh_process("正在搜索 " + keyword + "...");
     ajax_post("search", param, function (ret) {
       hide_refresh_process();
       if(ret.code == 0){
@@ -466,10 +514,11 @@
   }
 
   //点击链接下载
-  function download_link(id, name) {
-    var cmd = "download";
-    var data = { "id": id };
-    ajax_post(cmd, data, function (ret) {
+  function download_link(dir) {
+    var id = $("#search_download_id").val();
+    var name = $("#search_download_name").val();
+    $("#modal-search-download").modal('hide');
+    ajax_post("download", { "id": id, "dir": dir}, function (ret) {
       if(ret.retcode == 0){
         show_success_modal(name + " 添加下载成功！");
       }else{

@@ -128,7 +128,7 @@
               <div class="mb-3">
                 <label class="form-check form-switch">
                   <input class="form-check-input" type="checkbox" id="key_match" onclick="javascript:change_match_check(this)">
-                  <span class="form-check-label">模糊匹配 <span class="form-help bg-red-lt" title="开启后不检查TMDB是否有媒体信息，只要种子名称、标题、年份任一匹配关键字即会下载，此时标题可以配置正则表达式实现模糊匹配" data-bs-toggle="tooltip">?</span></span>
+                  <span class="form-check-label">模糊匹配 <span class="form-help" title="开启后不检查TMDB是否有媒体信息，只要种子名称、标题、年份任一匹配关键字即会下载，此时标题可以配置正则表达式实现模糊匹配" data-bs-toggle="tooltip">?</span></span>
                 </label>
               </div>
             </div>
@@ -136,15 +136,15 @@
               <div class="mb-3">
                 <label class="form-check form-switch">
                   <input class="form-check-input" type="checkbox" id="over_edition" onclick="javascript:change_over_edition_check(this)">
-                  <span class="form-check-label">洗版 <span class="form-help bg-red-lt" title="开启后RSS不检查媒体库是否已存在，命中即会下载" data-bs-toggle="tooltip">?</span></span>
+                  <span class="form-check-label">洗版 <span class="form-help" title="开启后RSS不检查媒体库是否已存在，命中即会下载" data-bs-toggle="tooltip">?</span></span>
                 </label>
               </div>
             </div>
           </div>
           <div class="row">
-            <label class="form-label">过滤规则 <span class="form-help bg-red-lt" title="质量、分辨率与过滤规则为“与”的关系，过滤规则不选择时将使用站点的过滤规则，站点也未设置过滤规则时将使用默认过滤规则" data-bs-toggle="tooltip">?</span></label>
+            <label class="form-label">过滤规则 <span class="form-help" title="质量、分辨率与过滤规则为“与”的关系，过滤规则不选择时将使用站点的过滤规则，站点也未设置过滤规则时将使用默认过滤规则" data-bs-toggle="tooltip">?</span></label>
             <div class="row mb-3">
-              <div class="col-12 col-lg-4 mb-1">
+              <div class="col-12 col-lg-3 mb-1">
                 <select class="form-select" id="rss_restype">
                   <option value="" selected>全部</option>
                   {% for restype in RestypeDict %}
@@ -152,7 +152,7 @@
                   {% endfor %}
                 </select>
               </div>
-              <div class="col-12 col-lg-4 mb-1">
+              <div class="col-12 col-lg-3 mb-1">
                 <select class="form-select" id="rss_pix">
                   <option value="" selected>全部</option>
                   {% for pix in PixDict %}
@@ -160,7 +160,10 @@
                   {% endfor %}
                 </select>
               </div>
-              <div class="col-12 col-lg-4 mb-1">
+              <div class="col-12 col-lg-3 mb-1">
+                <input type="text" value="" id="rss_team" class="form-control" placeholder="制作组/字幕组">
+              </div>
+              <div class="col-12 col-lg-3 mb-1">
                 <select class="form-select" id="rss_rule">
                   <option value="" selected>请选择</option>
                   {% for RuleGroup in RuleGroups %}
@@ -175,7 +178,7 @@
               <label class="form-label">订阅站点</label>
               <div class="form-selectgroup">
                 {% for site in Sites %}
-                 <label class="form-selectgroup-item">
+                <label class="form-selectgroup-item">
                   <input type="checkbox" name="sites" value="{{ site.name }}" class="form-selectgroup-input" checked>
                   <span class="form-selectgroup-label">{{ site.name }}</span>
                 </label>
@@ -188,9 +191,9 @@
               <label class="form-label">搜索站点</label>
               <div class="form-selectgroup">
                 {% for site in SearchSites %}
-                 <label class="form-selectgroup-item">
-                  <input type="checkbox" name="search_sites" value="{{ site }}" class="form-selectgroup-input" checked>
-                  <span class="form-selectgroup-label">{{ site }}</span>
+                <label class="form-selectgroup-item">
+                  <input type="checkbox" name="search_sites" value="{{ site.name }}" class="form-selectgroup-input" checked>
+                  <span class="form-selectgroup-label">{{ site.name }}</span>
                 </label>
                 {% endfor %}
               </div>
@@ -203,7 +206,7 @@
           取消全选
         </a>
         <a href="#" class="btn btn-link" id="rss_delete_btn">
-          删除订阅
+          取消订阅
         </a>
         <a href="javascript:add_rss_tv()" id="rss_add_btn" class="btn btn-primary">确定</a>
       </div>
@@ -222,6 +225,7 @@
     var match = $("#key_match").prop("checked");
     var rss_restype = $("#rss_restype").val();
     var rss_pix = $("#rss_pix").val();
+    var rss_team = $("#rss_team").val();
     var rss_rule = $("#rss_rule").val();
     var over_edition = $("#over_edition").prop("checked");
     if (!name) {
@@ -289,6 +293,7 @@
                  "search_sites": search_sites,
                  "rss_restype": rss_restype,
                  "rss_pix": rss_pix,
+                 "rss_team": rss_team,
                  "rss_rule": rss_rule,
                  "over_edition": over_edition,
                  "rssid": rssid,
@@ -370,6 +375,7 @@
     $("#over_edition").prop("checked", false);
     $("#tv_name").attr("readonly", false);
     $("#tv_year").attr("readonly", false);
+    $("#rss_delete_btn").hide();
     $("#modal-tv-rss").modal('show');
   }
 
@@ -407,6 +413,7 @@
         }
         $("#rss_restype").val(ret.detail.filter.restype);
         $("#rss_pix").val(ret.detail.filter.pix);
+        $("#rss_team").val(ret.detail.filter.team);
         $("#rss_rule").val(ret.detail.filter.rule);
         $("#rss_sites_div").find("input[type=checkbox]").each(function(){
           if(ret.detail.r_sites.length==0 || ret.detail.r_sites.includes($(this).val())){
@@ -415,7 +422,7 @@
             $(this).prop("checked",false);
           }
         });
-       $("#rss_search_sites_div").find("input[type=checkbox]").each(function(){
+        $("#rss_search_sites_div").find("input[type=checkbox]").each(function(){
           if(ret.detail.s_sites.length==0 || ret.detail.s_sites.includes($(this).val())){
             $(this).prop("checked",true);
           }else{
@@ -423,6 +430,7 @@
           }
         });
         $("#rss_delete_btn").attr("href", 'javascript:remove_rss_tv("'+ret.detail.name+'","'+ret.detail.year+'","'+rssid+'")');
+        $("#rss_delete_btn").show();
         $("#modal-tv-rss").modal('show');
       }
     });

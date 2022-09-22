@@ -1,36 +1,45 @@
 import base64
+import datetime
 import logging
 import os.path
+import shutil
+import sqlite3
+import time
 import traceback
 import urllib
+import xml.dom.minidom
 from math import floor
+from pathlib import Path
 from urllib import parse
 
-from flask import Flask, request, json, render_template, make_response, session, send_from_directory
+import cn2an
+from flask import Flask, request, json, render_template, make_response, session, send_from_directory, send_file
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user
 from werkzeug.security import check_password_hash
-import xml.dom.minidom
 
+import re
 import log
-from pt.douban import DouBan
-from pt.filterrules import FilterRule
-from pt.sites import Sites
-from pt.downloader import Downloader
-from pt.searcher import Searcher
-from rmt.media import Media
-from pt.media_server import MediaServer
-from rmt.metainfo import MetaInfo
-from config import WECHAT_MENU, PT_TRANSFER_INTERVAL, TORRENT_SEARCH_PARAMS
-from utils.functions import *
-from utils.meta_helper import MetaHelper
-from utils.security import Security
-from utils.sqls import *
-from utils.types import *
-from version import APP_VERSION
+from app.brushtask import BrushTask
+from app.mediaserver import WebhookEvent
+from app.message import Message
+from app.rsschecker import RssChecker
+from app.utils import Security, StringUtils, DomUtils, SystemUtils, WebUtils, MetaHelper
+from config import WECHAT_MENU, PT_TRANSFER_INTERVAL, TORRENT_SEARCH_PARAMS, TMDB_IMAGE_W500_URL, NETTEST_TARGETS
+from app.douban import DouBan
+from app.downloader import Downloader
+from app.filterrules import FilterRule
+from app.indexer import BuiltinIndexer
+from app.mediaserver import MediaServer
+from app.searcher import Searcher
+from app.sites import Sites
+from app.media import MetaInfo, Media
+from web.apiv1 import apiv1, authorization
+from web.backend.WXBizMsgCrypt3 import WXBizMsgCrypt
 from web.action import WebAction
-from web.backend.web_utils import get_random_discover_backdrop
-from web.backend.webhook_event import WebhookEvent
-from utils.WXBizMsgCrypt3 import WXBizMsgCrypt
+from web.backend.subscribe import add_rss_subscribe
+from app.db import SqlHelper, DictHelper
+from app.utils.types import *
+from web.backend.wallpaper import get_login_wallpaper
 
 login_manager = LoginManager()
 login_manager.login_view = "login"
@@ -58,6 +67,12 @@ def create_flask_app(config):
     applog.setLevel(logging.ERROR)
     login_manager.init_app(App)
 
+    # API注册
+    App.register_blueprint(apiv1, url_prefix="/api/v1")
+
+    # 加载壁纸
+    get_login_wallpaper()
+
     @App.after_request
     def add_header(r):
         """
@@ -75,7 +90,7 @@ def create_flask_app(config):
         for user in ADMIN_USERS:
             if user.get("name") == user_name:
                 return user
-        for user in get_users():
+        for user in SqlHelper.get_users():
             if user[1] == user_name:
                 return {"id": user[0], "name": user[1], "password": user[2], "pris": user[3]}
         return {}
@@ -114,7 +129,7 @@ def create_flask_app(config):
             for user in ADMIN_USERS:
                 if user.get('id') == user_id:
                     return User(user)
-            for user in get_users():
+            for user in SqlHelper.get_users():
                 if not user:
                     continue
                 if user[0] == user_id:
@@ -140,9 +155,7 @@ def create_flask_app(config):
     @App.route('/', methods=['GET', 'POST'])
     def login():
         # 判断当前的运营环境
-        SystemFlag = 0
-        if get_system() == OsType.LINUX and check_process("supervisord"):
-            SystemFlag = 1
+        SystemFlag = 1 if SystemUtils.get_system() == OsType.LINUX else 0
         if request.method == 'GET':
             GoPage = request.args.get("next") or ""
             if GoPage.startswith('/'):
@@ -154,18 +167,18 @@ def create_flask_app(config):
                 if userid is None or username is None:
                     return render_template('login.html',
                                            GoPage=GoPage,
-                                           LoginWallpaper=get_random_discover_backdrop())
+                                           LoginWallpaper=get_login_wallpaper())
                 else:
                     return render_template('navigation.html',
                                            GoPage=GoPage,
                                            UserName=username,
                                            UserPris=str(pris).split(","),
                                            SystemFlag=SystemFlag,
-                                           AppVersion=APP_VERSION)
+                                           AppVersion=WebUtils.get_current_version())
             else:
                 return render_template('login.html',
                                        GoPage=GoPage,
-                                       LoginWallpaper=get_random_discover_backdrop())
+                                       LoginWallpaper=get_login_wallpaper())
 
         else:
             GoPage = request.form.get('next') or ""
@@ -177,13 +190,13 @@ def create_flask_app(config):
             if not username:
                 return render_template('login.html',
                                        GoPage=GoPage,
-                                       LoginWallpaper=get_random_discover_backdrop(),
+                                       LoginWallpaper=get_login_wallpaper(),
                                        err_msg="请输入用户名")
             user_info = get_user(username)
             if not user_info:
                 return render_template('login.html',
                                        GoPage=GoPage,
-                                       LoginWallpaper=get_random_discover_backdrop(),
+                                       LoginWallpaper=get_login_wallpaper(),
                                        err_msg="用户名或密码错误")
             # 创建用户实体
             user = User(user_info)
@@ -198,11 +211,11 @@ def create_flask_app(config):
                                        UserName=username,
                                        UserPris=str(pris).split(","),
                                        SystemFlag=SystemFlag,
-                                       AppVersion=APP_VERSION)
+                                       AppVersion=WebUtils.get_current_version())
             else:
                 return render_template('login.html',
                                        GoPage=GoPage,
-                                       LoginWallpaper=get_random_discover_backdrop(),
+                                       LoginWallpaper=get_login_wallpaper(),
                                        err_msg="用户名或密码错误")
 
     # 开始
@@ -217,6 +230,7 @@ def create_flask_app(config):
         SongCount = 0
         MediaServerClient = MediaServer()
         media_count = MediaServerClient.get_medias_count()
+        MSType = MediaServerClient.get_type()
         if media_count:
             MovieCount = "{:,}".format(media_count.get('MovieCount'))
             SeriesCount = "{:,}".format(media_count.get('SeriesCount'))
@@ -239,6 +253,7 @@ def create_flask_app(config):
         TotalSpace = 0
         FreeSpace = 0
         UsedPercent = 0
+        TotalSpaceList = []
         media = config.get_config('media')
         if media:
             # 电影目录
@@ -246,13 +261,12 @@ def create_flask_app(config):
             if not isinstance(movie_paths, list):
                 movie_paths = [movie_paths]
             movie_used, movie_total = 0, 0
-            movie_space_list = []
             for movie_path in movie_paths:
                 if not movie_path:
                     continue
-                used, total = get_used_of_partition(movie_path)
-                if "%s-%s" % (used, total) not in movie_space_list:
-                    movie_space_list.append("%s-%s" % (used, total))
+                used, total = SystemUtils.get_used_of_partition(movie_path)
+                if "%s-%s" % (used, total) not in TotalSpaceList:
+                    TotalSpaceList.append("%s-%s" % (used, total))
                     movie_used += used
                     movie_total += total
             # 电视目录
@@ -260,13 +274,12 @@ def create_flask_app(config):
             if not isinstance(tv_paths, list):
                 tv_paths = [tv_paths]
             tv_used, tv_total = 0, 0
-            tv_space_list = []
             for tv_path in tv_paths:
                 if not tv_path:
                     continue
-                used, total = get_used_of_partition(tv_path)
-                if "%s-%s" % (used, total) not in tv_space_list:
-                    tv_space_list.append("%s-%s" % (used, total))
+                used, total = SystemUtils.get_used_of_partition(tv_path)
+                if "%s-%s" % (used, total) not in TotalSpaceList:
+                    TotalSpaceList.append("%s-%s" % (used, total))
                     tv_used += used
                     tv_total += total
             # 动漫目录
@@ -274,13 +287,12 @@ def create_flask_app(config):
             if not isinstance(anime_paths, list):
                 anime_paths = [anime_paths]
             anime_used, anime_total = 0, 0
-            anime_space_list = []
             for anime_path in anime_paths:
                 if not anime_path:
                     continue
-                used, total = get_used_of_partition(anime_path)
-                if "%s-%s" % (used, total) not in anime_space_list:
-                    anime_space_list.append("%s-%s" % (used, total))
+                used, total = SystemUtils.get_used_of_partition(anime_path)
+                if "%s-%s" % (used, total) not in TotalSpaceList:
+                    TotalSpaceList.append("%s-%s" % (used, total))
                     anime_used += used
                     anime_total += total
             # 总空间
@@ -317,7 +329,7 @@ def create_flask_app(config):
         TvChartData = {}
         TvNums = []
         AnimeNums = []
-        for statistic in get_transfer_statistics():
+        for statistic in SqlHelper.get_transfer_statistics():
             if statistic[0] == "电影":
                 MovieChartLabels.append(statistic[1])
                 MovieNums.append(statistic[2])
@@ -347,7 +359,8 @@ def create_flask_app(config):
                                TvChartLabels=TvChartLabels,
                                MovieNums=MovieNums,
                                TvNums=TvNums,
-                               AnimeNums=AnimeNums
+                               AnimeNums=AnimeNums,
+                               MediaServerType=MSType
                                )
 
     # 资源搜索页面
@@ -363,7 +376,7 @@ def create_flask_app(config):
         # 查询结果
         SearchWord = request.args.get("s")
         NeedSearch = request.args.get("f")
-        res = get_search_results()
+        res = SqlHelper.get_search_results()
         # 类型字典
         MeidaTypeDict = {}
         # 站点字典
@@ -376,6 +389,8 @@ def create_flask_app(config):
         MediaSPStateDict = {}
         # 名称
         MediaNameDict = {}
+        # 结果
+        SearchResults = []
         # 查询统计值
         for item in res:
             # 资源类型
@@ -418,6 +433,37 @@ def create_flask_app(config):
                     MediaNameDict[name] = 1
                 else:
                     MediaNameDict[name] += 1
+            # 是否已存在
+            if item[14]:
+                exist_flag = MediaServer().check_item_exists(title=item[21], year=item[7], tmdbid=item[14])
+            else:
+                exist_flag = False
+            # 结果
+            SearchResults.append({
+                "id": item[0],
+                "title_string": item[1],
+                "restype": item[2],
+                "size": item[3],
+                "seeders": item[4],
+                "enclosure": item[5],
+                "site": item[6],
+                "year": item[7],
+                "es_string": item[8],
+                "image": item[9],
+                "type": item[10],
+                "vote": item[11],
+                "torrent_name": item[12],
+                "description": item[13],
+                "tmdbid": item[14],
+                "poster": item[15],
+                "overview": item[16],
+                "pageurl": item[17],
+                "otherinfo": item[18],
+                "uploadvalue": item[19],
+                "downloadvalue": item[20],
+                "title": item[21],
+                "exist": exist_flag
+            })
 
         # 展示类型
         MediaMTypes = []
@@ -451,13 +497,16 @@ def create_flask_app(config):
         SiteDict = []
         Indexers = Searcher().indexer.get_indexers() or []
         for item in Indexers:
-            SiteDict.append(item[1])
+            SiteDict.append({"id": item.id, "name": item.name})
+
+        # 下载目录
+        SaveDirs = WebAction().get_download_dirs()
         return render_template("search.html",
                                UserPris=str(pris).split(","),
                                SearchWord=SearchWord or "",
                                NeedSearch=NeedSearch or "",
-                               Count=len(res),
-                               Items=res,
+                               Count=len(SearchResults),
+                               Items=SearchResults,
                                MediaMTypes=MediaMTypes,
                                MediaSites=MediaSites,
                                MediaPixs=MediaPixs,
@@ -466,7 +515,9 @@ def create_flask_app(config):
                                MediaRestypes=MediaRestypes,
                                RestypeDict=TORRENT_SEARCH_PARAMS.get("restype").keys(),
                                PixDict=TORRENT_SEARCH_PARAMS.get("pix").keys(),
-                               SiteDict=SiteDict)
+                               SiteDict=SiteDict,
+                               SaveDirs=SaveDirs,
+                               UPCHAR=chr(8593))
 
     # 媒体列表页面
     @App.route('/medialist', methods=['POST', 'GET'])
@@ -480,14 +531,23 @@ def create_flask_app(config):
         use_douban_titles = config.get_config("laboratory").get("use_douban_titles")
         if SearchWord and NeedSearch:
             if use_douban_titles:
-                medias = DouBan().search_douban_medias(SearchWord)
+                _, key_word, season_num, episode_num, _, _ = StringUtils.get_keyword_from_string(SearchWord)
+                medias = DouBan().search_douban_medias(keyword=key_word,
+                                                       season=season_num,
+                                                       episode=episode_num)
             else:
                 meta_info = MetaInfo(title=SearchWord)
                 tmdbinfos = Media().get_tmdb_infos(title=meta_info.get_name(), year=meta_info.year, num=20)
                 for tmdbinfo in tmdbinfos:
                     tmp_info = MetaInfo(title=SearchWord)
                     tmp_info.set_tmdb_info(tmdbinfo)
-                    tmp_info.poster_path = "https://image.tmdb.org/t/p/w500%s" % tmp_info.poster_path
+                    if meta_info.type == MediaType.TV and tmp_info.type != MediaType.TV:
+                        continue
+                    if tmp_info.begin_season:
+                        tmp_info.title = "%s 第%s季" % (tmp_info.title, cn2an.an2cn(meta_info.begin_season, mode='low'))
+                    if tmp_info.begin_episode:
+                        tmp_info.title = "%s 第%s集" % (tmp_info.title, meta_info.begin_episode)
+                    tmp_info.poster_path = TMDB_IMAGE_W500_URL % tmp_info.poster_path
                     medias.append(tmp_info)
         return render_template("medialist.html",
                                SearchWord=SearchWord or "",
@@ -500,9 +560,9 @@ def create_flask_app(config):
     @App.route('/movie_rss', methods=['POST', 'GET'])
     @login_required
     def movie_rss():
-        RssItems = get_rss_movies()
-        RssSites = Sites().get_sites()
-        SearchSites = [item[1] for item in Searcher().indexer.get_indexers()]
+        RssItems = SqlHelper.get_rss_movies()
+        RssSites = Sites().get_sites(rss=True)
+        SearchSites = [{"id": item.id, "name": item.name} for item in Searcher().indexer.get_indexers()]
         RuleGroups = FilterRule().get_rule_groups()
         return render_template("rss/movie_rss.html",
                                Count=len(RssItems),
@@ -518,9 +578,9 @@ def create_flask_app(config):
     @App.route('/tv_rss', methods=['POST', 'GET'])
     @login_required
     def tv_rss():
-        RssItems = get_rss_tvs()
-        RssSites = Sites().get_sites()
-        SearchSites = [item[1] for item in Searcher().indexer.get_indexers() or []]
+        RssItems = SqlHelper.get_rss_tvs()
+        RssSites = Sites().get_sites(rss=True)
+        SearchSites = [{"id": item.id, "name": item.name} for item in Searcher().indexer.get_indexers()]
         RuleGroups = FilterRule().get_rule_groups()
         return render_template("rss/tv_rss.html",
                                Count=len(RssItems),
@@ -537,8 +597,9 @@ def create_flask_app(config):
     @login_required
     def rss_calendar():
         Today = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d')
-        RssMovieIds = [movie[2] for movie in get_rss_movies()]
-        RssTvItems = [{"id": tv[3], "season": int(str(tv[2]).replace("S", "")), "name": tv[0]} for tv in get_rss_tvs()
+        RssMovieIds = [movie[2] for movie in SqlHelper.get_rss_movies()]
+        RssTvItems = [{"id": tv[3], "season": int(str(tv[2]).replace("S", "")), "name": tv[0]} for tv in
+                      SqlHelper.get_rss_tvs()
                       if tv[2]]
         return render_template("rss/rss_calendar.html",
                                Today=Today,
@@ -584,25 +645,35 @@ def create_flask_app(config):
                     speed = "已暂停"
                 else:
                     state = "Downloading"
-                    dlspeed = str_filesize(torrent.get('dlspeed'))
-                    upspeed = str_filesize(torrent.get('upspeed'))
+                    dlspeed = StringUtils.str_filesize(torrent.get('dlspeed'))
+                    upspeed = StringUtils.str_filesize(torrent.get('upspeed'))
                     if progress >= 100:
                         speed = "%s%sB/s %s%sB/s" % (chr(8595), dlspeed, chr(8593), upspeed)
                     else:
-                        eta = str_timelong(torrent.get('eta'))
+                        eta = StringUtils.str_timelong(torrent.get('eta'))
                         speed = "%s%sB/s %s%sB/s %s" % (chr(8595), dlspeed, chr(8593), upspeed, eta)
                 # 主键
                 key = torrent.get('hash')
-            elif Client == DownloaderType.Cloud:
+            elif Client == DownloaderType.Client115:
                 name = torrent.get('name')
                 # 进度
                 progress = round(torrent.get('percentDone'), 1)
                 state = "Downloading"
-                dlspeed = str_filesize(torrent.get('peers'))
-                upspeed = str_filesize(torrent.get('rateDownload'))
+                dlspeed = StringUtils.str_filesize(torrent.get('peers'))
+                upspeed = StringUtils.str_filesize(torrent.get('rateDownload'))
                 speed = "%s%sB/s %s%sB/s" % (chr(8595), dlspeed, chr(8593), upspeed)
                 # 主键
                 key = torrent.get('info_hash')
+            elif Client == DownloaderType.Aria2:
+                name = torrent.get('bittorrent', {}).get('info', {}).get("name")
+                # 进度
+                progress = round(int(torrent.get('completedLength')) / int(torrent.get("totalLength")), 1) * 100
+                state = "Downloading"
+                dlspeed = StringUtils.str_filesize(torrent.get('downloadSpeed'))
+                upspeed = StringUtils.str_filesize(torrent.get('uploadSpeed'))
+                speed = "%s%sB/s %s%sB/s" % (chr(8595), dlspeed, chr(8593), upspeed)
+                # 主键
+                key = torrent.get('gid')
             else:
                 name = torrent.name
                 if torrent.status in ['stopped']:
@@ -610,8 +681,8 @@ def create_flask_app(config):
                     speed = "已暂停"
                 else:
                     state = "Downloading"
-                    dlspeed = str_filesize(torrent.rateDownload)
-                    upspeed = str_filesize(torrent.rateUpload)
+                    dlspeed = StringUtils.str_filesize(torrent.rateDownload)
+                    upspeed = StringUtils.str_filesize(torrent.rateUpload)
                     speed = "%s%sB/s %s%sB/s" % (chr(8595), dlspeed, chr(8593), upspeed)
                 # 进度
                 progress = round(torrent.progress)
@@ -641,7 +712,8 @@ def create_flask_app(config):
 
         return render_template("download/downloading.html",
                                DownloadCount=DownloadCount,
-                               Torrents=DispTorrents)
+                               Torrents=DispTorrents,
+                               Client=config.get_config("pt").get("pt_client"))
 
     # 近期下载页面
     @App.route('/downloaded', methods=['POST', 'GET'])
@@ -705,7 +777,7 @@ def create_flask_app(config):
             days=2)
 
         # 站点用户数据
-        SiteUserStatistics = Sites().get_pt_site_user_statistics()
+        SiteUserStatistics = Sites().get_site_user_statistics()
 
         return render_template("site/statistics.html",
                                CurrentDownload=CurrentDownload,
@@ -729,20 +801,25 @@ def create_flask_app(config):
     @login_required
     def brushtask():
         # 站点列表
-        CfgSites = Sites().get_sites()
+        CfgSites = Sites().get_sites(brush=True)
         # 下载器列表
-        downloaders = get_user_downloaders()
+        downloaders = SqlHelper.get_user_downloaders() or []
         # 任务列表
-        brushtasks = get_brushtasks()
+        brushtasks = SqlHelper.get_brushtasks()
         Tasks = []
         for task in brushtasks:
+            sendmessage_switch = DictHelper.get(SystemDictType.BrushMessageSwitch.value, task[2])
+            forceupload_switch = DictHelper.get(SystemDictType.BrushForceUpSwitch.value, task[2])
+            site_info = Sites().get_sites(siteid=task[2])
+            scheme, netloc = StringUtils.get_url_netloc(site_info.get("signurl") or site_info.get("rssurl"))
+            downloader_info = BrushTask().get_downloader_config(task[6])
             Tasks.append({
                 "id": task[0],
                 "name": task[1],
-                "site": task[3],
+                "site": site_info.get("name"),
                 "interval": task[4],
                 "state": task[5],
-                "downloader": task[19],
+                "downloader": downloader_info.get("name"),
                 "transfer": task[7],
                 "free": task[8],
                 "rss_rule": eval(task[9]),
@@ -750,10 +827,12 @@ def create_flask_app(config):
                 "seed_size": task[11],
                 "download_count": task[12],
                 "remove_count": task[13],
-                "download_size": str_filesize(task[14]),
-                "upload_size": str_filesize(task[15]),
+                "download_size": StringUtils.str_filesize(task[14]),
+                "upload_size": StringUtils.str_filesize(task[15]),
                 "lst_mod_date": task[16],
-                "site_url": "http://%s" % parse.urlparse(task[17]).netloc if task[17] else ""
+                "site_url": "%s://%s" % (scheme, netloc),
+                "sendmessage": sendmessage_switch,
+                "forceupload": forceupload_switch
             })
 
         return render_template("site/brushtask.html",
@@ -766,7 +845,7 @@ def create_flask_app(config):
     @App.route('/userdownloader', methods=['POST', 'GET'])
     @login_required
     def userdownloader():
-        downloaders = get_user_downloaders()
+        downloaders = SqlHelper.get_user_downloaders()
         return render_template("download/userdownloader.html",
                                Count=len(downloaders),
                                Downloaders=downloaders)
@@ -780,7 +859,7 @@ def create_flask_app(config):
         if pt:
             # RSS订阅
             pt_check_interval = pt.get('pt_check_interval')
-            if pt_check_interval:
+            if str(pt_check_interval).isdigit():
                 tim_rssdownload = str(round(int(pt_check_interval) / 60)) + " 分钟"
                 rss_state = 'ON'
             else:
@@ -798,7 +877,7 @@ def create_flask_app(config):
                 {'name': 'RSS订阅', 'time': tim_rssdownload, 'state': rss_state, 'id': 'rssdownload', 'svg': svg,
                  'color': "blue"})
 
-            # PT文件转移
+            # 下载文件转移
             pt_monitor = pt.get('pt_monitor')
             if pt_monitor:
                 tim_pttransfer = str(round(PT_TRANSFER_INTERVAL / 60)) + " 分钟"
@@ -816,10 +895,10 @@ def create_flask_app(config):
             </svg>
             '''
             scheduler_cfg_list.append(
-                {'name': 'PT下载转移', 'time': tim_pttransfer, 'state': sta_pttransfer, 'id': 'pttransfer', 'svg': svg,
+                {'name': '下载文件转移', 'time': tim_pttransfer, 'state': sta_pttransfer, 'id': 'pttransfer', 'svg': svg,
                  'color': "green"})
 
-            # PT删种
+            # 删种
             pt_seeding_config_time = pt.get('pt_seeding_time')
             if pt_seeding_config_time and pt_seeding_config_time != '0':
                 pt_seeding_time = "%s 天" % pt_seeding_config_time
@@ -835,10 +914,10 @@ def create_flask_app(config):
                 </svg>
                 '''
                 scheduler_cfg_list.append(
-                    {'name': 'PT删种', 'time': pt_seeding_time, 'state': sta_autoremovetorrents,
+                    {'name': '删种', 'time': pt_seeding_time, 'state': sta_autoremovetorrents,
                      'id': 'autoremovetorrents', 'svg': svg, 'color': "twitter"})
 
-            # PT自动签到
+            # 自动签到
             tim_ptsignin = pt.get('ptsignin_cron')
             if tim_ptsignin:
                 if str(tim_ptsignin).find(':') == -1:
@@ -853,7 +932,7 @@ def create_flask_app(config):
                 </svg>
                 '''
                 scheduler_cfg_list.append(
-                    {'name': 'PT站签到', 'time': tim_ptsignin, 'state': sta_ptsignin, 'id': 'ptsignin', 'svg': svg,
+                    {'name': '站点签到', 'time': tim_ptsignin, 'state': sta_ptsignin, 'id': 'ptsignin', 'svg': svg,
                      'color': "facebook"})
 
         # 目录同步
@@ -870,7 +949,8 @@ def create_flask_app(config):
                 </svg>
                 '''
                 scheduler_cfg_list.append(
-                    {'name': '目录同步', 'time': '实时监控', 'state': sta_sync, 'id': 'sync', 'svg': svg, 'color': "orange"})
+                    {'name': '目录同步', 'time': '实时监控', 'state': sta_sync, 'id': 'sync', 'svg': svg,
+                     'color': "orange"})
         # 豆瓣同步
         douban_cfg = config.get_config('douban')
         if douban_cfg:
@@ -898,7 +978,7 @@ def create_flask_app(config):
         </svg>
         '''
         scheduler_cfg_list.append(
-            {'name': '清理文件缓存', 'time': '手动', 'state': 'OFF', 'id': 'blacklist', 'svg': svg, 'color': 'red'})
+            {'name': '清理转移缓存', 'time': '手动', 'state': 'OFF', 'id': 'blacklist', 'svg': svg, 'color': 'red'})
 
         # 名称识别测试
         svg = '''
@@ -930,16 +1010,35 @@ def create_flask_app(config):
         scheduler_cfg_list.append(
             {'name': '过滤规则测试', 'time': '', 'state': 'OFF', 'id': 'ruletest', 'svg': svg, 'color': 'yellow'})
 
-        # 实时日志
+        # 网络连通性测试
         svg = '''
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-terminal" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-network" width="40" height="40" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-           <path d="M5 7l5 5l-5 5"></path>
-           <line x1="12" y1="19" x2="19" y2="19"></line>
+           <circle cx="12" cy="9" r="6"></circle>
+           <path d="M12 3c1.333 .333 2 2.333 2 6s-.667 5.667 -2 6"></path>
+           <path d="M12 3c-1.333 .333 -2 2.333 -2 6s.667 5.667 2 6"></path>
+           <path d="M6 9h12"></path>
+           <path d="M3 19h7"></path>
+           <path d="M14 19h7"></path>
+           <circle cx="12" cy="19" r="2"></circle>
+           <path d="M12 15v2"></path>
+        </svg>
+        '''
+        targets = NETTEST_TARGETS
+        scheduler_cfg_list.append(
+            {'name': '网络连通性测试', 'time': '', 'state': 'OFF', 'id': 'nettest', 'svg': svg, 'color': 'cyan',
+             "targets": targets})
+
+        # 备份
+        svg = '''
+        <svg t="1660720525544" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1559" width="16" height="16">
+        <path d="M646 1024H100A100 100 0 0 1 0 924V258a100 100 0 0 1 100-100h546a100 100 0 0 1 100 100v31a40 40 0 1 1-80 0v-31a20 20 0 0 0-20-20H100a20 20 0 0 0-20 20v666a20 20 0 0 0 20 20h546a20 20 0 0 0 20-20V713a40 40 0 0 1 80 0v211a100 100 0 0 1-100 100z" fill="#ffffff" p-id="1560"></path>
+        <path d="M924 866H806a40 40 0 0 1 0-80h118a20 20 0 0 0 20-20V100a20 20 0 0 0-20-20H378a20 20 0 0 0-20 20v8a40 40 0 0 1-80 0v-8A100 100 0 0 1 378 0h546a100 100 0 0 1 100 100v666a100 100 0 0 1-100 100z" fill="#ffffff" p-id="1561"></path>
+        <path d="M469 887a40 40 0 0 1-27-10L152 618a40 40 0 0 1 1-60l290-248a40 40 0 0 1 66 30v128a367 367 0 0 0 241-128l94-111a40 40 0 0 1 70 35l-26 109a430 430 0 0 1-379 332v142a40 40 0 0 1-40 40zM240 589l189 169v-91a40 40 0 0 1 40-40c144 0 269-85 323-214a447 447 0 0 1-323 137 40 40 0 0 1-40-40v-83z" fill="#ffffff" p-id="1562"></path>
         </svg>
         '''
         scheduler_cfg_list.append(
-            {'name': '实时日志', 'time': '', 'state': 'OFF', 'id': 'logging', 'svg': svg, 'color': 'indigo'})
+            {'name': '备份&恢复', 'time': '', 'state': 'OFF', 'id': 'backup', 'svg': svg, 'color': 'green'})
 
         return render_template("service.html",
                                Count=len(scheduler_cfg_list),
@@ -960,7 +1059,7 @@ def create_flask_app(config):
             CurrentPage = 1
         else:
             CurrentPage = int(CurrentPage)
-        totalCount, historys = get_transfer_history(SearchStr, CurrentPage, PageNum)
+        totalCount, historys = SqlHelper.get_transfer_history(SearchStr, CurrentPage, PageNum)
         if totalCount:
             totalCount = totalCount[0][0]
         else:
@@ -1044,12 +1143,14 @@ def create_flask_app(config):
     @login_required
     def unidentification():
         Items = []
-        Records = get_transfer_unknown_paths()
+        Records = SqlHelper.get_transfer_unknown_paths()
         TotalCount = len(Records)
         for rec in Records:
             if not rec[1]:
                 continue
-            Items.append({"id": rec[0], "path": rec[1], "to": rec[2], "name": rec[1]})
+            path = rec[1].replace("\\", "/") if rec[1] else ""
+            path_to = rec[2].replace("\\", "/") if rec[2] else ""
+            Items.append({"id": rec[0], "path": path, "to": path_to, "name": path})
         return render_template("rename/unidentification.html",
                                TotalCount=TotalCount,
                                Items=Items)
@@ -1061,39 +1162,56 @@ def create_flask_app(config):
         proxy = config.get_config('app').get("proxies", {}).get("http")
         if proxy:
             proxy = proxy.replace("http://", "")
-        return render_template("setting/basic.html", Config=config.get_config(), Proxy=proxy)
+        ignored_words = config.get_config('laboratory').get("ignored_words")
+        if ignored_words:
+            ignored_words = ignored_words.replace("|", "\n")
+        replaced_words = config.get_config('laboratory').get("replaced_words")
+        if replaced_words:
+            replaced_words = replaced_words.replace("|", "\n")
+        return render_template("setting/basic.html", Config=config.get_config(), Proxy=proxy, Ignored_Words=ignored_words, Replaced_Words=replaced_words)
 
     # 目录同步页面
     @App.route('/directorysync', methods=['POST', 'GET'])
     @login_required
     def directorysync():
         sync_paths = config.get_config("sync").get("sync_path")
+        rmt_mode = config.get_config("sync").get("sync_mod")
         SyncPaths = []
         if sync_paths:
             if isinstance(sync_paths, list):
-                for sync_path in sync_paths:
-                    SyncPath = {}
-                    is_rename = True
-                    is_enabled = True
-                    if sync_path.startswith("#"):
-                        is_enabled = False
-                        sync_path = sync_path[1:-1]
-                    if sync_path.startswith("["):
-                        is_rename = False
-                        sync_path = sync_path[1:-1]
-                    paths = sync_path.split("|")
+                for sync_items in sync_paths:
+                    SyncPath = {'enabled': True, 'rename': True}
+                    # 是否启用
+                    if sync_items.startswith("#"):
+                        SyncPath['enabled'] = False
+                        sync_items = sync_items[1:-1]
+                    # 是否重命名
+                    if sync_items.startswith("["):
+                        SyncPath['rename'] = False
+                        sync_items = sync_items[1:-1]
+                    # 转移方式
+                    config_items = sync_items.split("@")
+                    if not config_items:
+                        continue
+                    if len(config_items) > 1:
+                        SyncPath['syncmod'] = config_items[-1]
+                    else:
+                        SyncPath['syncmod'] = rmt_mode
+                    SyncPath['syncmod_name'] = RmtMode[SyncPath['syncmod'].upper()].value
+                    if not SyncPath['syncmod']:
+                        continue
+                    # 源目录|目的目录|未知目录
+                    paths = config_items[0].split("|")
                     if not paths:
                         continue
                     if len(paths) > 0:
                         if not paths[0]:
                             continue
-                        SyncPath['from'] = paths[0]
+                        SyncPath['from'] = paths[0].replace("\\", "/")
                     if len(paths) > 1:
-                        SyncPath['to'] = paths[1]
+                        SyncPath['to'] = paths[1].replace("\\", "/")
                     if len(paths) > 2:
-                        SyncPath['unknown'] = paths[2]
-                    SyncPath['rename'] = is_rename
-                    SyncPath['enabled'] = is_enabled
+                        SyncPath['unknown'] = paths[2].replace("\\", "/")
                     SyncPaths.append(SyncPath)
             else:
                 SyncPaths = [{"from": sync_paths}]
@@ -1198,15 +1316,15 @@ def create_flask_app(config):
                 TrMovieContainerPath = TrTvContainerPath = TrAnimeContainerPath = ""
 
         # Cloudtorrent
-        cloudtorrent = config.get_config('cloudtorrent')
-        save_path = cloudtorrent.get("save_path", {})
+        client115 = config.get_config('client115')
+        save_path = client115.get("save_path", {})
         if isinstance(save_path, str):
             CloudMovieSavePath = CloudTvSavePath = CloudAnimeSavePath = save_path
         else:
             CloudMovieSavePath = save_path.get("movie")
             CloudTvSavePath = save_path.get("tv")
             CloudAnimeSavePath = save_path.get("anime")
-        contianer_path = cloudtorrent.get('save_containerpath', {})
+        contianer_path = client115.get('save_containerpath', {})
         if isinstance(contianer_path, str):
             CloudMovieContainerPath = CloudTvContainerPath = CloudAnimeContainerPath = contianer_path
         else:
@@ -1216,6 +1334,26 @@ def create_flask_app(config):
                 CloudAnimeContainerPath = contianer_path.get("anime")
             else:
                 CloudMovieContainerPath = CloudTvContainerPath = CloudAnimeContainerPath = ""
+
+        # Aria2
+        aria2 = config.get_config('aria2')
+        save_path = aria2.get("save_path", {})
+        if isinstance(save_path, str):
+            Aria2MovieSavePath = Aria2TvSavePath = Aria2AnimeSavePath = save_path
+        else:
+            Aria2MovieSavePath = save_path.get("movie")
+            Aria2TvSavePath = save_path.get("tv")
+            Aria2AnimeSavePath = save_path.get("anime")
+        contianer_path = aria2.get('save_containerpath', {})
+        if isinstance(contianer_path, str):
+            Aria2MovieContainerPath = Aria2TvContainerPath = Aria2AnimeContainerPath = contianer_path
+        else:
+            if contianer_path:
+                Aria2MovieContainerPath = contianer_path.get("movie")
+                Aria2TvContainerPath = contianer_path.get("tv")
+                Aria2AnimeContainerPath = contianer_path.get("anime")
+            else:
+                Aria2MovieContainerPath = Aria2TvContainerPath = Aria2AnimeContainerPath = ""
 
         return render_template("setting/downloader.html",
                                Config=config.get_config(),
@@ -1236,13 +1374,26 @@ def create_flask_app(config):
                                CloudAnimeSavePath=CloudAnimeSavePath,
                                CloudMovieContainerPath=CloudMovieContainerPath,
                                CloudTvContainerPath=CloudTvContainerPath,
-                               CloudAnimeContainerPath=CloudAnimeContainerPath)
+                               CloudAnimeContainerPath=CloudAnimeContainerPath,
+                               Aria2MovieSavePath=Aria2MovieSavePath,
+                               Aria2TvSavePath=Aria2TvSavePath,
+                               Aria2AnimeSavePath=Aria2AnimeSavePath,
+                               Aria2MovieContainerPath=Aria2MovieContainerPath,
+                               Aria2TvContainerPath=Aria2TvContainerPath,
+                               Aria2AnimeContainerPath=Aria2AnimeContainerPath)
 
     # 索引器页面
     @App.route('/indexer', methods=['POST', 'GET'])
     @login_required
     def indexer():
-        return render_template("setting/indexer.html", Config=config.get_config())
+        indexers = BuiltinIndexer().get_indexers(check=False)
+        private_count = len([item.id for item in indexers if not item.public])
+        public_count = len([item.id for item in indexers if item.public])
+        return render_template("setting/indexer.html",
+                               Config=config.get_config(),
+                               PrivateCount=private_count,
+                               PublicCount=public_count,
+                               Indexers=indexers)
 
     # 媒体库页面
     @App.route('/library', methods=['POST', 'GET'])
@@ -1272,7 +1423,7 @@ def create_flask_app(config):
     @App.route('/users', methods=['POST', 'GET'])
     @login_required
     def users():
-        user_list = get_users()
+        user_list = SqlHelper.get_users()
         user_count = len(user_list)
         Users = []
         for user in user_list:
@@ -1285,9 +1436,56 @@ def create_flask_app(config):
     @login_required
     def filterrule():
         RuleGroups = FilterRule().get_rule_infos()
+        sql_file = os.path.join(config.get_root_path(), "config", "init_filter.sql")
+        with open(sql_file, "r", encoding="utf-8") as f:
+            sql_list = f.read().split(';\n')
+            Init_RuleGroups = []
+            i = 0
+            while i < len(sql_list):
+                rulegroup = {}
+                rulegroup_info = re.findall(r"[0-9]+,'[^\"]+NULL", sql_list[i], re.I)[0].split(",")
+                rulegroup['id'] = int(rulegroup_info[0])
+                rulegroup['name'] = rulegroup_info[1][1:-1]
+                rulegroup['rules'] = []
+                rulegroup['sql'] = [sql_list[i]]
+                if i + 1 < len(sql_list):
+                    rules = re.findall(r"[0-9]+,'[^\"]+NULL", sql_list[i + 1], re.I)[0].split("),\n (")
+                    for rule in rules:
+                        rule_info = {}
+                        rule = rule.split(",")
+                        rule_info['name'] = rule[2][1:-1]
+                        rule_info['include'] = rule[4][1:-1]
+                        rule_info['exclude'] = rule[5][1:-1]
+                        rulegroup['rules'].append(rule_info)
+                    rulegroup["sql"].append(sql_list[i + 1])
+                Init_RuleGroups.append(rulegroup)
+                i = i + 2
         return render_template("setting/filterrule.html",
                                Count=len(RuleGroups),
-                               RuleGroups=RuleGroups)
+                               RuleGroups=RuleGroups,
+                               Init_RuleGroups=Init_RuleGroups)
+
+    # 自定义订阅页面
+    @App.route('/user_rss', methods=['POST', 'GET'])
+    @login_required
+    def user_rss():
+        Tasks = RssChecker().get_rsstask_info()
+        RssParsers = RssChecker().get_userrss_parser()
+        FilterRules = FilterRule().get_rule_groups()
+        return render_template("rss/user_rss.html",
+                               Tasks=Tasks,
+                               Count=len(Tasks),
+                               RssParsers=RssParsers,
+                               FilterRules=FilterRules)
+
+    # RSS解析器页面
+    @App.route('/rss_parser', methods=['POST', 'GET'])
+    @login_required
+    def rss_parser():
+        RssParsers = RssChecker().get_userrss_parser()
+        return render_template("rss/rss_parser.html",
+                               RssParsers=RssParsers,
+                               Count=len(RssParsers))
 
     # 事件响应
     @App.route('/do', methods=['POST'])
@@ -1316,11 +1514,13 @@ def create_flask_app(config):
             for f in os.listdir(d):
                 ff = os.path.join(d, f)
                 if os.path.isdir(ff):
-                    r.append('<li class="directory collapsed"><a rel="%s/">%s</a></li>' % (ff, f))
+                    r.append('<li class="directory collapsed"><a rel="%s/">%s</a></li>' % (
+                        ff.replace("\\", "/"), f.replace("\\", "/")))
                 else:
                     if ft != "HIDE_FILES_FILTER":
                         e = os.path.splitext(f)[1][1:]
-                        r.append('<li class="file ext_%s"><a rel="%s">%s</a></li>' % (e, ff, f))
+                        r.append('<li class="file ext_%s"><a rel="%s">%s</a></li>' % (
+                            e, ff.replace("\\", "/"), f.replace("\\", "/")))
             r.append('</ul>')
         except Exception as e:
             r.append('加载路径失败: %s' % str(e))
@@ -1389,9 +1589,9 @@ def create_flask_app(config):
                 dom_tree = xml.dom.minidom.parseString(sMsg.decode('UTF-8'))
                 root_node = dom_tree.documentElement
                 # 消息类型
-                msg_type = tag_value(root_node, "MsgType")
+                msg_type = DomUtils.tag_value(root_node, "MsgType")
                 # 用户ID
-                user_id = tag_value(root_node, "FromUserName")
+                user_id = DomUtils.tag_value(root_node, "FromUserName")
                 # 没的消息类型和用户ID的消息不要
                 if not msg_type or not user_id:
                     log.info("收到微信心跳报文...")
@@ -1400,7 +1600,7 @@ def create_flask_app(config):
                 content = ""
                 if msg_type == "event":
                     # 事件消息
-                    event_key = tag_value(root_node, "EventKey")
+                    event_key = DomUtils.tag_value(root_node, "EventKey")
                     if event_key:
                         log.info("点击菜单：%s" % event_key)
                         keys = event_key.split('#')
@@ -1408,7 +1608,7 @@ def create_flask_app(config):
                             content = WECHAT_MENU.get(keys[2])
                 elif msg_type == "text":
                     # 文本消息
-                    content = tag_value(root_node, "Content", default="")
+                    content = DomUtils.tag_value(root_node, "Content", default="")
                 if content:
                     # 处理消息内容
                     WebAction().handle_message_job(content, SearchType.WX, user_id)
@@ -1466,10 +1666,118 @@ def create_flask_app(config):
                 WebAction().handle_message_job(text, SearchType.TG, user_id)
         return 'Success'
 
-    # 自定义模板过滤器
+    # Jellyseerr Overseerr订阅接口
+    @App.route('/subscribe', methods=['POST', 'GET'])
+    def subscribe():
+        if not authorization():
+            return make_response("认证失败！", 400)
+        req_json = request.get_json()
+        if not req_json:
+            return make_response("非法请求！", 400)
+        notification_type = req_json.get("notification_type")
+        if notification_type not in ["MEDIA_APPROVED", "MEDIA_AUTO_APPROVED"]:
+            return make_response("ok", 200)
+        subject = req_json.get("subject")
+        media_type = MediaType.MOVIE if req_json.get("media", {}).get("media_type") == "movie" else MediaType.TV
+        tmdbId = req_json.get("media", {}).get("tmdbId")
+        if not media_type or not tmdbId or not subject:
+            return make_response("请求参数不正确！", 500)
+        # 添加订阅
+        code = 0
+        msg = "ok"
+        meta_info = MetaInfo(title=subject, mtype=media_type)
+        if media_type == MediaType.MOVIE:
+            code, msg, meta_info = add_rss_subscribe(mtype=media_type,
+                                                     name=meta_info.get_name(),
+                                                     year=meta_info.year,
+                                                     tmdbid=tmdbId)
+            Message().send_rss_success_message(in_from=SearchType.API,
+                                               media_info=meta_info)
+        else:
+            seasons = []
+            for extra in req_json.get("extra", []):
+                if extra.get("name") == "Requested Seasons":
+                    seasons = [int(str(sea).strip()) for sea in extra.get("value").split(", ") if str(sea).isdigit()]
+                    break
+            for season in seasons:
+                code, msg, meta_info = add_rss_subscribe(mtype=media_type,
+                                                         name=meta_info.get_name(),
+                                                         year=meta_info.year,
+                                                         tmdbid=tmdbId,
+                                                         season=season)
+                Message().send_rss_success_message(in_from=SearchType.API,
+                                                   media_info=meta_info)
+        if code == 0:
+            return make_response("ok", 200)
+        else:
+            return make_response(msg, 500)
+
+    @App.route('/backup', methods=['POST'])
+    @login_required
+    def backup():
+        """
+        备份用户设置文件
+        :return: 备份文件.zip_file
+        """
+        try:
+            # 创建备份文件夹
+            config_path = Path(config.get_config_path())
+            backup_file = f"bk_{time.strftime('%Y%m%d%H%M%S')}"
+            backup_path = config_path / "backup_file" / backup_file
+            backup_path.mkdir(parents=True)
+            # 把现有的相关文件进行copy备份
+            shutil.copy(f'{config_path}/config.yaml', backup_path)
+            shutil.copy(f'{config_path}/default-category.yaml', backup_path)
+            shutil.copy(f'{config_path}/user.db', backup_path)
+            conn = sqlite3.connect(f'{backup_path}/user.db')
+            cursor = conn.cursor()
+            # 执行操作删除不需要备份的表
+            table_list = [
+                'SEARCH_RESULT_INFO',
+                'RSS_TORRENTS',
+                'DOUBAN_MEDIAS',
+                'TRANSFER_HISTORY',
+                'TRANSFER_UNKNOWN',
+                'TRANSFER_BLACKLIST',
+                'SYNC_HISTORY',
+                'DOWNLOAD_HISTORY',
+            ]
+            for table in table_list:
+                cursor.execute(f"""DROP TABLE IF EXISTS {table};""")
+            conn.commit()
+            cursor.close()
+            conn.close()
+            zip_file = str(backup_path) + '.zip'
+            if os.path.exists(zip_file):
+                zip_file = str(backup_path) + '.zip'
+            shutil.make_archive(str(backup_path), 'zip', str(backup_path))
+            shutil.rmtree(str(backup_path))
+        except Exception as e:
+            log.debug(e)
+            return make_response("创建备份失败", 400)
+        return send_file(zip_file)
+
+    @App.route('/upload', methods=['POST'])
+    @login_required
+    def upload():
+        try:
+            files = request.files['file']
+            zip_file = Path(config.get_config_path()) / files.filename
+            files.save(str(zip_file))
+            return {"code": 0, "filepath": str(zip_file)}
+        except Exception as e:
+            log.debug(e)
+            return {"code": 1, "msg": str(e), "filepath": ""}
+
+    # base64模板过滤器
     @App.template_filter('b64encode')
     def b64encode(s):
         return base64.b64encode(s.encode()).decode()
+
+    # split模板过滤器
+    @App.template_filter('split')
+    def split(string, char, pos):
+        return string.split(char)[pos]
 
     # 站点信息拆分模板过滤器
     @App.template_filter('rss_sites_string')

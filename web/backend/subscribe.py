@@ -1,8 +1,7 @@
-from rmt.doubanv2api.doubanapi import DoubanApi
-from rmt.media import Media
-from rmt.metainfo import MetaInfo
-from utils.sqls import insert_rss_tv, insert_rss_movie, delete_rss_tv, delete_rss_movie
-from utils.types import MediaType
+from app.db import SqlHelper
+from app.media.doubanv2api import DoubanApi
+from app.media import MetaInfo, Media
+from app.utils.types import MediaType
 
 
 def add_rss_subscribe(mtype, name, year,
@@ -15,6 +14,7 @@ def add_rss_subscribe(mtype, name, year,
                       over_edition=False,
                       rss_restype=None,
                       rss_pix=None,
+                      rss_team=None,
                       rss_rule=None,
                       state="D",
                       rssid=None):
@@ -32,6 +32,7 @@ def add_rss_subscribe(mtype, name, year,
     :param over_edition: 是否选版
     :param rss_restype: 质量过滤
     :param rss_pix: 分辨率过滤
+    :param rss_team: 制作组/字幕组过滤
     :param rss_rule: 关键字过滤
     :param state: 添加订阅时的状态
     :param rssid: 修改订阅时传入
@@ -71,7 +72,7 @@ def add_rss_subscribe(mtype, name, year,
                 if not douban_info or douban_info.get("localized_message"):
                     return 1, "无法查询到豆瓣媒体信息", None
                 media_info = MetaInfo(title="%s %s".strip() % (douban_info.get('title'), year), mtype=mtype)
-                media_info.title = media_info.get_name()
+                media_info.title = douban_info.get('title')
                 media_info.year = douban_info.get("year")
                 media_info.type = mtype
                 media_info.backdrop_path = douban_info.get("cover_url")
@@ -86,8 +87,8 @@ def add_rss_subscribe(mtype, name, year,
         # 添加订阅
         if media_info.type != MediaType.MOVIE:
             if tmdbid:
-                if season:
-                    season = int(season)
+                if season or media_info.begin_season is not None:
+                    season = int(season) if season else media_info.begin_season
                     total_episode = media.get_tmdb_season_episodes_num(sea=season, tmdbid=tmdbid)
                 else:
                     # 查询季及集信息
@@ -105,29 +106,31 @@ def add_rss_subscribe(mtype, name, year,
                 media_info.begin_season = season
                 media_info.total_episodes = total_episode
             if rssid:
-                delete_rss_tv(rssid=rssid)
-            insert_rss_tv(media_info=media_info,
-                          total=media_info.total_episodes,
-                          lack=media_info.total_episodes,
-                          sites=sites,
-                          search_sites=search_sites,
-                          over_edition=over_edition,
-                          rss_restype=rss_restype,
-                          rss_pix=rss_pix,
-                          rss_rule=rss_rule,
-                          state=state,
-                          match=match)
+                SqlHelper.delete_rss_tv(rssid=rssid)
+            SqlHelper.insert_rss_tv(media_info=media_info,
+                                    total=media_info.total_episodes,
+                                    lack=media_info.total_episodes,
+                                    sites=sites,
+                                    search_sites=search_sites,
+                                    over_edition=over_edition,
+                                    rss_restype=rss_restype,
+                                    rss_pix=rss_pix,
+                                    rss_team=rss_team,
+                                    rss_rule=rss_rule,
+                                    state=state,
+                                    match=match)
         else:
             if rssid:
-                delete_rss_movie(rssid=rssid)
-            insert_rss_movie(media_info=media_info,
-                             sites=sites,
-                             search_sites=search_sites,
-                             over_edition=over_edition,
-                             rss_restype=rss_restype,
-                             rss_pix=rss_pix,
-                             rss_rule=rss_rule,
-                             state=state)
+                SqlHelper.delete_rss_movie(rssid=rssid)
+            SqlHelper.insert_rss_movie(media_info=media_info,
+                                       sites=sites,
+                                       search_sites=search_sites,
+                                       over_edition=over_edition,
+                                       rss_restype=rss_restype,
+                                       rss_pix=rss_pix,
+                                       rss_team=rss_team,
+                                       rss_rule=rss_rule,
+                                       state=state)
     else:
         # 模糊匹配
         media_info = MetaInfo(title=name, mtype=mtype)
@@ -137,28 +140,30 @@ def add_rss_subscribe(mtype, name, year,
             media_info.begin_season = int(season)
         if mtype == MediaType.MOVIE:
             if rssid:
-                delete_rss_movie(rssid=rssid)
-            insert_rss_movie(media_info=media_info,
-                             state="R",
-                             sites=sites,
-                             search_sites=search_sites,
-                             over_edition=over_edition,
-                             rss_restype=rss_restype,
-                             rss_pix=rss_pix,
-                             rss_rule=rss_rule)
+                SqlHelper.delete_rss_movie(rssid=rssid)
+            SqlHelper.insert_rss_movie(media_info=media_info,
+                                       state="R",
+                                       sites=sites,
+                                       search_sites=search_sites,
+                                       over_edition=over_edition,
+                                       rss_restype=rss_restype,
+                                       rss_pix=rss_pix,
+                                       rss_team=rss_team,
+                                       rss_rule=rss_rule)
         else:
             if rssid:
-                delete_rss_tv(rssid=rssid)
-            insert_rss_tv(media_info=media_info,
-                          total=0,
-                          lack=0,
-                          state="R",
-                          sites=sites,
-                          search_sites=search_sites,
-                          over_edition=over_edition,
-                          rss_restype=rss_restype,
-                          rss_pix=rss_pix,
-                          rss_rule=rss_rule,
-                          match=match)
+                SqlHelper.delete_rss_tv(rssid=rssid)
+            SqlHelper.insert_rss_tv(media_info=media_info,
+                                    total=0,
+                                    lack=0,
+                                    state="R",
+                                    sites=sites,
+                                    search_sites=search_sites,
+                                    over_edition=over_edition,
+                                    rss_restype=rss_restype,
+                                    rss_pix=rss_pix,
+                                    rss_team=rss_team,
+                                    rss_rule=rss_rule,
+                                    match=match)
 
     return 0, "添加订阅成功", media_info

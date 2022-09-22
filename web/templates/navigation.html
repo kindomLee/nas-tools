@@ -3,28 +3,40 @@
 
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>NASTool - 资源归集、整理自动化工具</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=0">
+  <meta name="Robots" content="noindex,nofollow,noarchive">
+  <link rel="icon" type="image/png" href="../static/img/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../static/img/logo-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../static/img/logo-16x16.png">
+  <link rel="apple-touch-icon" sizes="256x256"  href="../static/img/logo.png">
+  <link rel="shortcut icon" href="../static/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-startup-image" href="../static/img/startup.jpg">
+  <link rel="manifest" href="../static/site.webmanifest" crossorigin="use-credentials">
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="NASTool">
+  <meta name="description" content="NAS媒体库资源归集整理自动化工具">
+  <meta name="format-detection" content="telephone=no">
   <meta name="referrer" content="never">
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="msapplication-TileColor" content="#1e293b" />
   <meta name="theme-color" content="#1e293b" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="HandheldFriendly" content="True" />
   <meta name="MobileOptimized" content="320" />
-  <link rel="icon" href="../static/img/logo.png">
-  <link rel="shortcut icon" href="../static/favicon.ico" type="image/x-icon" />
-  <link rel="apple-touch-icon" href="../static/img/logo.png">
-  <meta name="Robots" content="noindex,nofollow,noarchive">
+  <title>NASTool - 资源归集、整理自动化工具</title>
   <!-- CSS files -->
   <link href="../static/css/tabler.min.css" rel="stylesheet" />
   <link href="../static/css/demo.min.css" rel="stylesheet" />
   <link href="../static/css/fullcalendar.min.css" rel="stylesheet" />
   <link href="../static/css/jquery.filetree.css" rel="stylesheet" />
+  <link href="../static/css/dropzone.css" rel="stylesheet" />
   <style type="text/css">
+    body, .page {
+      height: 100%;
+      overflow: hidden;
+    }
+
     .tooltip-inner {
       text-align: left;
     }
@@ -39,8 +51,41 @@
     }
 
     .navbar-vertical {
-      padding-top: env(safe-area-inset-top);
+      padding-top: env(safe-area-inset-top) !important;
+      position: fixed !important;
+      left: 0 !important;
+      right: 0 !important;
+      top: 0 !important;
     }
+
+    .navbar-expand-md {
+      position: fixed !important;
+      left: 0 !important;
+      right: 0 !important;
+      top: 0 !important;
+    }
+    
+    @media (max-width: 991.98px) {
+      .navbar ul.navbar-nav {
+        overflow-y: auto;
+        max-height: 80vh;
+      }
+    }
+
+    .page-wrapper {
+      margin-top: calc(env(safe-area-inset-top) + 50px) !important;
+      height: 100% !important;
+      overflow: scroll !important;
+    }
+
+    .offcanvas {
+      padding-top: env(safe-area-inset-top) !important;
+    }
+
+    .modal-dialog {
+      padding-top: env(safe-area-inset-top) !important;
+    }
+
   </style>
 </head>
 
@@ -58,7 +103,7 @@
           </a>
         </h1>
         <div class="navbar-nav flex-row d-lg-none">
-          <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="暗黑风格" data-bs-toggle="tooltip"
+          <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="暗黑风格"
             data-bs-placement="bottom">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
               stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -66,7 +111,7 @@
               <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
             </svg>
           </a>
-          <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="明亮风格" data-bs-toggle="tooltip"
+          <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="明亮风格"
             data-bs-placement="bottom">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
               stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -94,6 +139,7 @@
               {% if "系统设置" in UserPris %}
               <a class="dropdown-item" data-bs-toggle="offcanvas" href="#offcanvasEnd" role="button"
                 aria-controls="offcanvasEnd">消息中心</a>
+              <a class="dropdown-item" href="javascript:show_logging_modal()" role="button">实时日志</a>
               <div class="dropdown-divider"></div>
               {% if SystemFlag > 0 %}
               <a href="javascript:restart()" class="dropdown-item">重启</a>
@@ -115,7 +161,7 @@
                   <line x1="21" y1="21" x2="15" y2="15" />
                 </svg>
               </span>
-              <input type="text" value="" class="form-control home_search_word" placeholder="搜索...">
+              <input type="text" value="" class="form-control home_search_word" placeholder="搜索/订阅...">
             </div>
           </div>
           <ul class="navbar-nav pt-lg-3">
@@ -197,6 +243,9 @@
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('recommend?t=dbhm')">
                   豆瓣热门电影
                 </a>
+                <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('recommend?t=dbtop')">
+                  豆瓣电影TOP250
+                </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('recommend?t=dbht')">
                   豆瓣热门电视剧
                 </a>
@@ -260,6 +309,9 @@
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('tv_rss')">
                   电视剧订阅
+                </a>
+                <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('user_rss')">
+                  自定义订阅
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('rss_calendar')">
                   订阅日历
@@ -427,7 +479,7 @@
             </div>
           </div>
           <div class="d-none d-md-flex">
-            <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="暗黑风格" data-bs-toggle="tooltip"
+            <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="暗黑风格"
               data-bs-placement="bottom">
               <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
                 stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -435,7 +487,7 @@
                 <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
               </svg>
             </a>
-            <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="明亮风格" data-bs-toggle="tooltip"
+            <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="明亮风格"
               data-bs-placement="bottom">
               <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
                 stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -512,6 +564,7 @@
               {% if "系统设置" in UserPris %}
               <a class="dropdown-item" data-bs-toggle="offcanvas" href="#offcanvasEnd" role="button"
                 aria-controls="offcanvasEnd">消息中心</a>
+              <a class="dropdown-item" href="javascript:show_logging_modal()" role="button">实时日志</a>
               <div class="dropdown-divider"></div>
               {% if SystemFlag > 0 %}
               <a href="javascript:restart()" class="dropdown-item">重启</a>
@@ -534,7 +587,7 @@
                   <line x1="21" y1="21" x2="15" y2="15" />
                 </svg>
               </span>
-              <input type="text" value="" class="form-control home_search_word" placeholder="搜索…" aria-label="资源搜索">
+              <input type="text" value="" class="form-control home_search_word" placeholder="搜索/订阅…" aria-label="资源搜索/订阅">
             </div>
           </div>
         </div>
@@ -571,7 +624,7 @@
       <div class="list-group list-group-flush" id="system-messages">
       </div>
       <div class="mt-3" align="center">
-        <button class="btn" type="button" data-bs-dismiss="offcanvas">
+        <button class="btn btn-primary" type="button" data-bs-dismiss="offcanvas">
           关闭
         </button>
       </div>
@@ -622,7 +675,7 @@
           <div class="w-100">
             <div class="row">
               <div class="col">
-                <a href="#" class="btn w-100" data-bs-dismiss="modal">
+                <a href="#" class="btn w-100 btn-secondary" data-bs-dismiss="modal">
                   取消
                 </a>
               </div>
@@ -727,7 +780,7 @@
             <div class="col">
               <div class="card-body">
                 <h4 class="card-title mb-3">
-                  <a href="#"><strong id="system_media_name"></strong></a><br />
+                  <a id="system_media_name_link" href="#" target="_blank"><strong id="system_media_name"></strong></a><br />
                   <span class="text-muted" id="system_release_date"></span>
                 </h4>
                 <div class="text-muted mb-3" id="system_media_overview">
@@ -740,16 +793,61 @@
             <a href="#" target="_blank" class="card-btn" id="system_media_url_btn">
               详情
             </a>
-            <a href="javascript:void(0)" class="card-btn" id="system_media_rss_btn">
+            <a href="javascript:void(0)" data-bs-toggle="dropdown" class="dropdown-toggle card-btn" id="system_media_rss_btn">
               订阅
             </a>
-            <a href="javascript:void(0)" class="card-btn" id="system_media_search_btn">
+            <div class="dropdown-menu" id="system_media_rss_dropdown"></div>
+            <a href="javascript:void(0)" class="card-btn" id="system_media_search_btn" style="border-left:1px solid var(--tblr-border-color)">
               搜索
             </a>
             <a href="javascript:void(0)" class="card-btn" data-bs-dismiss="modal">
               关闭
             </a>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal modal-blur fade" id="modal-logging" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">实时日志</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            id="logging_close_head"></button>
+        </div>
+        <div class="modal-body" id="logging_content" style="display:flex; flex-direction:column-reverse;font-size:12px;">
+        </div>
+        <div class="modal-footer">
+          <a href="javascript:pause_logging()" class="btn btn-link me-auto" id="logging_stop_btn">
+            暂停
+          </a>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="logging_close_btn">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal modal-blur fade" id="system-rss-seasons" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="card border-top-0">
+          <div class="card-header">
+            <h5 class="modal-title">选择订阅季</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col">
+                <div class="mb-3">
+                  <div class="form-selectgroup" id="system_rss_seasons_group">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a href="javascript:void(0)" id="system_rss_seasons_btn" class="btn btn-primary">确定</a>
         </div>
       </div>
     </div>
@@ -763,6 +861,7 @@
   <script src="../static/js/fullcalendar.min.js"></script>
   <script src="../static/js/locales/zh-cn.js"></script>
   <script src="../static/js/jquery.filetree.js"></script>
+  <script src="../static/js/dropzone-min.js"></script>
   <!-- 公共函数 -->
   <script type="text/javascript">
     //显示全局加载框
@@ -777,14 +876,20 @@
 
     //刷新进度及文件
     var refresh_process_flag = false;
+    var refresh_fail_count = 0;
     function refresh_process () {
-      ajax_post("refresh_process", {}, function (ret) {
-        if (ret.code == 0) {
+      if(!refresh_process_flag){
+        return;
+      }
+      ajax_post("refresh_process", {type:"search"}, function (ret) {
+        if (ret.code == 0 && ret.value <= 100) {
           $("#modal_process_bar").attr("style", "width: " + ret.value + "%");
           $("#modal_process_bar").attr("aria-valuenow", ret.value);
           $("#modal_process_text").text(ret.text);
+        }else{
+          refresh_fail_count = refresh_fail_count + 1;
         }
-        if ((ret.code == 0 || ret.code == 1) && refresh_process_flag) {
+        if(refresh_fail_count < 5 ){
           setTimeout("refresh_process()", 200);
         }
       });
@@ -803,6 +908,7 @@
       $("#modal-process").modal("show");
       //刷新进度
       refresh_process_flag = true;
+      refresh_fail_count = 0;
       refresh_process();
     }
 
@@ -888,9 +994,14 @@
             $("#system_media_vote").show();
           }
           //订阅按钮、搜索按钮
+          if($("#system_media_rss_dropdown").hasClass("show")){
+            $("#system_media_rss_btn").dropdown("toggle");
+          }
           if (ret.rssid) {
             //取消订阅按钮
-            $("#system_media_rss_btn").text("删除订阅");
+            $("#system_media_rss_btn").text("取消订阅");
+            $("#system_media_rss_btn").removeAttr("data-bs-toggle");
+            $("#system_media_rss_btn").removeClass("dropdown-toggle");
             $("#system_media_rss_btn").attr("href", 'javascript:remove_rss_media("' + ret.title + '","' + ret.year + '","' + ret.type + '","' + ret.rssid + '","' + ret.page + '")');
             //刷新和编辑按钮
             if (ret.page.startsWith("movie_rss") || ret.page.startsWith("tv_rss")) {
@@ -903,7 +1014,10 @@
               $("#system_media_url_btn").removeAttr("target");
               $("#system_media_url_btn").attr("href", "javascript:show_edit_rss_media_modal('" + ret.rssid + "')");
             } else {
-              $("#system_media_search_btn").hide();
+              //搜索按钮
+              $("#system_media_search_btn").text("搜索");
+              $("#system_media_search_btn").attr("href", 'javascript:search_mediainfo_media("' + ret.tmdbid + '", "' + ret.doubanid + '", "' + ret.title + '", "' + ret.type_str + '")');
+              $("#system_media_search_btn").show();
               //详情按钮
               $("#system_media_url_btn").text("详情");
               $("#system_media_url_btn").attr("target", "_blank");
@@ -912,7 +1026,21 @@
           } else {
             //订阅按钮
             $("#system_media_rss_btn").text("订阅");
-            $("#system_media_rss_btn").attr("href", 'javascript:add_rss_media("' + ret.title + '","' + ret.year + '","' + ret.type + '","' + ret.tmdbid + '","' + ret.doubanid + '","' + ret.page + '")');
+            if(ret.seasons.length == 0){
+              $("#system_media_rss_btn").removeAttr("data-bs-toggle");
+              $("#system_media_rss_btn").removeClass("dropdown-toggle");
+              $("#system_media_rss_btn").attr("href", 'javascript:add_rss_media("' + ret.title + '","' + ret.year + '","' + ret.type + '","' + ret.tmdbid + '","' + ret.doubanid + '","' + ret.page + '","")');
+            }else{
+              $("#system_media_rss_btn").prop("data-bs-toggle", "dropdown");
+              $("#system_media_rss_btn").addClass("dropdown-toggle");
+              $("#system_media_rss_btn").attr("href", 'javascript:$("#system_media_rss_btn").dropdown("toggle")');
+              $("#system_media_rss_dropdown").empty();
+              for(var i=0; i<ret.seasons.length; i++){
+                $("#system_media_rss_dropdown").append('<a class="dropdown-item" href=\'javascript:add_rss_media("' + ret.title + '","' + ret.year + '","' + ret.type + '","' + ret.tmdbid + '","' + ret.doubanid + '","' + ret.page + '","' + ret.seasons[i].num + '")\'>' + ret.seasons[i].text + '</a>');
+              }
+            }
+
+            //订阅季的下拉框
             //搜索按钮
             $("#system_media_search_btn").text("搜索");
             $("#system_media_search_btn").attr("href", 'javascript:search_mediainfo_media("' + ret.tmdbid + '", "' + ret.doubanid + '", "' + ret.title + '", "' + ret.type_str + '")');
@@ -922,10 +1050,15 @@
             $("#system_media_url_btn").attr("target", "_blank");
             $("#system_media_url_btn").attr("href", ret.link_url);
           }
+          $("#system_media_name_link").attr("href", ret.link_url);
           //弹窗
           $("#system-media-modal").modal("show");
         } else if (ret.code == 1) {
-          window.open(ret.link_url);
+          if (ret.rssid) {
+            show_edit_rss_media_modal(ret.rssid);
+          } else {
+            window.open(ret.link_url);
+          }
         }
       });
     }
@@ -1001,7 +1134,7 @@
       });
       $("#navbar-menu").collapse('hide');
       show_wait_process();
-      $(window).unbind('scroll');
+      $(".page-wrapper").unbind('scroll');
       page = page.replaceAll(" ", "%20");
       $("#page_content").load(page, {}, function (response, status, xhr) {
         hide_wait_process();
@@ -1015,14 +1148,22 @@
     }
 
     //新增订阅
-    function add_rss_media (name, year, type, tmdbid, doubanid, page) {
+    function add_rss_media (name, year, type, tmdbid, doubanid, page, season, func) {
       hide_mediainfo_modal();
-      var data = { "name": name, "type": type, "year": year, "doubanid": doubanid, "tmdbid": tmdbid, "page": page };
+      var data = { "name": name,
+                   "type": type,
+                   "year": year,
+                   "doubanid": doubanid,
+                   "tmdbid": tmdbid,
+                   "page": page,
+                   "season": season};
       show_wait_process();
       ajax_post("add_rss_media", data, function (ret) {
         hide_wait_process();
         if (ret.code == 0) {
-          if (ret.page) {
+          if(func){
+            func();
+          }else if (ret.page) {
             navmenu(ret.page);
           } else {
             show_success_modal(ret.name + " 添加RSS订阅成功！");
@@ -1034,12 +1175,13 @@
     }
 
     // 取消订阅
-    function remove_rss_media (name, year, type, rssid, page) {
+    function remove_rss_media (name, year, type, rssid, page, tmdbid, func) {
       hide_mediainfo_modal();
-      var cmd = "remove_rss_media";
-      var data = { "name": name, "type": type, "year": year, "rssid": rssid, "page": page };
-      ajax_post(cmd, data, function (ret) {
-        if (ret.page) {
+      var data = { "name": name, "type": type, "year": year, "rssid": rssid, "page": page, "tmdbid": tmdbid};
+      ajax_post("remove_rss_media", data, function (ret) {
+        if(func){
+          func();
+        }else if (ret.page) {
           navmenu(ret.page);
         } else {
           show_success_modal(ret.name + " 已从RSS订阅中移除！");
@@ -1055,6 +1197,29 @@
           navmenu(ret.page);
         }
       });
+    }
+
+    //显示订阅季选择框
+    function show_rss_seasons_modal(name, year, type, tmdbid, doubanid, seasons, func){
+      $("#system_rss_seasons_group").empty();
+      for(var i=0; i<seasons.length; i++){
+        $("#system_rss_seasons_group").append('<label class="form-selectgroup-item"><input type="checkbox" name="system_rss_season" value="'+seasons[i].num+'" class="form-selectgroup-input"><span class="form-selectgroup-label">'+seasons[i].text+'</span></label>');
+      }
+      $("#system_rss_seasons_btn").unbind('click').click(function(){
+        $("#system-rss-seasons").modal('hide');
+        var i = 0;
+        var rss_seasons = [];
+        $("input[name='system_rss_season']").each(function(){
+          if($(this).prop("checked")){
+            rss_seasons[i] = $(this).val();
+            i = i + 1;
+          }
+        });
+        if(rss_seasons.length > 0){
+          add_rss_media(name, year, type, tmdbid, doubanid, '', rss_seasons, func);
+        }
+      });
+      $("#system-rss-seasons").modal('show');
     }
 
     //搜索
@@ -1074,6 +1239,60 @@
         }
       });
     }
+
+  //刷新LOG标志
+  var refresh_logging_flag = false
+  //开始刷新日志
+  function start_logging() {
+    refresh_logging_flag = true;
+    refresh_logging();
+  }
+  //停止刷新日志
+  function stop_logging() {
+    refresh_logging_flag = false;
+  }
+  //刷新日志
+  function refresh_logging(flag) {
+    ajax_post("logging", {}, function (ret) {
+      if (ret.text) {
+        $("#logging_content").append(ret.text);
+        var height = $('#logging_content').prop("scrollHeight");
+        $('#logging_content').scrollTop(height);
+      }
+      if($("#modal-logging").is(":hidden") && flag){
+        stop_logging();
+      }
+      if (refresh_logging_flag == true) {
+        setTimeout("refresh_logging(true)", 2000);
+      }
+    });
+  }
+
+  //暂停实时日志
+  function pause_logging() {
+    if (refresh_logging_flag == true) {
+      stop_logging();
+      $("#logging_stop_btn").text("开始")
+    } else {
+      start_logging();
+      $("#logging_stop_btn").text("暂停")
+    }
+  }
+
+  //实时日志关闭
+  $("#logging_close_btn").click(function () {
+    stop_logging();
+  });
+
+  $("#logging_close_head").click(function () {
+    stop_logging();
+  });
+
+  //
+  function show_logging_modal(){
+    $('#modal-logging').modal('show');
+    start_logging();
+  }
   </script>
   <script type="text/javascript">
     //浏览器兼容
@@ -1082,7 +1301,7 @@
     }
 
     // 检查新版本
-    var AppVersion = "{{ AppVersion }}";
+    var AppVersion = "{{ AppVersion }}".split(" ")[0];
     var NewVersion = '';
     $("#new_version_tip").hide();
     function check_new_version () {
@@ -1164,6 +1383,36 @@
         }
       });
 
+      // tooltip点击事件处理，阻止冒泡到上级元素，避免比如`点击tooltip切换了switch`的问题
+      $('body').on('click', '[data-bs-toggle="tooltip"]', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+
+      /**
+       * 计算菜单列表高度
+       * @return {number}
+       */
+      function computeMenuListHeight() {
+        // '#navbar-menu > .order-first' 要打开菜单后才会显示，所以这里取固定值36
+        var menuFirstHeight = 36
+        // 这个是经过测试得到的数值
+        var extra = 70
+        return $('.navbar-brand').outerHeight() + menuFirstHeight + extra
+      }
+
+      /**
+       * 更新菜单列表高度
+       */
+      function updateMenuListHeight() {
+        var height = computeMenuListHeight()
+        $('.navbar ul.navbar-nav').css({
+          maxHeight: 'calc(100vh - ' + height + 'px)'
+        })
+      }
+
+      updateMenuListHeight()
+
       //加载页面
       var go_page = "{{ GoPage }}";
       if (go_page) {
@@ -1181,22 +1430,6 @@
       {% endif %}
     });
 
-    //禁止双指放大
-    document.documentElement.addEventListener('touchstart', function (event) {
-      if (event.touches.length > 1) {
-        event.preventDefault();
-      }
-    }, false);
-
-    //禁止双击放大
-    var lastTouchEnd = 0;
-    document.documentElement.addEventListener('touchend', function (event) {
-      var now = Date.now();
-      if (now - lastTouchEnd <= 300) {
-        event.preventDefault();
-      }
-      lastTouchEnd = now;
-    }, false);
   </script>
 </body>
 

@@ -1,4 +1,420 @@
 meta_cases = [{
+    "title": "Thor Love and Thunder (2022) [1080p] [WEBRip] [5.1]",
+    "subtitle": "",
+    "target": {
+        "type": "电影",
+        "cn_name": "",
+        "en_name": "Thor Love and Thunder",
+        "year": "2022",
+        "part": "",
+        "season": "",
+        "episode": "",
+        "restype": "",
+        "pix": "1080p",
+        "video_codec": "",
+        "audio_codec": "5.1"
+    }
+}, {
+    "title": "【爪爪字幕组】★7月新番[欢迎来到实力至上主义的教室 第二季/Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e S2][11][1080p][HEVC][GB][MP4][招募翻译校对]",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "欢迎来到实力至上主义的教室",
+        "en_name": "Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e",
+        "year": "",
+        "part": "",
+        "season": "S02",
+        "episode": "E11",
+        "restype": "",
+        "pix": "1080p",
+        "video_codec": "HEVC",
+        "audio_codec": ""
+    }
+}, {
+    "title": "[Animations(动画片)][[诛仙][Jade Dynasty][2022][WEB-DL][2160][TV Series][TV 08][LeagueWEB]][诛仙/诛仙动画 第一季 第08集 | 类型:动画 [国语中字]][680.12 MB]",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "",
+        "en_name": "Jade Dynasty",
+        "year": "2022",
+        "part": "",
+        "season": "S01",
+        "episode": "E08",
+        "restype": "",
+        "pix": "",
+        "video_codec": "",
+        "audio_codec": ""
+    }
+}, {
+    "title": "钢铁侠2 (2010) 1080p AC3.mp4",
+    "subtitle": "",
+    "target": {
+        "type": "电影",
+        "cn_name": "钢铁侠2",
+        "en_name": "",
+        "year": "2010",
+        "part": "",
+        "season": "",
+        "episode": "",
+        "restype": "",
+        "pix": "1080p",
+        "video_codec": "",
+        "audio_codec": "AC3"
+    }
+}, {
+    "title": "Wonder Woman 1984 2020 BluRay 1080p Atmos TrueHD 7.1 x264-EPiC",
+    "subtitle": "",
+    "target": {
+        "type": "电影",
+        "cn_name": "",
+        "en_name": "Wonder Woman 1984",
+        "year": "2020",
+        "part": "",
+        "season": "",
+        "episode": "",
+        "restype": "BluRay",
+        "pix": "1080p",
+        "video_codec": "x264",
+        "audio_codec": "Atmos TrueHD 7.1"
+    }
+}, {
+    "title": "9-1-1 - S04E03 - Future Tense WEBDL-1080p.mp4",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "",
+        "en_name": "9 1 1",
+        "year": "",
+        "part": "",
+        "season": "S04",
+        "episode": "E03",
+        "restype": "",
+        "pix": "1080p",
+        "video_codec": "",
+        "audio_codec": ""
+    }
+}, {
+    "title": "【幻月字幕组】【22年日剧】【据幸存的六人所说】【04】【1080P】【中日双语】",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "据幸存的六人所说",
+        "en_name": "",
+        "year": "",
+        "part": "",
+        "season": "S01",
+        "episode": "E04",
+        "restype": "",
+        "pix": "1080p",
+        "video_codec": "",
+        "audio_codec": ""
+    }
+}, {
+    "title": "【爪爪字幕组】★7月新番[即使如此依旧步步进逼/Soredemo Ayumu wa Yosetekuru][09][1080p][HEVC][GB][MP4][招募翻译校对]",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "",
+        "en_name": "Soredemo Ayumu wa Yosetekuru",
+        "year": "",
+        "part": "",
+        "season": "S01",
+        "episode": "E09",
+        "restype": "",
+        "pix": "1080p",
+        "video_codec": "HEVC",
+        "audio_codec": ""
+    }
+}, {
+    "title": "[猎户不鸽发布组] 不死者之王 第四季 OVERLORD Ⅳ [02] [1080p] [简中内封] [2022年7月番]",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "不死者之王",
+        "en_name": "OVERLORD Ⅳ",
+        "year": "",
+        "part": "",
+        "season": "S04",
+        "episode": "E02",
+        "restype": "",
+        "pix": "1080p",
+        "video_codec": "",
+        "audio_codec": ""
+    }
+}, {
+    "title": "[GM-Team][国漫][寻剑 第1季][Sword Quest Season 1][2002][02][AVC][GB][1080P]",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "",
+        "en_name": "Sword Quest",
+        "year": "2002",
+        "part": "",
+        "season": "S01",
+        "episode": "E02",
+        "restype": "",
+        "pix": "1080p",
+        "video_codec": "AVC",
+        "audio_codec": ""
+    }
+}, {
+    "title": " [猎户不鸽发布组] 组长女儿与照料专员 / 组长女儿与保姆 Kumichou Musume to Sewagakari [09] [1080p+] [简中内嵌] [2022年7月番]",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "组长女儿与保姆",
+        "en_name": "Kumichou Musume to Sewagakari",
+        "year": "",
+        "part": "",
+        "season": "S01",
+        "episode": "E09",
+        "restype": "",
+        "pix": "1080p",
+        "video_codec": "",
+        "audio_codec": ""
+    }
+}, {
+    "title": "Nande Koko ni Sensei ga!? 2019 Blu-ray Remux 1080p AVC LPCM-7³ ACG",
+    "subtitle": "",
+    "target": {
+        "type": "电影",
+        "cn_name": "",
+        "en_name": "Nande Koko ni Sensei ga!?",
+        "year": "2019",
+        "part": "",
+        "season": "",
+        "episode": "",
+        "restype": "BluRay",
+        "pix": "1080p",
+        "video_codec": "AVC",
+        "audio_codec": "LPCM 7³"
+    }
+}, {
+    "title": "30.Rock.S02E01.1080p.BluRay.x264-BORDURE.mkv",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "",
+        "en_name": "30 Rock",
+        "year": "",
+        "part": "",
+        "season": "S02",
+        "episode": "E01",
+        "restype": "BluRay",
+        "pix": "1080p",
+        "video_codec": "x264",
+        "audio_codec": ""
+    }
+}, {
+    "title": "[Gal to Kyouryuu][02][BDRIP][1080P][H264_FLAC].mkv",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "",
+        "en_name": "Gal to Kyouryuu",
+        "year": "",
+        "part": "",
+        "season": "S01",
+        "episode": "E02",
+        "restype": "",
+        "pix": "1080p",
+        "video_codec": "H264",
+        "audio_codec": "FLAC"
+    }
+}, {
+    "title": "[AI-Raws] 逆境無頼カイジ #13 (BD HEVC 1920x1080 yuv444p10le FLAC)[7CFEE642].mkv",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "逆境無頼カイジ",
+        "en_name": "",
+        "year": "",
+        "part": "",
+        "season": "S01",
+        "episode": "E13",
+        "restype": "BD",
+        "pix": "1080p",
+        "video_codec": "HEVC",
+        "audio_codec": "FLAC"
+    }
+}, {
+    "title": "Mr. Robot - S02E06 - eps2.4_m4ster-s1ave.aes SDTV.mp4",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "",
+        "en_name": "Mr Robot",
+        "year": "",
+        "part": "",
+        "season": "S02",
+        "episode": "E06",
+        "restype": "",
+        "pix": "",
+        "video_codec": "",
+        "audio_codec": ""
+    }
+}, {
+    "title": "[神印王座][Throne of Seal][2022][WEB-DL][2160][TV Series][TV 22][LeagueWEB] 神印王座 第一季 第22集 | 类型:动画 [国语中字][967.44 MB]",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "",
+        "en_name": "Throne of Seal",
+        "year": "2022",
+        "part": "",
+        "season": "S01",
+        "episode": "E22",
+        "restype": "",
+        "pix": "",
+        "video_codec": "",
+        "audio_codec": ""
+    }
+}, {
+    "title": "S02E1000.mkv",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "",
+        "en_name": "",
+        "year": "",
+        "part": "",
+        "season": "S02",
+        "episode": "E1000",
+        "restype": "",
+        "pix": "",
+        "video_codec": "",
+        "audio_codec": ""
+    }
+}, {
+    "title": "西部世界 12.mkv",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "西部世界",
+        "en_name": "",
+        "year": "",
+        "part": "",
+        "season": "S01",
+        "episode": "E12",
+        "restype": "",
+        "pix": "",
+        "video_codec": "",
+        "audio_codec": ""
+    }
+}, {
+    "title": "[ANi] OVERLORD 第四季 - 04 [1080P][Baha][WEB-DL][AAC AVC][CHT].mp4",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "",
+        "en_name": "OVERLORD",
+        "year": "",
+        "part": "",
+        "season": "S04",
+        "episode": "E04",
+        "restype": "",
+        "pix": "1080p",
+        "video_codec": "AVC",
+        "audio_codec": "AAC"
+    }
+}, {
+    "title": "[SweetSub&LoliHouse] Made in Abyss S2 - 03v2 [WebRip 1080p HEVC-10bit AAC ASSx2].mkv",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "",
+        "en_name": "Made in Abyss",
+        "year": "",
+        "part": "",
+        "season": "S02",
+        "episode": "E03",
+        "restype": "",
+        "pix": "1080p",
+        "video_codec": "",
+        "audio_codec": "AAC"
+    }
+}, {
+    "title": "[GM-Team][国漫][斗破苍穹 第5季][Fights Break Sphere V][2022][05][HEVC][GB][4K]",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "",
+        "en_name": "Fights Break Sphere V",
+        "year": "2022",
+        "part": "",
+        "season": "S05",
+        "episode": "E05",
+        "restype": "",
+        "pix": "",
+        "video_codec": "HEVC",
+        "audio_codec": ""
+    }
+}, {
+    "title": "Ousama Ranking S01E02-[1080p][BDRIP][x265.FLAC].mkv",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "",
+        "en_name": "Ousama Ranking",
+        "year": "",
+        "part": "",
+        "season": "S01",
+        "episode": "E02",
+        "restype": "BDRIP",
+        "pix": "1080p",
+        "video_codec": "x265",
+        "audio_codec": "FLAC"
+    }
+}, {
+    "title": "[Nekomoe kissaten&LoliHouse] Soredemo Ayumu wa Yosetekuru - 01v2 [WebRip 1080p HEVC-10bit EAC3 ASSx2].mkv",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "",
+        "en_name": "Soredemo Ayumu wa Yosetekuru",
+        "year": "",
+        "part": "",
+        "season": "S01",
+        "episode": "E01",
+        "restype": "",
+        "pix": "1080p",
+        "video_codec": "",
+        "audio_codec": "EAC3"
+    }
+}, {
+    "title": "[喵萌奶茶屋&LoliHouse] 金装的薇尔梅 / Kinsou no Vermeil - 01 [WebRip 1080p HEVC-10bit AAC][简繁内封字幕]",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "",
+        "en_name": "Kinsou no Vermeil",
+        "year": "",
+        "part": "",
+        "season": "S01",
+        "episode": "E01",
+        "restype": "",
+        "pix": "1080p",
+        "video_codec": "",
+        "audio_codec": "AAC"
+    }
+}, {
+    "title": "Hataraku.Maou-sama.S02E05.2022.1080p.CR.WEB-DL.x264.AAC-ADWeb.mkv",
+    "subtitle": "",
+    "target": {
+        "type": "电视剧",
+        "cn_name": "",
+        "en_name": "Hataraku Maou sama",
+        "year": "2022",
+        "part": "",
+        "season": "S02",
+        "episode": "E05",
+        "restype": "WEB-DL",
+        "pix": "1080p",
+        "video_codec": "x264",
+        "audio_codec": "AAC"
+    }
+}, {
     "title": "The Witch Part 2：The Other One 2022 1080p WEB-DL AAC5.1 H264-tG1R0",
     "subtitle": "",
     "target": {
@@ -35,7 +451,7 @@ meta_cases = [{
     "subtitle": "",
     "target": {
         "type": "电视剧",
-        "cn_name": "處刑少女的生存之道",
+        "cn_name": "处刑少女的生存之道",
         "en_name": "",
         "year": "",
         "part": "",
@@ -111,22 +527,6 @@ meta_cases = [{
         "audio_codec": "AAC"
     }
 }, {
-    "title": "[猎户不鸽发布组] 不死者之王 第四季 OVERLORD Ⅳ [02] [1080p] [简中内封] [2022年7月番]",
-    "subtitle": "",
-    "target": {
-        "type": "电视剧",
-        "cn_name": "不死者之王",
-        "en_name": "OVERLORD Ⅳ",
-        "year": "",
-        "part": "",
-        "season": "S04",
-        "episode": "E02",
-        "restype": "",
-        "pix": "1080p",
-        "video_codec": "",
-        "audio_codec": ""
-    }
-}, {
     "title": "[桜都字幕组] 异世界归来的舅舅 / Isekai Ojisan [01][1080p][简体内嵌]",
     "subtitle": "",
     "target": {
@@ -170,7 +570,7 @@ meta_cases = [{
         "season": "S02",
         "episode": "E02",
         "restype": "",
-        "pix": "1920p",
+        "pix": "1080p",
         "video_codec": "HEVC",
         "audio_codec": "AAC"
     }
@@ -221,22 +621,6 @@ meta_cases = [{
         "pix": "1080p",
         "video_codec": "x265",
         "audio_codec": ""
-    }
-}, {
-    "title": "Wonder Woman 1984 2020 BluRay 1080p Atmos TrueHD 7.1 x264-EPiC",
-    "subtitle": "",
-    "target": {
-        "type": "电影",
-        "cn_name": "",
-        "en_name": "Wonder Woman 1984",
-        "year": "2020",
-        "part": "",
-        "season": "",
-        "episode": "",
-        "restype": "BluRay",
-        "pix": "1080p",
-        "video_codec": "x264",
-        "audio_codec": "Atmos TrueHD 7.1"
     }
 }, {
     "title": "The Heart of Genius S01 13-14 2022 1080p WEB-DL H264 AAC",
@@ -298,7 +682,7 @@ meta_cases = [{
         "season": "S04",
         "episode": "E17",
         "restype": "",
-        "pix": "1920p",
+        "pix": "1080p",
         "video_codec": "AVC",
         "audio_codec": "AAC"
     }
@@ -330,7 +714,7 @@ meta_cases = [{
         "season": "S01",
         "episode": "E01-E26",
         "restype": "",
-        "pix": "1920p",
+        "pix": "1080p",
         "video_codec": "",
         "audio_codec": "flac"
     }

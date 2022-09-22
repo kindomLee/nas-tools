@@ -27,7 +27,7 @@
             </svg>
             自定义下载器
           </a>
-          <a href="javascript:show_brushtask_downloader_modal()" class="btn d-sm-none btn-icon" title="自定义下载器">
+          <a href="javascript:show_brushtask_downloader_modal()" class="btn btn-secondary d-sm-none btn-icon" title="自定义下载器">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-apps" width="40" height="40" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                <rect x="4" y="4" width="6" height="6" rx="1"></rect>
@@ -111,6 +111,26 @@
             <div class="datagrid-item">
               <div class="datagrid-title">下载器</div>
               <div class="datagrid-content">{{ Task.downloader or "" }}</div>
+            </div>
+            <div class="datagrid-item">
+              <div class="datagrid-title">消息推送</div>
+              <div class="datagrid-content">
+                {% if Task.sendmessage == 'Y' %}
+                <span class="status status-green">开</span>
+                {% else %}
+                <span class="status status-red">关</span>
+                {% endif %}
+              </div>
+            </div>
+            <div class="datagrid-item">
+              <div class="datagrid-title">强制做种</div>
+              <div class="datagrid-content">
+                {% if Task.forceupload == 'Y' %}
+                <span class="status status-green">开</span>
+                {% else %}
+                <span class="status status-red">关</span>
+                {% endif %}
+              </div>
             </div>
             <div class="datagrid-item">
               <div class="datagrid-title">转移到媒体库</div>
@@ -205,7 +225,7 @@
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label required">刷新间隔(分钟) <span class="form-help bg-red-lt" title="检查站点RSS更新的间隔时间，为了减小PT站压力，建议不小于10分钟" data-bs-toggle="tooltip">?</span></label>
+                <label class="form-label required">刷新间隔(分钟) <span class="form-help" title="检查站点RSS更新的间隔时间，为了减小站点压力，建议不小于10分钟" data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="brushtask_interval" class="form-control" placeholder="30">
               </div>
             </div>
@@ -213,7 +233,7 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label required">下载器 <span class="form-help bg-red-lt" title="选择刷流任务使用的下载器，在自定义下载器中添加，如需识别转移到媒体库，需与正在使用的下载器相同" data-bs-toggle="tooltip">?</span></label>
+                <label class="form-label required">下载器 <span class="form-help" title="选择刷流任务使用的下载器，在自定义下载器中添加，如需识别转移到媒体库，需与正在使用的下载器相同" data-bs-toggle="tooltip">?</span></label>
                 <select class="form-select" id="brushtask_downloader">
                   <option value="" selected>请选择</option>
                   {% for downloader in Downloaders %}
@@ -224,7 +244,7 @@
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">保种体积(GB) <span class="form-help bg-red-lt" title="该任务所有下载任务的保种体积超过设定值时不再新增下载" data-bs-toggle="tooltip">?</span></label>
+                <label class="form-label">保种体积(GB) <span class="form-help" title="该任务所有下载任务的保种体积超过设定值时不再新增下载" data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="brushtask_totalsize" class="form-control" placeholder="">
               </div>
             </div>
@@ -240,13 +260,29 @@
           </div>
           <div class="row">
             <div class="col-lg-4">
-            <div class="mb-3">
-              <label class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="brushtask_transfer">
-                <span class="form-check-label">转移到媒体库 <span class="form-help bg-red-lt" title="开启后刷流的下载也会进行转移并识别重命名到媒体库" data-bs-toggle="tooltip">?</span></span>
-              </label>
+              <div class="mb-3">
+                <label class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="brushtask_sendmessage">
+                  <span class="form-check-label">消息推送 <span class="form-help" title="开启后会将当前任务的情况进行推送" data-bs-toggle="tooltip">?</span></span>
+                </label>
+              </div>
             </div>
-          </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="brushtask_forceupload">
+                  <span class="form-check-label">强制做种 <span class="form-help" title="开启后当前任务的新增下载将设置为强制下载/做种状态" data-bs-toggle="tooltip">?</span></span>
+                </label>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="brushtask_transfer">
+                  <span class="form-check-label">转移到媒体库 <span class="form-help" title="开启后刷流的下载也会进行转移并识别重命名到媒体库" data-bs-toggle="tooltip">?</span></span>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
         <div class="hr-text hr-text-center hr-text-spaceless">选种规则</div>
@@ -254,7 +290,7 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">促销 <span class="form-help bg-red-lt" title="选全部即不过滤会下载到非促销的种子，免费包括2X免费" data-bs-toggle="tooltip">?</span></label>
+                <label class="form-label">促销 <span class="form-help" title="选全部即不过滤会下载到非促销的种子，免费包括2X免费" data-bs-toggle="tooltip">?</span></label>
                 <select class="form-select" id="brushtask_free">
                   <option value="" selected>全部</option>
                   <option value="FREE">免费</option>
@@ -273,9 +309,9 @@
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">种子大小(GB) <span class="form-help bg-red-lt" title="设置大小范围的种子才会下载，介于时使用英文逗号,分隔两个值" data-bs-toggle="tooltip">?</span></label>
+                <label class="form-label">种子大小(GB) <span class="form-help" title="设置大小范围的种子才会下载，介于时使用英文逗号,分隔两个值" data-bs-toggle="tooltip">?</span></label>
                 <div class="input-group">
-                  <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="brushtask_torrent_size_btn">
+                  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="brushtask_torrent_size_btn">
                     全部
                   </button>
                   <input type="hidden" id="brushtask_torrent_size_do">
@@ -301,20 +337,46 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">包含 <span class="form-help bg-red-lt" title="种子名称或副标题中包括对应关键字或者匹配正则式时才会下载" data-bs-toggle="tooltip">?</span></label>
+                <label class="form-label">包含 <span class="form-help" title="种子名称或副标题中包括对应关键字或者匹配正则式时才会下载" data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="brushtask_include" class="form-control" placeholder="关键字或正则表达式">
               </div>
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">排除 <span class="form-help bg-red-lt" title="种子名称或副标题中包括对应关键字或者匹配正则式时不会下载" data-bs-toggle="tooltip">?</span></label>
+                <label class="form-label">排除 <span class="form-help" title="种子名称或副标题中包括对应关键字或者匹配正则式时不会下载" data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="brushtask_exclude" class="form-control" placeholder="关键字或正则表达式">
               </div>
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">同时下载数量限制 <span class="form-help bg-red-lt" title="下载器中正在下载的任务数超过此值时不再添加下载" data-bs-toggle="tooltip">?</span></label>
+                <label class="form-label">同时下载数量限制 <span class="form-help" title="下载器中正在下载的任务数超过此值时不再添加下载" data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="brushtask_dlcount" class="form-control" placeholder="10">
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">做种人数限制 <span class="form-help" title="种子当前做种人数限制，介于时使用英文逗号,分隔两个值，比较值时均包括边界值本身" data-bs-toggle="tooltip">?</span></label>
+                <div class="input-group">
+                  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="brushtask_peercount_btn">
+                    全部
+                  </button>
+                  <input type="hidden" id="brushtask_peercount_do">
+                  <div class="dropdown-menu" style="">
+                    <a class="dropdown-item" id="brushtask_peercount_do_" href="javascript:void(0)" onclick="javascript:filter_item_change('', 'brushtask_peercount',$(this))">
+                      全部
+                    </a>
+                    <a class="dropdown-item" id="brushtask_peercount_do_gt" href="javascript:void(0)" onclick="javascript:filter_item_change('gt', 'brushtask_peercount',$(this))">
+                      大于
+                    </a>
+                    <a class="dropdown-item" id="brushtask_peercount_do_lt" href="javascript:void(0)" onclick="javascript:filter_item_change('lt', 'brushtask_peercount',$(this))">
+                      小于
+                    </a>
+                    <a class="dropdown-item" id="brushtask_peercount_do_bw" href="javascript:void(0)" onclick="javascript:filter_item_change('bw', 'brushtask_peercount',$(this))">
+                      介于
+                    </a>
+                  </div>
+                  <input type="text" id="brushtask_peercount" class="form-control" placeholder="" readonly/>
+                </div>
               </div>
             </div>
           </div>
@@ -324,9 +386,9 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">做种时间(小时) <span class="form-help bg-red-lt" title="做种超过设定时间时会删除下载任务" data-bs-toggle="tooltip">?</span></label>
+                <label class="form-label">做种时间(小时) <span class="form-help" title="做种超过设定时间时会删除下载任务" data-bs-toggle="tooltip">?</span></label>
                 <div class="input-group">
-                  <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="brushtask_seedtime_btn">
+                  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="brushtask_seedtime_btn">
                     忽略
                   </button>
                   <input type="hidden" id="brushtask_seedtime_do">
@@ -344,9 +406,9 @@
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">分享率 <span class="form-help bg-red-lt" title="分享率超过设定值时会删除下载任务" data-bs-toggle="tooltip">?</span></label>
+                <label class="form-label">分享率 <span class="form-help" title="分享率超过设定值时会删除下载任务" data-bs-toggle="tooltip">?</span></label>
                 <div class="input-group">
-                  <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="brushtask_seedratio_btn">
+                  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="brushtask_seedratio_btn">
                     忽略
                   </button>
                   <input type="hidden" id="brushtask_seedratio_do">
@@ -364,9 +426,9 @@
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">上传量(GB) <span class="form-help bg-red-lt" title="上传量超过设定值时会删除下载任务" data-bs-toggle="tooltip">?</span></label>
+                <label class="form-label">上传量(GB) <span class="form-help" title="上传量超过设定值时会删除下载任务" data-bs-toggle="tooltip">?</span></label>
                 <div class="input-group">
-                  <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="brushtask_seedsize_btn">
+                  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="brushtask_seedsize_btn">
                     忽略
                   </button>
                   <input type="hidden" id="brushtask_seedsize_do">
@@ -384,9 +446,9 @@
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">下载耗时(小时) <span class="form-help bg-red-lt" title="下载耗时超过设定值仍然未下载完成时会删除下载任务" data-bs-toggle="tooltip">?</span></label>
+                <label class="form-label">下载耗时(小时) <span class="form-help" title="下载耗时超过设定值仍然未下载完成时会删除下载任务" data-bs-toggle="tooltip">?</span></label>
                 <div class="input-group">
-                  <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="brushtask_dltime_btn">
+                  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="brushtask_dltime_btn">
                     忽略
                   </button>
                   <input type="hidden" id="brushtask_dltime_do">
@@ -404,9 +466,9 @@
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">平均上传速度(KB/S) <span class="form-help bg-red-lt" title="平均上传速度低于设定值时删除下载任务，检查周期为10分钟" data-bs-toggle="tooltip">?</span></label>
+                <label class="form-label">平均上传速度(KB/S) <span class="form-help" title="平均上传速度低于设定值时删除下载任务，检查周期为10分钟" data-bs-toggle="tooltip">?</span></label>
                 <div class="input-group">
-                  <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="brushtask_avg_upspeed_btn">
+                  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="brushtask_avg_upspeed_btn">
                     忽略
                   </button>
                   <input type="hidden" id="brushtask_avg_upspeed_do">
@@ -459,13 +521,35 @@
         }else{
           $("#brushtask_transfer").prop("checked", false);
         }
+        if(ret.task.sendmessage == "Y"){
+          $("#brushtask_sendmessage").prop("checked", true);
+        }else{
+          $("#brushtask_sendmessage").prop("checked", false);
+        }
+        if(ret.task.forceupload == "Y"){
+          $("#brushtask_forceupload").prop("checked", true);
+        }else{
+          $("#brushtask_forceupload").prop("checked", false);
+        }
         $("#brushtask_dlcount").val(ret.task.rss_rule.dlcount)
+        $("#brushtask_peercount").val(ret.task.rss_rule.peercount)
         $("#brushtask_include").val(ret.task.rss_rule.include);
         $("#brushtask_exclude").val(ret.task.rss_rule.exclude);
         //种子大小
         if(ret.task.rss_rule.size){
           size_str = ret.task.rss_rule.size.split('#');
           filter_item_change(size_str[0], 'brushtask_torrent_size', $('#brushtask_torrent_size_do_' + size_str[0]), size_str[1])
+        }
+        //种子大小
+        if(ret.task.rss_rule.peercount){
+          peercount_str = ret.task.rss_rule.peercount;
+          if(peercount_str===''){
+              peercount_str = '#';
+          }else if(peercount_str.indexOf('#')===-1){
+              peercount_str = 'lt#' + peercount_str;
+          }
+          peercount_strs=peercount_str.split('#');
+          filter_item_change(peercount_strs[0], 'brushtask_peercount', $('#brushtask_peercount_do_' + peercount_strs[0]), peercount_strs[1])
         }
         //做种时间
         if(ret.task.remove_rule.time){
@@ -538,6 +622,7 @@
 
   // 范围条件
   function filter_item_change(type, id, item, value){
+      console.log(type, id, item, value)
     input_obj = $("#" + id);
     button_obj = $("#" + id + "_btn");
     do_obj = $("#" + id + "_do");
@@ -594,6 +679,8 @@
     }
     var brushtask_state = $("#brushtask_state").val();
     var brushtask_transfer = $("#brushtask_transfer").prop('checked');
+    var brushtask_sendmessage = $("#brushtask_sendmessage").prop('checked');
+    var brushtask_forceupload = $("#brushtask_forceupload").prop('checked');
     var brushtask_free = $("#brushtask_free").val();
     var brushtask_hr = $("#brushtask_hr").val();
     //种子大小
@@ -623,6 +710,22 @@
       return;
     }else{
       $("#brushtask_dlcount").removeClass("is-invalid");
+    }
+    //做种人数
+    var brushtask_peercount_do = $("#brushtask_peercount_do").val();
+    var brushtask_peercount = $("#brushtask_peercount").val();
+    if(brushtask_peercount_do && !brushtask_peercount){
+      $("#brushtask_peercount").addClass("is-invalid");
+      return;
+    } else {
+      if(brushtask_peercount && brushtask_peercount_do != 'bw' && isNaN(brushtask_peercount)){
+        $("#brushtask_peercount").addClass("is-invalid");
+        return;
+      }else if(brushtask_peercount && brushtask_peercount_do == 'bw' && !/\d+,\d+/.test(brushtask_peercount)){
+        $("#brushtask_peercount").addClass("is-invalid");
+        return;
+      }
+      $("#brushtask_peercount").removeClass("is-invalid");
     }
     //做种时间
     var brushtask_seedtime_do = $("#brushtask_seedtime_do").val();
@@ -700,12 +803,15 @@
       brushtask_totalsize: brushtask_totalsize,
       brushtask_state: brushtask_state,
       brushtask_transfer: brushtask_transfer,
+      brushtask_sendmessage: brushtask_sendmessage,
+      brushtask_forceupload: brushtask_forceupload,
       brushtask_free: brushtask_free,
       brushtask_hr: brushtask_hr,
       brushtask_torrent_size: brushtask_torrent_size_do + "#" + brushtask_torrent_size,
       brushtask_include: brushtask_include,
       brushtask_exclude: brushtask_exclude,
       brushtask_dlcount: brushtask_dlcount,
+      brushtask_peercount: brushtask_peercount_do + "#" +brushtask_peercount,
       brushtask_seedtime: brushtask_seedtime_do + "#" + brushtask_seedtime,
       brushtask_seedratio: brushtask_seedratio_do + "#" + brushtask_seedratio,
       brushtask_seedsize: brushtask_seedsize_do + "#" + brushtask_seedsize,
