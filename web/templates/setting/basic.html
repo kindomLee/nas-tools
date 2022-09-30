@@ -173,7 +173,7 @@
             <div class="row">
               <div class="col">
                 <div class="mb-3">
-                  <label class="form-label required">电影重命名格式 <span class="form-help" title="程序会按定义的命名格式对电影进行重命名；/代表上下级目录，{}内为占位符；占位符会使用文件识别出来的实际值替换；占位符外的字符会当成普通字符，直接体现在名称上。<br>电影占位符：{title}：标题，{en_title}：英文标题，{original_title}：原语种标题，{original_name}：原文件名，{year}：年份，{edition}：版本(Bluray/WEB-DL等)，{videoFormat}：分辨率(1080p/4k等)，{videoCodec}：视频编码，{audioCodec}：音频编码及声道，{tmdbid}：TMDB的ID，{part}：part1/disc1/dvd1等" data-bs-toggle="tooltip" data-bs-html="true">?</span></label>
+                  <label class="form-label required">电影重命名格式 <span class="form-help" title="程序会按定义的命名格式对电影进行重命名；/代表上下级目录，{}内为占位符；占位符会使用文件识别出来的实际值替换；占位符外的字符会当成普通字符，直接体现在名称上。<br>电影占位符：<br>{title}：标题<br>{en_title}：英文标题<br>{original_title}：原语种标题<br>{original_name}：原文件名<br>{year}：年份<br>{edition}：版本(Bluray/WEB-DL等)<br>{videoFormat}：分辨率(1080p/4k等)<br>{videoCodec}：视频编码<br>{audioCodec}：音频编码及声道<br>{tmdbid}：TMDB的ID<br>{part}：part1/disc1/dvd1<br>{releaseGroup}：制作组/字幕组" data-bs-toggle="tooltip" data-bs-html="true">?</span></label>
                   <input type="text" value="{{ Config.media.movie_name_format or '' }}" class="form-control" id="media.movie_name_format" placeholder="{title} ({year})/{title}-{part} ({year}) - {videoFormat}" autocomplete="off">
                 </div>
               </div>
@@ -181,7 +181,7 @@
             <div class="row">
               <div class="col">
                 <div class="mb-3">
-                  <label class="form-label required">电视剧重命名格式 <span class="form-help" title="程序会按定义的命名格式对电视剧进行重命名；/代表上下级目录，{}内为占位符；占位符会使用文件识别出来的实际值替换，占位符外的字符会当成普通字符，直接体现在名称上。<br>电视剧占位符：{title}：标题，{en_title}：英文标题，{original_title}：原语种标题，{original_name}：原文件名，{year}：年份，{edition}：版本(Bluray/WEB-DL等)，{videoFormat}：分辨率(1080p/4k等)，{videoCodec}：视频编码，{audioCodec}：音频编码及声道，{tmdbid}：TMDB的ID，{season}：季数，{episode}：集数，{season_episode}：剧集SxxExx，{part}：part1/disc1/dvd1等" data-bs-toggle="tooltip" data-bs-html="true">?</span></label>
+                  <label class="form-label required">电视剧重命名格式 <span class="form-help" title="程序会按定义的命名格式对电视剧进行重命名；/代表上下级目录，{}内为占位符；占位符会使用文件识别出来的实际值替换，占位符外的字符会当成普通字符，直接体现在名称上。<br>电视剧占位符：<br>{title}：标题<br>{en_title}：英文标题<br>{original_title}：原语种标题<br>{original_name}：原文件名<br>{year}：年份<br>{edition}：版本(Bluray/WEB-DL等)<br>{videoFormat}：分辨率(1080p/4k等)<br>{videoCodec}：视频编码<br>{audioCodec}：音频编码及声道<br>{tmdbid}：TMDB的ID<br>{season}：季数<br>{episode}：集数<br>{season_episode}：剧集SxxExx<br>{part}：part1/disc1/dvd1<br>{releaseGroup}：制作组/字幕组" data-bs-toggle="tooltip" data-bs-html="true">?</span></label>
                   <input type="text" value="{{ Config.media.tv_name_format or '' }}" class="form-control" id="media.tv_name_format" placeholder="{title} ({year})/Season {season}/{title}-{part} - {season_episode} - 第 {episode} 集" autocomplete="off">
                 </div>
               </div>
@@ -371,7 +371,7 @@
                 <div class="mb-3">
                   <label class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="laboratory.search_keyword" {% if Config.laboratory and Config.laboratory.search_keyword %}checked{% endif %}>
-                    <span class="form-check-label">辅助识别 <span class="form-help" title="开启后，无法识别到媒体信息时会尝试猜测和纠正关键词并再次匹配，可能会增加识别耗时" data-bs-toggle="tooltip">?</span></span>
+                    <span class="form-check-label">辅助识别 <span class="form-help" title="开启后，无法识别到媒体信息时会尝试猜测和纠正关键词并再次匹配，会大大增加识别耗时，一般情况下不建议开启" data-bs-toggle="tooltip">?</span></span>
                   </label>
                 </div>
               </div>
@@ -379,7 +379,7 @@
                 <div class="mb-3">
                   <label class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="laboratory.tmdb_cache_expire" {% if Config.laboratory and Config.laboratory.tmdb_cache_expire %}checked{% endif %}>
-                    <span class="form-check-label">TMDB缓存过期策略 <span class="form-help" title="开启TMDB缓存过期策略后，默认7天过期，过期缓存将被删除,  7天内访问过期时间可以被刷新" data-bs-toggle="tooltip">?</span></span>
+                    <span class="form-check-label">TMDB缓存过期策略 <span class="form-help" title="开启TMDB缓存过期策略后，默认7天过期，过期缓存将被删除,  7天内访问过期时间可以被刷新，建议开启" data-bs-toggle="tooltip">?</span></span>
                   </label>
                 </div>
               </div>
@@ -387,7 +387,7 @@
                 <div class="mb-3">
                   <label class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="laboratory.use_douban_titles" {% if Config.laboratory and Config.laboratory.use_douban_titles %}checked{% endif %}>
-                    <span class="form-check-label">使用豆瓣名称联想 <span class="form-help" title="开启将使用豆瓣进行电影电视剧的名称联想，否则使用TMDB的数据" data-bs-toggle="tooltip">?</span></span>
+                    <span class="form-check-label">使用豆瓣名称联想 <span class="form-help" title="开启将使用豆瓣进行电影电视剧的名称联想，允许中文名不完整时自动联想，但如豆瓣数据与TMDB不一致时可能会无法搜索；关闭后使用TMDB的数据，对中文支持不友好，但不会有无法搜索的问题" data-bs-toggle="tooltip">?</span></span>
                   </label>
                 </div>
               </div>
@@ -395,7 +395,7 @@
                 <div class="mb-3">
                   <label class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="laboratory.search_en_title" {% if Config.laboratory and Config.laboratory.search_en_title %}checked{% endif %}>
-                    <span class="form-check-label">精确搜索使用英文名称 <span class="form-help" title="开启后对于精确搜索场景（远程搜索、订阅搜索等）将会使用英文名检索站点资源以提升匹配度，但对有些站点资源标题全是中文的则需要关闭，否则匹配不到" data-bs-toggle="tooltip">?</span></span>
+                    <span class="form-check-label">搜索优先使用英文名 <span class="form-help" title="开启后对于精确搜索场景将会优先使用英文名搜索，否则优先使用中文名搜索" data-bs-toggle="tooltip">?</span></span>
                   </label>
                 </div>
               </div>
@@ -733,14 +733,14 @@
           <div class='row'>
             <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label">屏蔽词 <span class="form-help" title="识别时会先屏蔽名称中包含的屏蔽词" data-bs-toggle="tooltip">?</span></label>
-                <textarea class="form-control" id="ignored_words" rows="4" placeholder="增加屏蔽词请换行">{{ Ignored_Words or '' }}</textarea>
+                <label class="form-label">屏蔽词 <span class="form-help" title="识别时会先屏蔽名称中包含的屏蔽词，支持正则表达式" data-bs-toggle="tooltip">?</span></label>
+                <textarea class="form-control" id="ignored_words" rows="4" placeholder="增加屏蔽词请换行&#13;&#10;支持正则表达式">{{ Ignored_Words or '' }}</textarea>
               </div>
             </div>
             <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label">替换词 <span class="form-help" title="识别时会先替换名称中包含的替换词" data-bs-toggle="tooltip">?</span></label>
-                <textarea class="form-control" id="replaced_words" rows="4" placeholder="增加屏蔽词请换行，a@b，@前的词会被替换为@后的词">{{ Replaced_Words or '' }}</textarea>
+                <label class="form-label">替换词 <span class="form-help" title="识别时会先替换名称中包含的替换词，支持正则表达式" data-bs-toggle="tooltip">?</span></label>
+                <textarea class="form-control" id="replaced_words" rows="4" placeholder="A@B，@前的词会被替换为@后的词&#13;&#10;增加替换词请换行&#13;&#10;支持正则表达式">{{ Replaced_Words or '' }}</textarea>
               </div>
             </div>
           </div>
@@ -793,8 +793,8 @@
   // 保存自定义识别屏蔽词配置
   function save_customized_words_config(){
     var params = {};
-    var ignored_words = $("#ignored_words").val().replace(/\n/g,"|");
-    var replaced_words = $("#replaced_words").val().replace(/\n/g,"|");
+    var ignored_words = $("#ignored_words").val().replace(/\n/g,"||");
+    var replaced_words = $("#replaced_words").val().replace(/\n/g,"||");
     params['laboratory.ignored_words'] = ignored_words
     params['laboratory.replaced_words'] = replaced_words
     ajax_post("update_config", params, function (ret) {

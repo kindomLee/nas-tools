@@ -773,7 +773,7 @@ def create_flask_app(config):
                     SiteRatios.append(round(float(ratio), 1))
 
         # 近期上传下载各站点汇总
-        CurrentUpload, CurrentDownload, CurrentSiteLabels, CurrentSiteUploads, CurrentSiteDownloads = Sites().get_pt_site_statistics_history(
+        CurrentUpload, CurrentDownload, _, _, _ = Sites().get_pt_site_statistics_history(
             days=2)
 
         # 站点用户数据
@@ -791,9 +791,6 @@ def create_flask_app(config):
                                SiteRatios=SiteRatios,
                                SiteNames=SiteNames,
                                SiteErr=SiteErrs,
-                               CurrentSiteLabels=CurrentSiteLabels,
-                               CurrentSiteUploads=CurrentSiteUploads,
-                               CurrentSiteDownloads=CurrentSiteDownloads,
                                SiteUserStatistics=SiteUserStatistics)
 
     # 刷流任务页面
@@ -980,6 +977,17 @@ def create_flask_app(config):
         scheduler_cfg_list.append(
             {'name': '清理转移缓存', 'time': '手动', 'state': 'OFF', 'id': 'blacklist', 'svg': svg, 'color': 'red'})
 
+        # 清理RSS缓存
+        svg = '''
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-eraser" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                   <path d="M19 20h-10.5l-4.21 -4.3a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9.2 9.3"></path>
+                   <path d="M18 13.3l-6.3 -6.3"></path>
+                </svg>
+                '''
+        scheduler_cfg_list.append(
+            {'name': '清理RSS缓存', 'time': '手动', 'state': 'OFF', 'id': 'rsshistory', 'svg': svg, 'color': 'purple'})
+
         # 名称识别测试
         svg = '''
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alphabet-greek" width="40" height="40" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -1164,10 +1172,10 @@ def create_flask_app(config):
             proxy = proxy.replace("http://", "")
         ignored_words = config.get_config('laboratory').get("ignored_words")
         if ignored_words:
-            ignored_words = ignored_words.replace("|", "\n")
+            ignored_words = ignored_words.replace("||", "\n")
         replaced_words = config.get_config('laboratory').get("replaced_words")
         if replaced_words:
-            replaced_words = replaced_words.replace("|", "\n")
+            replaced_words = replaced_words.replace("||", "\n")
         return render_template("setting/basic.html", Config=config.get_config(), Proxy=proxy, Ignored_Words=ignored_words, Replaced_Words=replaced_words)
 
     # 目录同步页面

@@ -206,9 +206,9 @@ class SiteConf:
         },
         'hdchina.org': {
             'FREE': ["//img[@class='pro_free']"],
-            '2XFREE': [],
+            '2XFREE': ["//img[@class='pro_free2up"],
             'HR': [],
-            'PEER_COUNT': [],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
         "ccfbits.org": {
             'FREE': ["//font[@color='red'][text()='本种子不计下载量，只计上传量!']"],
@@ -306,27 +306,118 @@ class SiteConf:
             'HR': ["//img[@class='hitandrun']"],
             'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
+        'club.hares.top': {
+            'FREE': ["//b[@class='free'][text()='免费']"],
+            '2XFREE': ["//b[@class='twoupfree'][text()='2X免费']"],
+            'HR': [],
+            'PEER_COUNT': [],
+        },
+        'www.hddolby.com': {
+            'FREE': ["//font[@class='free']"],
+            '2XFREE': ["//font[@class='twoupfree']"],
+            'HR': [],
+            'PEER_COUNT': [],
+        },
+        'piggo.me': {
+            'FREE': ["//font[@class='free']"],
+            '2XFREE': ["//font[@class='twoupfree']"],
+            'HR': ["//img[@class='hitandrun']"],
+            'PEER_COUNT': [],
+        },
+        'pt.0ff.cc': {
+            'FREE': ["//font[@class='free']"],
+            '2XFREE': ["//font[@class='twoupfree']"],
+            'HR': ["//img[@class='hitandrun']"],
+            'PEER_COUNT': [],
+        },
+        'wintersakura.net': {
+            'FREE': ["//font[@class='free']"],
+            '2XFREE': ["//font[@class='twoupfree']"],
+            'HR': [],
+            'PEER_COUNT': [],
+        },
+        'pt.hdupt.com': {
+            'FREE': ["//font[@class='free']"],
+            '2XFREE': ["//font[@class='twoupfree']"],
+            'HR': [],
+            'PEER_COUNT': [],
+        },
+        'pt.upxin.net': {
+            'FREE': ["//font[@class='free']"],
+            '2XFREE': ["//font[@class='twoupfree']"],
+            'HR': [],
+            'PEER_COUNT': [],
+        },
+        'www.nicept.net': {
+            'FREE': ["//font[@class='free']"],
+            '2XFREE': ["//font[@class='twoupfree']"],
+            'HR': [],
+            'PEER_COUNT': [],
+        },
+        'ptchina.org': {
+            'FREE': ["//font[@class='free']"],
+            '2XFREE': ["//font[@class='twoupfree']"],
+            'HR': [],
+            'PEER_COUNT': [],
+        },
+        'www.hd.ai': {
+            'FREE': ["//img[@class='pro_free']"],
+            '2XFREE': [],
+            'HR': [],
+            'PEER_COUNT': [],
+        }
     }
     # 公共BT站点
     PUBLIC_TORRENT_SITES = {
         'rarbg.to': {
             "parser": "rarbg",
-            "proxy": True
+            "proxy": True,
+            "language": "en"
         },
         'dmhy.org': {
             "proxy": True
         },
         'eztv.re': {
-            "proxy": True
+            "proxy": True,
+            "language": "en"
         },
         'acg.rip': {
             "proxy": False
         },
         'thepiratebay.org': {
             "proxy": True,
-            "render": True
+            "render": True,
+            "language": "en"
         },
         'nyaa.si': {
+            "proxy": True,
+            "language": "en"
+        },
+        '1337x.to': {
+            "proxy": True,
+            "language": "en"
+        },
+        'ext.to': {
+            "proxy": True,
+            "language": "en"
+        },
+        'torrentgalaxy.to': {
+            "proxy": True,
+            "language": "en"
+        },
+        'mikanani.me': {
+            "proxy": False
+        },
+        'gaoqing.fm': {
+            "proxy": False
+        },
+        'www.mp4ba.vip': {
+            "proxy": False
+        },
+        'www.miobt.com': {
+            "proxy": True
+        },
+        'katcr.to': {
             "proxy": True
         }
     }

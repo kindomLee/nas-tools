@@ -86,7 +86,7 @@ class SqlHelper:
         """
         根据ID从数据库中查询检索结果的一条记录
         """
-        sql = "SELECT ENCLOSURE,TITLE,YEAR,SEASON,EPISODE,VOTE,IMAGE,TYPE,TORRENT_NAME,DESCRIPTION,SIZE,TMDBID,POSTER,OVERVIEW,SITE,UPLOAD_VOLUME_FACTOR,DOWNLOAD_VOLUME_FACTOR" \
+        sql = "SELECT ENCLOSURE,TITLE,YEAR,SEASON,EPISODE,VOTE,IMAGE,TYPE,TORRENT_NAME,DESCRIPTION,SIZE,TMDBID,POSTER,OVERVIEW,SITE,UPLOAD_VOLUME_FACTOR,DOWNLOAD_VOLUME_FACTOR,PAGEURL" \
               " FROM SEARCH_RESULT_INFO" \
               " WHERE ID = ?"
         return DBHelper().select_by_sql(sql, (dl_id,))
@@ -397,6 +397,13 @@ class SqlHelper:
         """
         DBHelper().update_by_sql("DELETE FROM TRANSFER_BLACKLIST")
         DBHelper().update_by_sql("DELETE FROM SYNC_HISTORY")
+
+    @staticmethod
+    def truncate_transfer_rsshistory():
+        """
+        清空RSS历史记录
+        """
+        DBHelper().update_by_sql("DELETE FROM RSS_TORRENTS")
 
     @staticmethod
     def get_config_site():
@@ -1678,7 +1685,7 @@ class SqlHelper:
     def update_userrss_task(item):
         if item.get("id") and SqlHelper.get_userrss_tasks(item.get("id")):
             return DBHelper().update_by_sql("UPDATE CONFIG_USER_RSS "
-                                            "SET NAME=?,ADDRESS=?,PARSER=?,INTERVAL=?,USES=?,INCLUDE=?,EXCLUDE=?,FILTER=?,UPDATE_TIME=?,STATE=?"
+                                            "SET NAME=?,ADDRESS=?,PARSER=?,INTERVAL=?,USES=?,INCLUDE=?,EXCLUDE=?,FILTER=?,UPDATE_TIME=?,STATE=?,NOTE=?"
                                             "WHERE ID=?", (item.get("name"),
                                                            item.get("address"),
                                                            item.get("parser"),
@@ -1690,23 +1697,25 @@ class SqlHelper:
                                                            time.strftime('%Y-%m-%d %H:%M:%S',
                                                                          time.localtime(time.time())),
                                                            item.get("state"),
+                                                           item.get("note"),
                                                            item.get("id")))
         else:
             return DBHelper().update_by_sql("INSERT INTO CONFIG_USER_RSS"
-                                            "(NAME,ADDRESS,PARSER,INTERVAL,USES,INCLUDE,EXCLUDE,FILTER,UPDATE_TIME,PROCESS_COUNT,STATE) "
-                                            "VALUES (?,?,?,?,?,?,?,?,?,?,?)", (item.get("name"),
-                                                                               item.get("address"),
-                                                                               item.get("parser"),
-                                                                               item.get("interval"),
-                                                                               item.get("uses"),
-                                                                               item.get("include"),
-                                                                               item.get("exclude"),
-                                                                               item.get("filterrule"),
-                                                                               time.strftime('%Y-%m-%d %H:%M:%S',
-                                                                                             time.localtime(
-                                                                                                 time.time())),
-                                                                               "0",
-                                                                               item.get("state")))
+                                            "(NAME,ADDRESS,PARSER,INTERVAL,USES,INCLUDE,EXCLUDE,FILTER,UPDATE_TIME,PROCESS_COUNT,STATE,NOTE) "
+                                            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", (item.get("name"),
+                                                                                 item.get("address"),
+                                                                                 item.get("parser"),
+                                                                                 item.get("interval"),
+                                                                                 item.get("uses"),
+                                                                                 item.get("include"),
+                                                                                 item.get("exclude"),
+                                                                                 item.get("filterrule"),
+                                                                                 time.strftime('%Y-%m-%d %H:%M:%S',
+                                                                                               time.localtime(
+                                                                                                   time.time())),
+                                                                                 "0",
+                                                                                 item.get("state"),
+                                                                                 item.get("note")))
 
     @staticmethod
     def get_userrss_parser(pid=None):

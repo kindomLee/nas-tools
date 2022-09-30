@@ -60,6 +60,14 @@
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">{{ Task.name }}</h3>
+          <div class="ms-2">
+            <a href="javascript:run_userrss_now('{{ Task.id }}')" class="btn-icon" title="立即运行任务" data-bs-toggle="tooltip">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-bolt icon-filled" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                 <polyline points="13 3 13 10 19 10 11 21 11 14 5 14 13 3"></polyline>
+              </svg>
+            </a>
+          </div>
           <div class="card-actions btn-actions">
               <a href="javascript:edit_userrss_modal('{{ Task.id }}')" class="btn-action" title="编辑任务">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" /><path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" /><line x1="16" y1="5" x2="19" y2="8" /></svg>
@@ -120,6 +128,10 @@
                 <span class="badge badge-outline text-orange me-2">{{ Task.filter_name }}</span>
                 {% endif %}
               </div>
+            </div>
+            <div class="datagrid-item">
+              <div class="datagrid-title">保存路径</div>
+              <div class="datagrid-content">{{ Task.save_dir or '自动' }}</div>
             </div>
             <div class="datagrid-item">
               <div class="datagrid-title">状态</div>
@@ -242,6 +254,12 @@
             </div>
           </div>
           <div class="row">
+            <div class="col-lg-8">
+              <div class="mb-3">
+                <label class="form-label">保存路径</label>
+                <input type="text" id="userrss_note" class="form-control" placeholder="留空自动选择保存路径">
+              </div>
+            </div>
             <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label required">状态</label>
@@ -283,6 +301,7 @@
         $("#userrss_parser").val(ret.detail.parser);
         $("#userrss_state").val(ret.detail.state);
         $("#userrss_uses").val(ret.detail.uses);
+        $("#userrss_note").val(ret.detail.save_dir);
         $("#modal-userrss").modal('show');
       }
     });
@@ -338,7 +357,8 @@
                   include: $("#userrss_include").val(),
                   exclude: $("#userrss_exclude").val(),
                   filterrule: $("#userrss_filterrule").val(),
-                  state: $("#userrss_state").val()};
+                  state: $("#userrss_state").val(),
+                  note: $("#userrss_note").val()};
     ajax_post("update_userrss_task", params, function(ret){
       $("#modal-userrss").modal('hide');
       navmenu('user_rss');
@@ -348,6 +368,17 @@
   // RSS解析器
   function show_userrss_parser_modal(){
     navmenu('rss_parser');
+  }
+
+  //立即运行任务
+  function run_userrss_now(id){
+    show_wait_process();
+    ajax_post("run_userrss", {"id": id}, function(ret){
+      hide_wait_process();
+      show_success_modal("任务运行完成！", function(){
+        navmenu('user_rss');
+      });
+    });
   }
 
 </script>

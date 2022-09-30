@@ -1,6 +1,8 @@
 import bisect
 import random
 import re
+import time
+import datetime
 from urllib import parse
 
 import cn2an
@@ -188,6 +190,14 @@ class StringUtils:
         return addr.scheme, addr.netloc
 
     @staticmethod
+    def get_base_url(url):
+        """
+        获取URL根地址
+        """
+        scheme, netloc = StringUtils.get_url_netloc(url)
+        return f"{scheme}://{netloc}"
+
+    @staticmethod
     def clear_file_name(name):
         if not name:
             return None
@@ -244,3 +254,17 @@ class StringUtils:
         for i in range(randomlength):
             random_str += base_str[random.randint(0, length)]
         return random_str
+
+    @staticmethod
+    def get_time_stamp(date):
+        tempsTime = None
+        try:
+            result = re.search(r"[\-+]\d+", date)
+            if result:
+                time_area = result.group()
+                utcdatetime = time.strptime(date, '%a, %d %b %Y %H:%M:%S ' + time_area)
+                tempsTime = time.mktime(utcdatetime)
+                tempsTime = datetime.datetime.fromtimestamp(tempsTime)
+        except Exception as err:
+            print(str(err))
+        return tempsTime

@@ -28,32 +28,53 @@ class BuiltinIndexer(IIndexer):
 
     def get_indexers(self, check=True):
         ret_indexers = []
+        # 选中站点配置
         indexer_sites = Config().get_config("pt").get("indexer_sites") or []
+        _indexer_domains = []
+        # 私有站点
         for site in Sites().get_sites():
             if not site.get("rssurl") and not site.get("signurl"):
                 continue
             if not site.get("cookie"):
                 continue
-            indexer = IndexerHelper().get_indexer(url=site.get("signurl") or site.get("rssurl"),
+            url = site.get("signurl") or site.get("rssurl")
+            public_site = SiteConf().get_public_sites(url=url)
+            if public_site:
+                public = True
+                proxy = public_site.get("proxy")
+                language = public_site.get("language")
+            else:
+                public = False
+                proxy = False
+                language = None
+            indexer = IndexerHelper().get_indexer(url=url,
                                                   cookie=site.get("cookie"),
                                                   name=site.get("name"),
                                                   rule=site.get("rule"),
-                                                  public=False,
-                                                  ua=site.get("ua"))
+                                                  public=public,
+                                                  proxy=proxy,
+                                                  ua=site.get("ua"),
+                                                  language=language)
             if indexer:
                 if check and indexer_sites and indexer.id not in indexer_sites:
                     continue
-                indexer.name = site.get("name")
-                ret_indexers.append(indexer)
+                if indexer.domain not in _indexer_domains:
+                    _indexer_domains.append(indexer.domain)
+                    indexer.name = site.get("name")
+                    ret_indexers.append(indexer)
+        # 公开站点
         for site, attr in SiteConf().get_public_sites():
             indexer = IndexerHelper().get_indexer(url=site,
                                                   public=True,
                                                   proxy=attr.get("proxy"),
-                                                  render=attr.get("render"))
+                                                  render=attr.get("render"),
+                                                  language=attr.get("language"))
             if indexer:
                 if check and indexer_sites and indexer.id not in indexer_sites:
                     continue
-                ret_indexers.append(indexer)
+                if indexer.domain not in _indexer_domains:
+                    _indexer_domains.append(indexer.domain)
+                    ret_indexers.append(indexer)
         return ret_indexers
 
     def search(self, order_seq,
@@ -85,6 +106,10 @@ class BuiltinIndexer(IIndexer):
         log.info(f"【{self.index_type}】开始检索Indexer：{indexer.name} ...")
         # 特殊符号处理
         search_word = StringUtils.handler_special_chars(text=key_word, replace_word=" ", allow_space=True)
+        # 避免对英文站搜索中文
+        if indexer.language == "en" and StringUtils.is_chinese(search_word):
+            log.warn(f"【{self.index_type}】{indexer.name} 无法使用中文名搜索")
+            return []
         if indexer.parser == "rarbg":
             imdb_id = match_media.imdb_id if match_media else None
             result_array = Rarbg(cookies=indexer.cookie).search(keyword=search_word, indexer=indexer, imdb_id=imdb_id)
