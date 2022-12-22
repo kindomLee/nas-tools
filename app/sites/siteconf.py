@@ -1,17 +1,12 @@
-from app.utils import StringUtils
-
-
 class SiteConf:
-    # 非常规RSS站点
-    RSS_EXTRA_SITES = {
-        'blutopia.xyz': 'Unit3D',
-        'desitorrents.tv': 'Unit3D',
-        'jptv.club': 'Unit3D',
-        'www.torrentseeds.org': 'Unit3D',
-        'beyond-hd.me': 'beyondhd',
-    }
     # 检测种子促销的站点XPATH，不在此清单的无法开启仅RSS免费种子功能
     RSS_SITE_GRAP_CONF = {
+        'jptv.club': {
+            'FREE': ["//span/i[@class='fas fa-star text-gold']"],
+            '2XFREE': [],
+            'HR': [],
+            'PEER_COUNT': ["//span[@class='badge-extra text-green']"],
+        },
         'pthome.net': {
             'FREE': ["//font[@class='free']"],
             '2XFREE': ["//font[@class='twoupfree']"],
@@ -124,7 +119,7 @@ class SiteConf:
             'FREE': ["//font[@class='free'][text()='免费']"],
             '2XFREE': ["//font[@class='twoupfree'][text()='2X免费']"],
             'HR': [],
-            'PEER_COUNT': [],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
         'hdsky.me': {
             'FREE': ["//font[@class='free'][text()='免费']"],
@@ -166,7 +161,7 @@ class SiteConf:
             'FREE': ["//font[@class='free']"],
             '2XFREE': ["//font[@class='twoupfree']"],
             'HR': ["//img[@class='hitandrun']"],
-            'PEER_COUNT': [],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
         'pt.btschool.club': {
             'FREE': ["//font[@class='free'][text()='免费']"],
@@ -184,13 +179,13 @@ class SiteConf:
             'FREE': ["//font[@class='free'][text()='免费']"],
             '2XFREE': [],
             'HR': ["//img[@class='hitandrun']"],
-            'PEER_COUNT': [],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
         'springsunday.net': {
             'FREE': ["//font[@class='free'][text()='免费']"],
             '2XFREE': ["//font[@class='twoupfree'][text()='2X免费']"],
             'HR': ["//img[@class='hitandrun']"],
-            'PEER_COUNT': [],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
         'www.htpt.cc': {
             'FREE': ["//font[@class='free'][text()='免费']"],
@@ -201,12 +196,12 @@ class SiteConf:
         'chdbits.co': {
             'FREE': ["//img[@class='pro_free']"],
             '2XFREE': [],
-            'HR': ["//b[text()='H&amp;R:&nbsp;']"],
+            'HR': ["//b[contains(text(),'H&R:')]"],
             'PEER_COUNT': [],
         },
         'hdchina.org': {
             'FREE': ["//img[@class='pro_free']"],
-            '2XFREE': ["//img[@class='pro_free2up"],
+            '2XFREE': ["//img[@class='pro_free2up']"],
             'HR': [],
             'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
@@ -226,7 +221,7 @@ class SiteConf:
             'FREE': ["//font[@class='free'][text()='免费']"],
             '2XFREE': ["//font[@class='twoupfree'][text()='2X免费']"],
             'HR': [],
-            'PEER_COUNT': [],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
         'hdatmos.club': {
             'FREE': ["//font[@class='free'][text()='免费']"],
@@ -316,19 +311,19 @@ class SiteConf:
             'FREE': ["//font[@class='free']"],
             '2XFREE': ["//font[@class='twoupfree']"],
             'HR': [],
-            'PEER_COUNT': [],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
         'piggo.me': {
             'FREE': ["//font[@class='free']"],
             '2XFREE': ["//font[@class='twoupfree']"],
             'HR': ["//img[@class='hitandrun']"],
-            'PEER_COUNT': [],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
         'pt.0ff.cc': {
             'FREE': ["//font[@class='free']"],
             '2XFREE': ["//font[@class='twoupfree']"],
             'HR': ["//img[@class='hitandrun']"],
-            'PEER_COUNT': [],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
         'wintersakura.net': {
             'FREE': ["//font[@class='free']"],
@@ -365,6 +360,42 @@ class SiteConf:
             '2XFREE': [],
             'HR': [],
             'PEER_COUNT': [],
+        },
+        'hhanclub.top': {
+            'FREE': ["//font[@class='free']"],
+            '2XFREE': [],
+            'HR': ["//img[@class='hitandrun']"],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
+        },
+        'zmpt.cc': {
+            'FREE': ["//font[@class='free']"],
+            '2XFREE': ["//font[@class='twoupfree']"],
+            'HR': [],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
+        },
+        'ihdbits.me': {
+            'FREE': ["//font[@class='free']"],
+            '2XFREE': ["//font[@class='twoupfree']"],
+            'HR': [],
+            'PEER_COUNT': [],
+        },
+        'leaves.red': {
+            'FREE': ["//font[@class='free']"],
+            '2XFREE': ["//font[@class='twoupfree']"],
+            'HR': [],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
+        },
+        "sharkpt.net": {
+            'FREE': ["//font[@class='free']"],
+            '2XFREE': [],
+            'HR': ["//img[@class='hitandrun']"],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
+        },
+        "pt.2xfree.org": {
+            'FREE': ["//font[@class='free']"],
+            '2XFREE': ["//font[@class='twoupfree']"],
+            'HR': [],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         }
     }
     # 公共BT站点
@@ -412,49 +443,20 @@ class SiteConf:
             "proxy": False
         },
         'www.mp4ba.vip': {
-            "proxy": False
+            "proxy": False,
+            "referer": True
         },
         'www.miobt.com': {
             "proxy": True
         },
         'katcr.to': {
+            "proxy": True,
+            "language": "en"
+        },
+        'btsow.quest': {
             "proxy": True
+        },
+        'www.hdpianyuan.com': {
+            "proxy": False
         }
     }
-
-    def get_extrasite_conf(self, url):
-        """
-        根据地址找到RSS_EXTRA_SITES对应配置
-        """
-        for k, v in self.RSS_EXTRA_SITES.items():
-            if StringUtils.url_equal(k, url):
-                return v
-        return None
-
-    def get_grapsite_conf(self, url):
-        """
-        根据地址找到RSS_SITE_GRAP_CONF对应配置
-        """
-        for k, v in self.RSS_SITE_GRAP_CONF.items():
-            if StringUtils.url_equal(k, url):
-                return v
-        return {}
-
-    def is_public_site(self, url):
-        """
-        判断是否为公开BT站点
-        """
-        _, netloc = StringUtils.get_url_netloc(url)
-        if netloc in self.PUBLIC_TORRENT_SITES.keys():
-            return True
-        return False
-
-    def get_public_sites(self, url=None):
-        """
-        查询所有公开BT站点
-        """
-        if url:
-            _, netloc = StringUtils.get_url_netloc(url)
-            return self.PUBLIC_TORRENT_SITES.get(netloc)
-        else:
-            return self.PUBLIC_TORRENT_SITES.items()

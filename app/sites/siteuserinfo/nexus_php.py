@@ -4,16 +4,14 @@ import re
 from lxml import etree
 
 import log
-from app.sites.siteuserinfo.site_user_info import ISiteUserInfo
+from app.sites.siteuserinfo._base import _ISiteUserInfo
 from app.utils import StringUtils
+from app.utils.exception_utils import ExceptionUtils
+from app.utils.types import SiteSchema
 
 
-class NexusPhpSiteUserInfo(ISiteUserInfo):
-    _site_schema = "NexusPhp"
-    _brief_page = "index.php"
-    _user_traffic_page = "index.php"
-    _user_detail_page = "userdetails.php?id="
-    _torrent_seeding_page = "getusertorrentlistajax.php?userid="
+class NexusPhpSiteUserInfo(_ISiteUserInfo):
+    schema = SiteSchema.NexusPhp
 
     def _parse_site_page(self, html_text):
         html_text = self._prepare_html_text(html_text)
@@ -30,16 +28,6 @@ class NexusPhpSiteUserInfo(ISiteUserInfo):
                 self.userid = None
                 self._torrent_seeding_page = None
 
-        html = etree.HTML(html_text)
-        if not html:
-            self.err_msg = "未检测到已登陆，请检查cookies是否过期"
-            return
-
-        logout = html.xpath('//a[contains(@href, "logout") or contains(@data-url, "logout")'
-                            ' or contains(@onclick, "logout") or contains(@href, "usercp")]')
-        if not logout:
-            self.err_msg = "未检测到已登陆，请检查cookies是否过期"
-
     def _parse_message_unread(self, html_text):
         """
         解析未读短消息数量
@@ -54,7 +42,7 @@ class NexusPhpSiteUserInfo(ISiteUserInfo):
         if message_labels:
             message_text = message_labels[0].xpath("string(.)")
 
-            log.debug(f"【PT】{self.site_name} 消息原始信息 {message_text}")
+            log.debug(f"【Sites】{self.site_name} 消息原始信息 {message_text}")
             message_unread_match = re.findall(r"[^Date](信息箱\s*|\(|你有\xa0)(\d+)", message_text)
 
             if message_unread_match and len(message_unread_match[-1]) == 2:
@@ -67,38 +55,34 @@ class NexusPhpSiteUserInfo(ISiteUserInfo):
 
         self._parse_message_unread(html_text)
 
-        html_text = self._prepare_html_text(html_text)
-        user_name = re.search(r"userdetails.php\?id=\d+[a-zA-Z\"'=()\u4E00-\u9FA5_\-\s]+>[<b>\s]*([^<>]*)[</b>]*</a>",
-                              html_text)
-        if user_name and user_name.group(1).strip():
-            self.username = user_name.group(1).strip()
-            return
         html = etree.HTML(html_text)
         if not html:
             return
+
+        ret = html.xpath(f'//a[contains(@href, "userdetails") and contains(@href, "{self.userid}")]//b//text()')
+        if ret:
+            self.username = str(ret[0])
+            return
+        ret = html.xpath(f'//a[contains(@href, "userdetails") and contains(@href, "{self.userid}")]//text()')
+        if ret:
+            self.username = str(ret[0])
+
         ret = html.xpath('//a[contains(@href, "userdetails")]//strong//text()')
         if ret:
             self.username = str(ret[0])
             return
 
-        ret = html.xpath('//a[contains(@href, "userdetails")]//b//text()')
-        if ret:
-            self.username = str(ret[0])
-            return
-        ret = html.xpath('//a[contains(@href, "userdetails")]//text()')
-        if ret:
-            self.username = str(ret[0])
-
     def __parse_user_traffic_info(self, html_text):
         html_text = self._prepare_html_text(html_text)
-        upload_match = re.search(r"[^总]上[传傳]量?[:：_<>/a-zA-Z-=\"'\s#;]+([\d,.\s]+[KMGTPI]*B)", html_text, re.IGNORECASE)
+        upload_match = re.search(r"[^总]上[传傳]量?[:：_<>/a-zA-Z-=\"'\s#;]+([\d,.\s]+[KMGTPI]*B)", html_text,
+                                 re.IGNORECASE)
         self.upload = StringUtils.num_filesize(upload_match.group(1).strip()) if upload_match else 0
         download_match = re.search(r"[^总子影力]下[载載]量?[:：_<>/a-zA-Z-=\"'\s#;]+([\d,.\s]+[KMGTPI]*B)", html_text,
                                    re.IGNORECASE)
         self.download = StringUtils.num_filesize(download_match.group(1).strip()) if download_match else 0
         ratio_match = re.search(r"分享率[:：_<>/a-zA-Z-=\"'\s#;]+([\d,.\s]+)", html_text)
         self.ratio = StringUtils.str_float(ratio_match.group(1)) if (
-                    ratio_match and ratio_match.group(1).strip()) else 0.0
+                ratio_match and ratio_match.group(1).strip()) else 0.0
         leeching_match = re.search(r"(Torrents leeching|下载中)[\u4E00-\u9FA5\D\s]+(\d+)[\s\S]+<", html_text)
         self.leeching = StringUtils.str_int(leeching_match.group(2)) if leeching_match and leeching_match.group(
             2).strip() else 0
@@ -124,7 +108,7 @@ class NexusPhpSiteUserInfo(ISiteUserInfo):
             if bonus_match and bonus_match.group(1).strip():
                 self.bonus = StringUtils.str_float(bonus_match.group(1))
         except Exception as err:
-            print(str(err))
+            ExceptionUtils.exception_traceback(err)
 
     def _parse_user_traffic_info(self, html_text):
         """
@@ -197,9 +181,10 @@ class NexusPhpSiteUserInfo(ISiteUserInfo):
 
         # 加入日期
         join_at_text = html.xpath(
-            '//tr/td[text()="加入日期" or text()="注册日期" or *[text()="加入日期"]]/following-sibling::td[1]//text()')
+            '//tr/td[text()="加入日期" or text()="注册日期" or *[text()="加入日期"]]/following-sibling::td[1]//text()'
+            '|//div/b[text()="加入日期"]/../text()')
         if join_at_text:
-            self.join_at = join_at_text[0].split(' (')[0]
+            self.join_at = StringUtils.unify_datetime_str(join_at_text[0].split(' (')[0].strip())
 
         # 做种体积 & 做种数
         # seeding 页面获取不到的话，此处再获取一次
@@ -229,7 +214,7 @@ class NexusPhpSiteUserInfo(ISiteUserInfo):
             seeding_match = re.search(r"总做种数:\s+(\d+)", seeding_sizes[0], re.IGNORECASE)
             seeding_size_match = re.search(r"总做种体积:\s+([\d,.\s]+[KMGTPI]*B)", seeding_sizes[0], re.IGNORECASE)
             tmp_seeding = StringUtils.str_int(seeding_match.group(1)) if (
-                        seeding_match and seeding_match.group(1)) else 0
+                    seeding_match and seeding_match.group(1)) else 0
             tmp_seeding_size = StringUtils.num_filesize(
                 seeding_size_match.group(1).strip()) if seeding_size_match else 0
         if not self.seeding_size:
@@ -301,3 +286,45 @@ class NexusPhpSiteUserInfo(ISiteUserInfo):
                 if user_level_match and user_level_match.group(1).strip():
                     self.user_level = user_level_match.group(1).strip()
                     break
+
+    def _parse_message_unread_links(self, html_text, msg_links):
+        html = etree.HTML(html_text)
+        if not html:
+            return None
+
+        message_links = html.xpath('//tr[not(./td/img[@alt="Read"])]/td/a[contains(@href, "viewmessage")]/@href')
+        msg_links.extend(message_links)
+        # 是否存在下页数据
+        next_page = None
+        next_page_text = html.xpath('//a[contains(.//text(), "下一页") or contains(.//text(), "下一頁")]/@href')
+        if next_page_text:
+            next_page = next_page_text[-1].strip()
+
+        return next_page
+
+    def _parse_message_content(self, html_text):
+        html = etree.HTML(html_text)
+        if not html:
+            return None, None, None
+        # 标题
+        message_head_text = None
+        message_head = html.xpath('//h1/text()'
+                                  '|//div[@class="layui-card-header"]/span[1]/text()')
+        if message_head:
+            message_head_text = message_head[-1].strip()
+
+        # 消息时间
+        message_date_text = None
+        message_date = html.xpath('//h1/following-sibling::table[.//tr/td[@class="colhead"]]//tr[2]/td[2]'
+                                  '|//div[@class="layui-card-header"]/span[2]/span[2]')
+        if message_date:
+            message_date_text = message_date[0].xpath("string(.)").strip()
+
+        # 消息内容
+        message_content_text = None
+        message_content = html.xpath('//h1/following-sibling::table[.//tr/td[@class="colhead"]]//tr[3]/td'
+                                     '|//div[contains(@class,"layui-card-body")]')
+        if message_content:
+            message_content_text = message_content[0].xpath("string(.)").strip()
+
+        return message_head_text, message_date_text, message_content_text

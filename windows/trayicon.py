@@ -44,12 +44,26 @@ class Balloon(wx.adv.TaskBarIcon):
         os.system('taskkill /F /IM ' + exe_name)
 
 
-class trayicon(wx.Frame):
-    def __init__(self, homepage_port, log_path):
+class TrayIcon(wx.Frame):
+    def __init__(self, homepage, log_path):
         app = wx.App()
         wx.Frame.__init__(self, None)
-        homepage = "http://localhost:" + str(homepage_port)
         self.taskBarIcon = Balloon(homepage, log_path)
         webbrowser.open(homepage)
         self.Hide()
         app.MainLoop()
+
+
+class NullWriter:
+    softspace = 0
+    encoding = 'UTF-8'
+
+    def write(*args):
+        pass
+
+    def flush(*args):
+        pass
+
+    # Some packages are checking if stdout/stderr is available (e.g., youtube-dl). For details, see #1883.
+    def isatty(self):
+        return False

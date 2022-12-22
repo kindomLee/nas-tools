@@ -3,16 +3,13 @@ import re
 
 from lxml import etree
 
-from app.sites.siteuserinfo.site_user_info import ISiteUserInfo
+from app.sites.siteuserinfo._base import _ISiteUserInfo
 from app.utils import StringUtils
+from app.utils.types import SiteSchema
 
 
-class IptSiteUserInfo(ISiteUserInfo):
-    _site_schema = "IPTorrents"
-    _brief_page = "/"
-    _user_traffic_page = None
-    _user_detail_page = None
-    _torrent_seeding_page = None
+class IptSiteUserInfo(_ISiteUserInfo):
+    schema = SiteSchema.Ipt
 
     def _parse_user_base_info(self, html_text):
         html_text = self._prepare_html_text(html_text)
@@ -37,9 +34,6 @@ class IptSiteUserInfo(ISiteUserInfo):
             self.ratio = StringUtils.str_float(str(tmps[0].xpath('span/text()')[0]).strip().replace('-', '0'))
             self.bonus = StringUtils.str_float(tmps[0].xpath('a')[3].xpath('text()')[0])
 
-        if not self.username:
-            self.err_msg = "获取不到用户信息，请检查cookies是否过期"
-
     def _parse_site_page(self, html_text):
         # TODO
         pass
@@ -56,7 +50,7 @@ class IptSiteUserInfo(ISiteUserInfo):
         # 加入日期
         join_at_text = html.xpath('//tr/th[text()="Join date"]/following-sibling::td[1]/text()')
         if join_at_text:
-            self.join_at = join_at_text[0].split(' (')[0]
+            self.join_at = StringUtils.unify_datetime_str(join_at_text[0].split(' (')[0])
 
     def _parse_user_torrent_seeding_info(self, html_text, multi_page=False):
         html = etree.HTML(html_text)
@@ -86,3 +80,9 @@ class IptSiteUserInfo(ISiteUserInfo):
     def _parse_user_traffic_info(self, html_text):
         # TODO
         pass
+
+    def _parse_message_unread_links(self, html_text, msg_links):
+        return None
+
+    def _parse_message_content(self, html_text):
+        return None, None, None

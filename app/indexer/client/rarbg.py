@@ -1,24 +1,22 @@
 import requests
 
 import log
-from app.utils.commons import singleton
 from app.utils import RequestUtils
 from config import Config
 
 
-@singleton
 class Rarbg:
     _appid = "nastool"
     _req = None
     _token = None
     _api_url = "http://torrentapi.org/pubapi_v2.php"
 
-    def __init__(self, cookies):
-        self.init_config(cookies)
+    def __init__(self):
+        self.init_config()
 
-    def init_config(self, cookies):
+    def init_config(self):
         session = requests.session()
-        self._req = RequestUtils(cookies=cookies, proxies=Config().get_proxies(), session=session, timeout=10)
+        self._req = RequestUtils(proxies=Config().get_proxies(), session=session, timeout=10)
         self.__get_token()
 
     def __get_token(self):
@@ -45,7 +43,7 @@ class Rarbg:
         if res and res.status_code == 200:
             results = res.json().get('torrent_results') or []
             for result in results:
-                if not result.get('title'):
+                if not result or not result.get('title'):
                     continue
                 torrent = {'indexer': indexer.id,
                            'title': result.get('title'),
@@ -56,7 +54,8 @@ class Rarbg:
                            'freeleech': True,
                            'downloadvolumefactor': 0.0,
                            'uploadvolumefactor': 1.0,
-                           'page_url': result.get('info_page')}
+                           'page_url': result.get('info_page'),
+                           'imdbid': result.get('episode_info').get('imdb') if result.get('episode_info') else ''}
                 torrents.append(torrent)
         elif res:
             log.warn("【INDEXER】{indexer.name} 搜索失败，错误码：%s" % res.status_code)

@@ -1,8 +1,8 @@
 // Ajax主方法
-function ajax_post(cmd, data, handler) {
-    var data = {
+function ajax_post(cmd, params, handler, aync=true) {
+    let data = {
         cmd: cmd,
-        data: JSON.stringify(data)
+        data: JSON.stringify(params)
     };
     $.ajax({
         type: "POST",
@@ -10,16 +10,22 @@ function ajax_post(cmd, data, handler) {
         dataType: "json",
         data: data,
         cache: false,
+        async: aync,
         timeout: 0,
         success: handler,
         error: function (xhr, textStatus, errorThrown) {
+            if (xhr && xhr.status === 200) {
+                handler({code: 0});
+            } else {
+                handler({code: -99, msg: "网络错误"});
+            }
         }
     });
 }
 
 // 备份文件下载
 function ajax_backup(handler) {
-    var downloadURL = "/backup";
+    const downloadURL = "/backup";
     let xhr = new XMLHttpRequest()
     xhr.open('POST', downloadURL, true);
     xhr.responseType = 'arraybuffer';
@@ -41,7 +47,7 @@ function ajax_backup(handler) {
                 let objectUrl = URL.createObjectURL(blob);
                 console.log(objectUrl);
                 if (fileName) {
-                    var a = document.createElement('a');
+                    const a = document.createElement('a');
                     // safari doesn't support this yet
                     if (typeof a.download === 'undefined') {
                         window.location = objectUrl
@@ -58,7 +64,7 @@ function ajax_backup(handler) {
             }
         }
         if (handler) {
-            eval(handler)();
+            handler();
         }
     };
     xhr.send();
@@ -66,10 +72,10 @@ function ajax_backup(handler) {
 
 //获取链接参数
 function getQueryVariable(variable) {
-    var query = window.location.search.substring(1);
-    var vars = query.split("&");
-    for (var i = 0; i < vars.length; i++) {
-        var pair = vars[i].split("=");
+    const query = window.location.search.substring(1);
+    const vars = query.split("&");
+    for (let i = 0; i < vars.length; i++) {
+        const pair = vars[i].split("=");
         if (pair[0] == variable) {
             return pair[1];
         }

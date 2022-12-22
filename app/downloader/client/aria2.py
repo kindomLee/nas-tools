@@ -2,23 +2,22 @@ import os
 import re
 
 from app.utils import RequestUtils
+from app.utils.exception_utils import ExceptionUtils
+from app.utils.types import DownloaderType
 from config import Config
-from app.downloader.client.client import IDownloadClient
+from app.downloader.download_client import IDownloadClient
 from app.downloader.client.pyaria2 import PyAria2
-from app.utils.types import MediaType
 
 
 class Aria2(IDownloadClient):
+
     _client = None
+    client_type = DownloaderType.Aria2.value
 
     def get_config(self):
         # 读取配置文件
-        config = Config()
-        aria2config = config.get_config('aria2')
+        aria2config = Config().get_config('aria2')
         if aria2config:
-            # 解析下载目录
-            self.save_path = aria2config.get('save_path')
-            self.save_containerpath = aria2config.get('save_containerpath')
             self.host = aria2config.get("host")
             if self.host:
                 if not self.host.startswith('http'):
@@ -62,7 +61,7 @@ class Aria2(IDownloadClient):
     def get_completed_torrents(self, **kwargs):
         return self.get_torrents(status="completed")
 
-    def set_torrents_status(self, ids):
+    def set_torrents_status(self, ids, tags=None):
         return self.delete_torrents(ids=ids, delete_file=False)
 
     def get_transfer_task(self, tag):
@@ -74,28 +73,19 @@ class Aria2(IDownloadClient):
             name = torrent.get('bittorrent', {}).get('info', {}).get("name")
             if not name:
                 continue
-            true_path = os.path.join(torrent.get("dir"), name)
-            if not true_path:
+            path = torrent.get("dir")
+            if not path:
                 continue
-            true_path = self.get_replace_path(true_path)
-            trans_tasks.append({'path': true_path, 'id': torrent.get("gid")})
+            true_path = self.get_replace_path(path)
+            trans_tasks.append({'path': os.path.join(true_path, name), 'id': torrent.get("gid")})
         return trans_tasks
 
-    def get_remove_torrents(self, seeding_time, **kwargs):
+    def get_remove_torrents(self, **kwargs):
         return []
 
-    def add_torrent(self, content, mtype, download_dir=None, **kwargs):
+    def add_torrent(self, content, download_dir=None, **kwargs):
         if not self._client:
             return None
-        if download_dir:
-            dl_dir = download_dir
-        else:
-            if mtype == MediaType.TV:
-                dl_dir = self.tv_save_path
-            elif mtype == MediaType.ANIME:
-                dl_dir = self.anime_save_path
-            else:
-                dl_dir = self.movie_save_path
         if isinstance(content, str):
             # 转换为磁力链
             if re.match("^https*://", content):
@@ -104,10 +94,10 @@ class Aria2(IDownloadClient):
                     if p and p.headers.get("Location"):
                         content = p.headers.get("Location")
                 except Exception as result:
-                    print(str(result))
-            return self._client.addUri(uris=[content], options=dict(dir=dl_dir))
+                    ExceptionUtils.exception_traceback(result)
+            return self._client.addUri(uris=[content], options=dict(dir=download_dir))
         else:
-            return self._client.addTorrent(torrent=content, uris=[], options=dict(dir=dl_dir))
+            return self._client.addTorrent(torrent=content, uris=[], options=dict(dir=download_dir))
 
     def start_torrents(self, ids):
         if not self._client:
@@ -126,3 +116,6 @@ class Aria2(IDownloadClient):
 
     def get_download_dirs(self):
         return []
+
+    def change_torrent(self, **kwargs):
+        pass

@@ -7,15 +7,12 @@
 [submodule "third_party/transmission-rpc"]
 	path = third_party/transmission-rpc
 	url = https://github.com/Trim21/transmission-rpc
-[submodule "third_party/python-opensubtitles"]
-	path = third_party/python-opensubtitles
-	url = https://github.com/agonzalezro/python-opensubtitles
 [submodule "third_party/anitopy"]
 	path = third_party/anitopy
 	url = https://github.com/igorcmoura/anitopy
-[submodule "third_party/cn2an"]
-	path = third_party/cn2an
-	url = https://github.com/Ailln/cn2an
 [submodule "third_party/plexapi"]
 	path = third_party/plexapi
 	url = https://github.com/pkkid/python-plexapi
+[submodule "third_party/slack_bolt"]
+	path = third_party/slack_bolt
+	url = https://github.com/slackapi/bolt-python

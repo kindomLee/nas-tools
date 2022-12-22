@@ -1,11 +1,13 @@
 import bisect
 import random
 import re
-import time
-import datetime
 from urllib import parse
 
 import cn2an
+import dateutil.parser
+from delorean import parse as delorean_parse
+
+from app.utils.exception_utils import ExceptionUtils
 from app.utils.types import MediaType
 
 
@@ -21,11 +23,11 @@ class StringUtils:
         if not isinstance(text, str):
             text = str(text)
         text = text.replace(",", "").replace(" ", "").upper()
-        size = re.sub(r"[KMGTPI]*B", "", text, flags=re.IGNORECASE)
+        size = re.sub(r"[KMGTPI]*B?", "", text, flags=re.IGNORECASE)
         try:
             size = float(size)
         except Exception as e:
-            print(str(e))
+            ExceptionUtils.exception_traceback(e)
             return 0
         if text.find("PB") != -1 or text.find("PIB") != -1:
             size *= 1024 ** 5
@@ -48,7 +50,7 @@ class StringUtils:
             try:
                 time_sec = float(time_sec)
             except Exception as e:
-                print(str(e))
+                ExceptionUtils.exception_traceback(e)
                 return ""
         d = [(0, '秒'), (60 - 1, '分'), (3600 - 1, '小时'), (86400 - 1, '天')]
         s = [x[0] for x in d]
@@ -64,10 +66,27 @@ class StringUtils:
         """
         判断是否含有中文
         """
-        for ch in word:
-            if '\u4e00' <= ch <= '\u9fff':
-                return True
-        return False
+        chn = re.compile(r'[\u4e00-\u9fff]')
+        if chn.search(word):
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def is_japanese(word):
+        jap = re.compile(r'[\u3040-\u309F\u30A0-\u30FF]')
+        if jap.search(word):
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def is_korean(word):
+        kor = re.compile(r'[\uAC00-\uD7FF]')
+        if kor.search(word):
+            return True
+        else:
+            return False
 
     @staticmethod
     def is_all_chinese(word):
@@ -108,7 +127,7 @@ class StringUtils:
         try:
             int_val = int(text.strip().replace(',', ''))
         except Exception as e:
-            print(str(e))
+            ExceptionUtils.exception_traceback(e)
 
         return int_val
 
@@ -123,7 +142,7 @@ class StringUtils:
         try:
             float_val = float(text.strip().replace(',', ''))
         except Exception as e:
-            print(str(e))
+            ExceptionUtils.exception_traceback(e)
         return float_val
 
     @staticmethod
@@ -132,7 +151,7 @@ class StringUtils:
         忽略特殊字符
         """
         # 需要忽略的特殊字符
-        CONVERT_EMPTY_CHARS = r"\.|\(|\)|\[|]|-|\+|【|】|/|～|;|&|\||#|_|「|」|（|）|'|’|!|！|,|～|·|:|：|\-"
+        CONVERT_EMPTY_CHARS = r"\.|\(|\)|\[|]|-|\+|【|】|/|～|;|&|\||#|_|「|」|（|）|'|’|!|！|,|～|·|:|：|\-|~"
         if not text:
             return ""
         text = re.sub(r"[\u200B-\u200D\uFEFF]", "", re.sub(r"%s" % CONVERT_EMPTY_CHARS, replace_word, text),
@@ -143,7 +162,7 @@ class StringUtils:
             return re.sub(r"\s+", " ", text).strip()
 
     @staticmethod
-    def str_filesize(size):
+    def str_filesize(size, pre=2):
         """
         将字节计算为文件大小描述
         """
@@ -151,7 +170,7 @@ class StringUtils:
             try:
                 size = float(size)
             except Exception as e:
-                print(str(e))
+                ExceptionUtils.exception_traceback(e)
                 return ""
         d = [(1024 - 1, 'K'), (1024 ** 2 - 1, 'M'), (1024 ** 3 - 1, 'G'), (1024 ** 4 - 1, 'T')]
         s = [x[0] for x in d]
@@ -160,7 +179,7 @@ class StringUtils:
             return str(size)
         else:
             b, u = d[index]
-        return str(round(size / (b + 1), 2)) + u
+        return str(round(size / (b + 1), pre)) + u
 
     @staticmethod
     def url_equal(url1, url2):
@@ -190,6 +209,16 @@ class StringUtils:
         return addr.scheme, addr.netloc
 
     @staticmethod
+    def get_url_domain(url):
+        """
+        获取URL的域名部分，不含WWW和HTTP
+        """
+        _, netloc = StringUtils.get_url_netloc(url)
+        if netloc:
+            return netloc.lower().replace("www.", "")
+        return ""
+
+    @staticmethod
     def get_base_url(url):
         """
         获取URL根地址
@@ -201,7 +230,7 @@ class StringUtils:
     def clear_file_name(name):
         if not name:
             return None
-        return re.sub(r"[*?\\/\"<>]", "", name, flags=re.IGNORECASE).replace(":", "：")
+        return re.sub(r"[*?\\/\"<>~]", "", name, flags=re.IGNORECASE).replace(":", "：")
 
     @staticmethod
     def get_keyword_from_string(content):
@@ -259,12 +288,78 @@ class StringUtils:
     def get_time_stamp(date):
         tempsTime = None
         try:
-            result = re.search(r"[\-+]\d+", date)
-            if result:
-                time_area = result.group()
-                utcdatetime = time.strptime(date, '%a, %d %b %Y %H:%M:%S ' + time_area)
-                tempsTime = time.mktime(utcdatetime)
-                tempsTime = datetime.datetime.fromtimestamp(tempsTime)
+            tempsTime = dateutil.parser.parse(date)
         except Exception as err:
-            print(str(err))
+            ExceptionUtils.exception_traceback(err)
         return tempsTime
+
+    @staticmethod
+    def unify_datetime_str(datetime_str):
+        """
+        日期时间格式化 统一转成 2020-10-14 07:48:04 这种格式
+        :param datetime_str:
+        :return:
+        """
+        # 传入的参数如果是None 或者空字符串 直接返回
+        if not datetime_str:
+            return datetime_str
+
+        try:
+            return delorean_parse(datetime_str, dayfirst=False).format_datetime('yyyy-MM-dd HH:mm:ss')
+        except Exception as e:
+            ExceptionUtils.exception_traceback(e)
+            return datetime_str
+
+    @staticmethod
+    def to_bool(text, default_val: bool = False) -> bool:
+        """
+        字符串转bool
+        :param text: 要转换的值
+        :param default_val: 默认值
+        :return:
+        """
+        if isinstance(text, str) and not text:
+            return default_val
+        if isinstance(text, bool):
+            return text
+        if isinstance(text, int) or isinstance(text, float):
+            return True if text > 0 else False
+        if isinstance(text, str) and text.lower() in ['y', 'true', '1']:
+            return True
+        return False
+
+    @staticmethod
+    def str_from_cookiejar(cj):
+        """
+        将cookiejar转换为字符串
+        :param cj:
+        :return:
+        """
+        return '; '.join(['='.join(item) for item in cj.items()])
+
+    @staticmethod
+    def get_idlist_from_string(content, dicts):
+        """
+        从字符串中提取id列表
+        :param content: 字符串
+        :param dicts: 字典
+        :return:
+        """
+        if not content:
+            return []
+        id_list = []
+        content_list = content.split()
+        for dic in dicts:
+            if dic.get('name') in content_list and dic.get('id') not in id_list:
+                id_list.append(dic.get('id'))
+                content = content.replace(dic.get('name'), '')
+        return id_list, re.sub(r'\s+', ' ', content).strip()
+
+    @staticmethod
+    def str_title(s):
+        """
+        讲英文的首字母大写
+        :param s: en_name string
+        :return: string title
+        """
+        return s.title() if s else s

@@ -8,12 +8,13 @@
 #   move会直接移动原文件，会影响做种，请谨慎使用
 #   rclone需要自行映射rclone配置目录到容器中，或在容器内完成rclone配置
 app:
-  # 【日志记录类型】：server、file
-  # 如果是使用Docker安装建议设置为file，将日志输出到配置文件目录
+  # 【日志记录类型】：server、file、console
+  # 如果是使用Docker安装建议设置为console，通过Docker管理器查看日志
   # 如果是使用群晖套件建议配置为 server，可将日志输出到群晖的日志中心便于查看
-  logtype: file
+  # 其它情况可以设置为file，将日志写入文件
+  logtype: console
   # 【日志文件的路径】：logtype为file时生效
-  logpath: '/config/logs'
+  logpath:
   # 【群晖日志中心IP和端口】：logtype为SERVER时生效。端口一般是514，只需要改动IP为群晖的IP，示例：127.0.0.1:514
   logserver: 127.0.0.1:514
   # 【日志级别】：info、debug、error
@@ -32,6 +33,8 @@ app:
   # 【TMDB API KEY】：需要在https://www.themoviedb.org/申请，必须配置，否则无法识别媒体资源和重命名
   # 以下地址需要网络能够正常访问：api.themoviedb.org、webservice.fanart.tv
   rmt_tmdbkey:
+  # 【使用TMDB服务器域名】：api.themoviedb.org、api.tmdb.org，如api.themoviedb.org无法访问可偿试使用api.tmdb.org
+  tmdb_domain: api.tmdb.org
   # 【TMDB匹配模式】：normal、strict，normal模式下如使用文件名/种子名中的年份无法匹配到媒体信息，会去掉年份再匹配一次；strict模式则严格按文件中年份匹配
   # normal模式下会提升识别成功率，但也可能会导致误识别率增加；strict模式可以降低误识别率，但可能导致很多文件名/种子名中年份不正确的无法被识别（特别是剧集，需要是首播年份）
   rmt_match_mode: normal
@@ -45,6 +48,8 @@ app:
   domain: ''
   # 【UserAgent】：可适当修改，用于站点签到、豆瓣数据抓取等
   user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36"
+  # 【登录界面壁纸】：themoviedb、bing，设置为themoviedb时需要配置TMDB API Key时才生效
+  wallpaper: bing
 
 # 【配置媒体库信息】
 media:
@@ -70,6 +75,10 @@ media:
   category: 'default-category'
   # 【转移到媒体库的最小文件大小】：避免预告片/MV等影响识别，单位M
   min_filesize: 150
+  # 【文件转移忽略词】：文件名包含忽略词，忽略转移
+  ignored_files:
+  # 【转移文件夹黑名单】：文件上级文件夹在黑名单中，忽略转移
+  ignored_paths:
   # 【洗版开关】：如开启则则新下载了更大的文件会覆盖媒体库目录中已有的文件
   filesize_cover: true
   # 【电影命名定义】：程序会按定义的命名格式对电影进行重命名；/代表上下级目录，{}内为占位符；占位符会使用文件识别出来的实际值替换；占位符外的字符会当成普通字符，直接体现在名称上
@@ -155,87 +164,12 @@ scraper_pic:
 
 # 【配置消息通知服务】
 message:
-  # 【发送消息使用的渠道】：wechat、serverchan、telegram、bark、pushplus、iyuu，需在对应的配置区域配置。不使用的渠道配置可以留空或者删除。推荐使用wechat、telegram渠道可以远程交互。不设置则不启用消息服务
-  msg_channel: wechat
   # 【Emby播放状态通知白名单】：配置了Emby webhooks插件回调时，用户播放媒体库中的媒体时会发送消息通知，本处配置哪些用户的设备不通知，避免打扰，配置格式：用户:设备名称，可用 - 增加多项
   webhook_ignore:
-  # 【推送开关设置】
-  switch:
-    # 开始下载
-    download_start: true
-    # 添加下载失败
-    download_fail: true
-    # 转移完成
-    transfer_finished: true
-    # 转移失败
-    transfer_fail: true
-    # 添加订阅
-    rss_added: true
-    # 订阅完成
-    rss_finished: true
-    # 站点签到
-    site_signin: true
-  # 【企业微信通知】：在企业微信https://work.weixin.qq.com/中申请和新增一个自建应用。配合微信的企业微信插件，可以直接在微信中查看本程序的消息以及控制程序运行，非常好用，推荐使用该渠道
-  wechat:
-    # corpid:每个企业都拥有唯一的corpid，获取此信息可在管理后台“我的企业”－“企业信息”下查看“企业ID”（需要有管理员权限）
-    # corpsecret:自建应用secret。在管理后台->“应用与小程序”->“应用”->“自建”，点进某个应用，即可看到
-    # agentid:每个应用都有唯一的agentid。在管理后台->“应用与小程序”->“应用”，点进某个应用，即可看到agentid
-    # 具体不明白的参考企业微信的开发者中心
-    corpid:
-    corpsecret:
-    agentid:
-    # 【微信回调】：用于在微信中控制本程序，需要在企业微信https://work.weixin.qq.com/中设置自建应用的菜单等
-    ## 配置步聚：
-    # 1、在微信企业应用接收消息设置页面生成Token和EncodingAESKey并填入下面区域。
-    # 2、重启本程序。
-    # 3、在微信企业应用接收消息设置页面输入此地址：http(s)://ip:3000/wechat，需要有公网IP并做好端口转发，最好要有域名
-    Token:
-    EncodingAESKey:
-    # 【使用默认微信代理服务器】：由于微信官方限制，2022年6月20日后创建的企业微信应用需要有固定的公网IP地址并加入IP白名单后才能发送消息，使用代理服务器转发可解决该问题
-    # 选中该项则代表使用默认的代理服务器
-    # 1、默认的代理服务器为免费使用，仅转发请求不会收集用户数据，如不放心可不开始，如无法发送消息请自行解决。2、需要将nastool.jxxghp.cn域名对应的IP地址加入企业微信应用的白名单中（通过ping域名获取IP地址）
-    default_proxy: false
-  # 【Server酱消息通知】：填写ServerChan的API KEY，SCT类型，在https://sct.ftqq.com/中申请（非VIP貌似每日限制只能收到5条消息）
-  serverchan:
-    # 令牌Token
-    sckey:
-  # 【Telegram通知】：填写Telegram bot机器人的信息，需要在Telegram中创建机器人
-  telegram:
-    # telegram机器人的Token，关注BotFather创建机器人
-    telegram_token:
-    # telegram中关注getuserID获取
-    telegram_chat_id:
-    # 【webhook开关】：打开该开关会对该机器人设置WebHook，实现在聊天窗口运行服务及进行远程资源检索下载，只有管理员用户可以使用命令
-    # 注意：受Telegram限制，程序外网访问地址需要设置为以下端口之一：443, 80, 88, 8443，且需要有公网认证的可信SSL证书
-    webhook: true
-  # 【Bark通知】，手机上安装Bark客户端，Server可以使用默认的也可以自己搭建，自己搭建的更换为服务器地址和端口，格式：http(s)://IP:PORT
-  bark:
-    # 自己搭建请更换，否则保持默认
-    server: https://api.day.app
-    # Bark客户端生成的KEY
-    apikey:
-  # 【pushplus通知】：http://www.pushplus.plus/ 注册账号
-  pushplus:
-    # 用户令牌
-    push_token:
-    # 群组编码
-    push_topic:
-    # 发送渠道：wechat、webhook、cp、mail
-    push_channel:
-    # webhook编码，仅在channel使用webhook渠道和CP渠道时有效
-    push_webhook:
-  # 【爱语飞飞消息通知】：https://iyuu.cn/ 申请令牌token
-  iyuu:
-    # 令牌Token
-    iyuu_token:
 
 # 【配置文件夹监控】：文件夹内容发生变化时自动识别转移
 sync:
-  # 【监控目录列表】：监控目录有文件变化时会自动进行转移处理
-  # 可以配置多个，按'源目录|目的目录|未识别目录@转移模式'格式配置，源目录为需要同步的目录，目的目录为识别和改名后存放的目录，未识别目录为无法识别时转移的目录
-  # 使用[]将整项括起来表示该目录配置不识别重命名，使用#将整项括起来表示该目录配置不启用
-  # 目的目录和未识别目录为可选项；目的目录不配置时会自动分类往媒体库目录存放；未识别目录仅用于备份，程序也不会主动删除，可以不配置该目录，未识别的记录可会在媒体整理->手动识别找到并手工处理
-  sync_path:
+  # 监控目录配置已转移至数据库
   # 【监控目录操作系统类型】：windows、linux。如果是windows，目录同步功能性能会比较差，会导致NAS不能休眠，除非是挂载的windows的远程共享目录或者是windows的docker，否则建议设置为linux
   nas_sys: linux
 
@@ -248,7 +182,7 @@ pt:
   pt_monitor: false
   # 【只监控NASTool添加的下载】：启用后只有NASTool添加的下载才会被自动转移和显示，关闭则下载软件中所有的任务都会转移和显示
   pt_monitor_only: true
-  # 【下载完成后转移到媒体库的转移模式】：link、copy、softlink、move、rclone、rclonecopy，详情参考顶部说明
+  # 【下载完成后转移到媒体库的转移模式】：link、copy、softlink、move、rclone、rclonecopy、minio、miniocopy，详情参考顶部说明
   rmt_mode: link
   #【聚合检索使用的检索器】：jackett、prowlarr、builtin，需要配置jackett或prowlarr对应的配置区域，builtin为内置索引器需要在配置文件目录/sites目录下存入对应的站点配置文件
   # 1、通过微信发送关键字，实时检索下载，发送格式示例：电视剧 西部世界、西部世界第1季、西部世界第1季第2集、西部世界 2022，只会匹配真实名称，命中后会自动下载，使用说明参考：https://github.com/jxxghp/nas-tools/wiki/
@@ -264,10 +198,6 @@ pt:
   # 【站点每日签到时间】
   # 两种配置方法，1、配置间隔，单位小时，建议不要设置为24小时的整数倍，避免每天的签到时间一样。2、配置固定时间，如'08:00'，注意要加引号和冒号。3、配置时间范围，如08:00-09:00，表示在该时间范围内随机执行一次
   ptsignin_cron: '08:01'
-  # 【做种清理开关】：此处配置做种时间，做种超过该时间则会自动删种（包括已下载的文件），单位是【天】。
-  # 如果是使用COPY模式，这个根据下载盘的大小配置，如果是使用LINK模式，这个一般不配置，
-  # 不配置或者配置为0则不启用做种清理功能
-  pt_seeding_time:
   # 【RSS订阅开关】：此处配置RSS订阅检查时间间隔，即每隔多长时间检查一下各站点是否有资源更新，建议不要少于30分钟，单位时间为秒
   # 配置为空或者0则不启用RSS订阅功能
   pt_check_interval: 1800
@@ -275,6 +205,8 @@ pt:
   search_rss_interval: 1
   # 【下载优先规则】：订阅及远程搜索下载将按此优先规则选择下载资源，字典：site 站点优先、seeder做种数优先
   download_order: site
+  # 【搜索结果数量限制】：每个站点返回搜索结果的最大数量
+  site_search_result_num: 100
 
 # 【配置Jackett检索器】
 jackett:
@@ -302,16 +234,8 @@ qbittorrent:
   qbpassword:
   # 转移完成后是否自动强制作种，按需要设置
   force_upload: true
-  # 下载文件保存路径，传递给下载器使用
-  save_path:
-    movie:
-    tv:
-    anime:
-  # NASTool访问下载文件的映射路径
-  save_containerpath:
-    movie:
-    tv:
-    anime:
+  # 是否开始自动管理模式
+  auto_management: false
 
 # 【配置transmission下载软件】：pt区的pt_client如配置为transmission则需要同步配置该项，需要3.0以上版本，否则可能会报错
 transmission:
@@ -321,31 +245,11 @@ transmission:
   # transmission 登录用户名和密码
   trusername:
   trpassword:
-  # 下载文件保存路径，传递给下载器使用
-  save_path:
-    movie:
-    tv:
-    anime:
-  # NASTool访问下载文件的映射路径
-  save_containerpath:
-    movie:
-    tv:
-    anime:
 
-# 配置115网盘下载器
+# 配置 115 网盘下载器
 client115:
   # 115 Cookie 抓包获取
   cookie:
-  # 下载文件保存路径，传递给下载器使用
-  save_path:
-    movie:
-    tv:
-    anime:
-  # NASTool访问下载文件的映射路径
-  save_containerpath:
-    movie:
-    tv:
-    anime:
 
 # 配置Aria2下载器
 aria2:
@@ -355,16 +259,9 @@ aria2:
   port:
   # 密码令牌
   secret:
-  # 下载文件保存路径，传递给下载器使用
-  save_path:
-    movie:
-    tv:
-    anime:
-  # NASTool访问下载文件的映射路径
-  save_containerpath:
-    movie:
-    tv:
-    anime:
+
+# 【下载目录】：配置下载目录，自按分类下载到指定目录
+downloaddir:
 
 # 【配置豆瓣账号信息】：配置后会自动同步豆瓣收藏，豆瓣标记想看内容后，后台自动下载
 douban:
@@ -389,12 +286,10 @@ douban:
 subtitle:
   # 【下载渠道】：opensubtitles、chinesesubfinder
   server: opensubtitles
-  # 配置OpenSubtitles.org中注册的用户名和密码
+  # opensubtitles.org
   opensubtitles:
-    # 用户名
-    username:
-    # 密码
-    password:
+    # 是否启用
+    enable: true
   # 配置ChineseSubFinder的服务器地址和API Key，API Key在ChineseSubFinder->配置中心->实验室->API Key处生成
   chinesesubfinder:
     # IP地址和端口
@@ -414,22 +309,22 @@ security:
     ipv6: ::/0
   # 【Telegram webhook允许ip范围】：即只有如下范围的IP才允许调用webhook
   telegram_webhook_allow_ip:
-    ipv4: 149.154.160.0/20,91.108.4.0/22
+    ipv4: 127.0.0.1
     ipv6: ::/0
-  # 【订阅API认证密钥】：用于Jellyseerr、Overseerr中Authorization认证
-  subscribe_token:
+  # 【API认证密钥】：用于Jellyseerr、Overseerr中Authorization认证以及非客户端类的API调用
+  api_key:
 
 # 【实验室】
 laboratory:
   # 【识别增强】关键字猜想
   search_keyword: false
+  # 【识别增强】通过TMDB WEB检索
+  search_tmdbweb: false
   # 【TMDB缓存过期策略】：是否开启TMDB缓存过期策略，默认7天过期，过期缓存将被删除,  7天内访问过期时间可以被刷新
   tmdb_cache_expire: true
   # 【使用豆瓣名称联想】：开启将使用豆瓣进行电影电视剧的名称联想，否则使用TMDB的数据
-  use_douban_titles: true
+  use_douban_titles: false
   # 【精确搜索使用英文名称】：开启后对于精确搜索场景（远程搜索、订阅搜索等）将会使用英文名检索站点资源以提升匹配度，但对有些站点资源标题全是中文的则需要关闭，否则匹配不到
   search_en_title: true
-  # 【自定义识别屏蔽词】
-  ignored_words: 
-  # 【自定义识别替换词】
-  replaced_words:
+  # 【使用TMDB代理】
+  tmdb_proxy: false
