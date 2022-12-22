@@ -11,8 +11,8 @@ from config import Config
 class SubHelper:
     _cookie = ""
     _ua = None
-    _url_imdbid = "https://www.opensubtitles.org/zh/search/imdbid-%s/sublanguageid-chi"
-    _url_keyword = "https://www.opensubtitles.org/zh/search/moviename-%s/sublanguageid-chi"
+    _url_imdbid = "https://www.opensubtitles.org/zh/search/imdbid-%s/sublanguageid-zht"
+    _url_keyword = "https://www.opensubtitles.org/zh/search/moviename-%s/sublanguagei-zht"
 
     def __init__(self):
         self._ua = Config().get_ua()
