@@ -1,18 +1,12 @@
 # -*- coding: utf-8 -*-
 import re
 
-from lxml import etree
-
 from app.sites.siteuserinfo.nexus_php import NexusPhpSiteUserInfo
+from app.utils.types import SiteSchema
 
 
 class NexusProjectSiteUserInfo(NexusPhpSiteUserInfo):
-    _site_schema = "NexusProject"
-
-    _brief_page = "/index.php"
-    _user_traffic_page = "/index.php"
-    _user_detail_page = "/userdetails.php?id="
-    _torrent_seeding_page = "getusertorrentlistajax.php?userid="
+    schema = SiteSchema.NexusProject
 
     def _parse_site_page(self, html_text):
         html_text = self._prepare_html_text(html_text)
@@ -23,13 +17,3 @@ class NexusProjectSiteUserInfo(NexusPhpSiteUserInfo):
             self.userid = user_detail.group(1)
 
         self._torrent_seeding_page = f"viewusertorrents.php?id={self.userid}&show=seeding"
-
-        html = etree.HTML(html_text)
-        if not html:
-            self.err_msg = "未检测到已登陆，请检查cookies是否过期"
-            return
-
-        logout = html.xpath('//a[contains(@href, "logout") or contains(@data-url, "logout")'
-                            ' or contains(@onclick, "logout")]')
-        if not logout:
-            self.err_msg = "未检测到已登陆，请检查cookies是否过期"

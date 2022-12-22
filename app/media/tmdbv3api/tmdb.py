@@ -21,16 +21,18 @@ class TMDb(object):
     TMDB_DEBUG_ENABLED = "TMDB_DEBUG_ENABLED"
     TMDB_CACHE_ENABLED = "TMDB_CACHE_ENABLED"
     TMDB_PROXIES = "TMDB_PROXIES"
-    REQUEST_CACHE_MAXSIZE = 128
+    TMDB_DOMAIN = "TMDB_DOMAIN"
+    REQUEST_CACHE_MAXSIZE = 256
 
     def __init__(self, obj_cached=True, session=None):
         self._session = requests.Session() if session is None else session
-        self._base = "https://api.themoviedb.org/3"
         self._remaining = 40
         self._reset = None
         self.obj_cached = obj_cached
         if os.environ.get(self.TMDB_LANGUAGE) is None:
             os.environ[self.TMDB_LANGUAGE] = "en-US"
+        if not os.environ.get(self.TMDB_DOMAIN):
+            os.environ[self.TMDB_DOMAIN] = "https://api.themoviedb.org/3"
 
     @property
     def page(self):
@@ -47,6 +49,21 @@ class TMDb(object):
     @property
     def api_key(self):
         return os.environ.get(self.TMDB_API_KEY)
+
+    @property
+    def domain(self):
+        return os.environ.get(self.TMDB_DOMAIN)
+
+    @domain.setter
+    def domain(self, domain):
+        if domain:
+            if not str(domain).startswith('http'):
+                domain = "https://%s" % domain
+            if not str(domain).endswith('/3'):
+                domain = "%s/3" % domain
+            os.environ[self.TMDB_DOMAIN] = str(domain)
+        else:
+            os.environ[self.TMDB_DOMAIN] = ''
 
     @property
     def proxies(self):
@@ -122,7 +139,7 @@ class TMDb(object):
     @staticmethod
     @lru_cache(maxsize=REQUEST_CACHE_MAXSIZE)
     def cached_request(method, url, data, proxies):
-        return requests.request(method, url, data=data, proxies=eval(proxies))
+        return requests.request(method, url, data=data, proxies=eval(proxies), verify=False, timeout=10)
 
     def cache_clear(self):
         return self.cached_request.cache_clear()
@@ -134,7 +151,7 @@ class TMDb(object):
             raise TMDbException("No API key found.")
 
         url = "%s%s?api_key=%s&%s&language=%s" % (
-            self._base,
+            self.domain,
             action,
             self.api_key,
             append_to_response,
@@ -144,7 +161,7 @@ class TMDb(object):
         if self.cache and self.obj_cached and call_cached and method != "POST":
             req = self.cached_request(method, url, data, self.proxies)
         else:
-            req = self._session.request(method, url, data=data, proxies=eval(self.proxies), timeout=5)
+            req = self._session.request(method, url, data=data, proxies=eval(self.proxies), timeout=10, verify=False)
 
         headers = req.headers
 

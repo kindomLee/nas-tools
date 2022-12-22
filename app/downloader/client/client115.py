@@ -1,22 +1,20 @@
 import log
+from app.utils.types import DownloaderType
 from config import Config
-from app.downloader.client.client import IDownloadClient
+from app.downloader.download_client import IDownloadClient
 from app.downloader.client.py115 import Py115
-from app.utils.types import MediaType
 
 
 class Client115(IDownloadClient):
+
     downclient = None
     lasthash = None
+    client_type = DownloaderType.Client115.value
 
     def get_config(self):
         # 读取配置文件
-        config = Config()
-        cloudconfig = config.get_config('client115')
+        cloudconfig = Config().get_config('client115')
         if cloudconfig:
-            # 解析下载目录
-            self.save_path = cloudconfig.get('save_path')
-            self.save_containerpath = cloudconfig.get('save_containerpath')
             self.downclient = Py115(cloudconfig.get("cookie"))
 
     def connect(self):
@@ -37,7 +35,7 @@ class Client115(IDownloadClient):
             return tlist
         ret, tasks = self.downclient.gettasklist(page=1)
         if not ret:
-            log.info("【115】获取任务列表错误：{}".format(self.downclient.err))
+            log.info(f"【{self.client_type}】获取任务列表错误：{self.downclient.err}")
             return tlist
         if tasks:
             for task in tasks:
@@ -63,45 +61,22 @@ class Client115(IDownloadClient):
         pass
 
     def get_transfer_task(self, **kwargs):
-        trans_tasks = []
-        try:
-            torrents = self.get_completed_torrents()
-            for torrent in torrents:
-                if torrent.get('path') == "/":
-                    continue
-                true_path = torrent.get('path')
-                if not true_path:
-                    continue
-                true_path = self.get_replace_path(true_path)
-                trans_tasks.append({'path': true_path, 'id': torrent.get('info_hash')})
-            return trans_tasks
-        except Exception as result:
-            log.error("【115】异常错误：{}".format(result))
-            return trans_tasks
+        pass
 
     def get_remove_torrents(self, **kwargs):
         return []
 
-    def add_torrent(self, content, mtype, download_dir=None, **kwargs):
+    def add_torrent(self, content, download_dir=None, **kwargs):
         if not self.downclient:
             return False
-        if download_dir:
-            save_path = download_dir
-        else:
-            if mtype == MediaType.TV:
-                save_path = self.tv_save_path
-            elif mtype == MediaType.MOVIE:
-                save_path = self.movie_save_path
-            else:
-                save_path = self.anime_save_path
         if isinstance(content, str):
-            ret, self.lasthash = self.downclient.addtask(tdir=save_path, content=content)
+            ret, self.lasthash = self.downclient.addtask(tdir=download_dir, content=content)
             if not ret:
-                log.error("【115】添加下载任务失败：{}".format(self.downclient.err))
+                log.error(f"【{self.client_type}】添加下载任务失败：{self.downclient.err}")
                 return None
             return self.lasthash
         else:
-            log.info("【115】暂时不支持非链接下载")
+            log.info(f"【{self.client_type}】暂时不支持非链接下载")
             return None
 
     def delete_torrents(self, delete_file, ids):
@@ -115,8 +90,11 @@ class Client115(IDownloadClient):
     def stop_torrents(self, ids):
         pass
 
-    def set_torrents_status(self, ids):
+    def set_torrents_status(self, ids, tags=None):
         return self.delete_torrents(ids=ids, delete_file=False)
 
     def get_download_dirs(self):
         return []
+
+    def change_torrent(self, **kwargs):
+        pass

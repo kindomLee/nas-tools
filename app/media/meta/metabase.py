@@ -1,6 +1,7 @@
 import re
 import cn2an
 from app.media.fanart import Fanart
+from app.utils.exception_utils import ExceptionUtils
 from config import ANIME_GENREIDS, DEFAULT_TMDB_IMAGE, TMDB_IMAGE_W500_URL
 from app.media.category import Category
 from app.utils import StringUtils
@@ -41,6 +42,8 @@ class MetaBase(object):
     part = None
     # 识别的资源类型
     resource_type = None
+    # 识别的效果
+    resource_effect = None
     # 识别的分辨率
     resource_pix = None
     # 识别的制作组/字幕组
@@ -65,6 +68,8 @@ class MetaBase(object):
     original_language = None
     # 媒体原发行标题
     original_title = None
+    # 媒体发行日期
+    release_date = None
     # 媒体年份
     year = None
     # 封面图片
@@ -78,11 +83,18 @@ class MetaBase(object):
     overview = None
     # TMDB 的其它信息
     tmdb_info = {}
+    # 本地状态 1-已订阅 2-已存在
+    fav = 0
+    # 站点列表
+    rss_sites = []
+    search_sites = []
     # 种子附加信息
     # 站点名称
     site = None
     # 站点优先级
     site_order = 0
+    # 操作用户
+    user_name = None
     # 种子链接
     enclosure = None
     # 资源优先级
@@ -106,16 +118,21 @@ class MetaBase(object):
     # 订阅ID
     rssid = None
     # 保存目录
-    save_dir = None
+    save_path = None
+    # 下载设置
+    download_setting = None
     # 识别辅助
     ignored_words = None
     replaced_words = None
+    offset_words = None
+    # 备注字典
+    note = {}
     # 副标题解析
     _subtitle_flag = False
     _subtitle_season_re = r"[第\s]+([0-9一二三四五六七八九十S\-]+)\s*季"
     _subtitle_season_all_re = r"全\s*([0-9一二三四五六七八九十]+)\s*季|([0-9一二三四五六七八九十]+)\s*季全"
-    _subtitle_episode_re = r"[第\s]+([0-9一二三四五六七八九十EP\-]+)\s*[集话話]"
-    _subtitle_episode_all_re = r"([0-9一二三四五六七八九十]+)\s*集全|全\s*([0-9一二三四五六七八九十]+)\s*集"
+    _subtitle_episode_re = r"[第\s]+([0-9一二三四五六七八九十EP\-]+)\s*[集话話期]"
+    _subtitle_episode_all_re = r"([0-9一二三四五六七八九十]+)\s*集全|全\s*([0-9一二三四五六七八九十]+)\s*[集话話期]"
 
     def __init__(self, title, subtitle=None, fileflag=False):
         self.category_handler = Category()
@@ -143,27 +160,36 @@ class MetaBase(object):
         else:
             return ""
 
-    def get_vote_string(self):
+    def get_star_string(self):
         if self.vote_average:
-            return "评分：%s" % self.vote_average
+            return "评分：%s" % self.get_stars()
         else:
             return ""
+
+    def get_vote_string(self):
+        if self.vote_average:
+            return "评分：%s" % round(float(self.vote_average), 1)
+        else:
+            return ""
+
+    def get_type_string(self):
+        if not self.type:
+            return ""
+        return "类型：%s" % self.type.value
 
     def get_title_vote_string(self):
         if not self.vote_average:
             return self.get_title_string()
         else:
-            return "%s %s" % (self.get_title_string(), self.get_vote_string())
+            return "%s\n%s" % (self.get_title_string(), self.get_star_string())
 
-    def get_title_ep_vote_string(self):
+    def get_title_ep_string(self):
         string = self.get_title_string()
         if self.get_episode_list():
             string = "%s %s" % (string, self.get_season_episode_string())
         else:
             if self.get_season_list():
                 string = "%s %s" % (string, self.get_season_string())
-            if self.vote_average:
-                string = "%s %s" % (string, self.get_vote_string())
         return string
 
     def get_overview_string(self, max_len=140):
@@ -175,7 +201,7 @@ class MetaBase(object):
         if not hasattr(self, "overview"):
             return ""
 
-        overview = self.overview
+        overview = str(self.overview).strip()
         placeholder = ' ...'
         max_len = max(len(placeholder), max_len - len(placeholder))
         overview = (overview[:max_len] + placeholder) if len(overview) > max_len else overview
@@ -287,16 +313,25 @@ class MetaBase(object):
                 return "%s" % episode
         return ""
 
-    # 返回资源类型字符串
+    # 返回资源类型字符串，含分辨率
     def get_resource_type_string(self):
-        if self.resource_type and self.resource_pix:
-            return "%s %s" % (self.resource_type, self.resource_pix)
-        elif self.resource_type:
-            return self.resource_type
-        elif self.resource_pix:
-            return self.resource_pix
-        else:
-            return ""
+        ret_string = ""
+        if self.resource_type:
+            ret_string = f"{ret_string} {self.resource_type}"
+        if self.resource_effect:
+            ret_string = f"{ret_string} {self.resource_effect}"
+        if self.resource_pix:
+            ret_string = f"{ret_string} {self.resource_pix}"
+        return ret_string
+
+    # 返回资源类型字符串，不含分辨率
+    def get_edtion_string(self):
+        ret_string = ""
+        if self.resource_type:
+            ret_string = f"{ret_string} {self.resource_type}"
+        if self.resource_effect:
+            ret_string = f"{ret_string} {self.resource_effect}"
+        return ret_string.strip()
     
     # 返回发布组/字幕组字符串
     def get_resource_team_string(self):
@@ -314,7 +349,7 @@ class MetaBase(object):
         return self.audio_encode or ""
 
     # 返回背景图片地址
-    def get_backdrop_image(self, default=True):
+    def get_backdrop_image(self, default=True, original=False):
         if self.fanart_backdrop:
             return self.fanart_backdrop
         else:
@@ -323,7 +358,10 @@ class MetaBase(object):
         if self.fanart_backdrop:
             return self.fanart_backdrop
         elif self.backdrop_path:
-            return self.backdrop_path
+            if original:
+                return self.backdrop_path.replace("/w500", "/original")
+            else:
+                return self.backdrop_path
         else:
             return "../static/img/tmdb.webp" if default else ""
 
@@ -344,17 +382,43 @@ class MetaBase(object):
             return DEFAULT_TMDB_IMAGE
 
     # 返回海报图片地址
-    def get_poster_image(self):
-        if self.fanart_poster:
-            return self.fanart_poster
-        else:
+    def get_poster_image(self, original=False):
+        if self.poster_path:
+            if original:
+                return self.poster_path.replace("/w500", "/original")
+            else:
+                return self.poster_path
+        if not self.fanart_poster:
             self.fanart_poster = self.fanart.get_poster(media_type=self.type,
                                                         queryid=self.tmdb_id if self.type == MediaType.MOVIE else self.tvdb_id)
-        return self.fanart_poster if self.fanart_poster else self.poster_path or ""
+        return self.fanart_poster or ""
+
+    # 查询TMDB详情页URL
+    def get_detail_url(self):
+        if self.tmdb_id:
+            if str(self.tmdb_id).startswith("DB:"):
+                return "https://movie.douban.com/subject/%s" % str(self.tmdb_id).replace("DB:", "")
+            elif self.type == MediaType.MOVIE:
+                return "https://www.themoviedb.org/movie/%s" % self.tmdb_id
+            else:
+                return "https://www.themoviedb.org/tv/%s" % self.tmdb_id
+        elif self.douban_id:
+            return "https://movie.douban.com/subject/%s" % self.douban_id
+        return ""
+
+    # 返回评分星星个数
+    def get_stars(self):
+        if not self.vote_average:
+            return ""
+        return "".rjust(int(self.vote_average), "★")
 
     # 返回促销信息
     def get_volume_factor_string(self):
-        if self.upload_volume_factor is None or self.download_volume_factor is None:
+        return self.get_free_string(self.upload_volume_factor, self.download_volume_factor)
+
+    @staticmethod
+    def get_free_string(upload_volume_factor, download_volume_factor):
+        if upload_volume_factor is None or download_volume_factor is None:
             return "未知"
         free_strs = {
             "1.0 1.0": "普通",
@@ -366,7 +430,7 @@ class MetaBase(object):
             "1.0 0.7": "70%",
             "1.0 0.3": "30%"
         }
-        return free_strs.get('%.1f %.1f' % (self.upload_volume_factor, self.download_volume_factor), "未知")
+        return free_strs.get('%.1f %.1f' % (upload_volume_factor, download_volume_factor), "未知")
 
     # 是否包含季
     def is_in_season(self, season):
@@ -423,17 +487,17 @@ class MetaBase(object):
             self.title = info.get('title')
             self.original_title = info.get('original_title')
             self.original_language = info.get('original_language')
-            release_date = info.get('release_date')
-            if release_date:
-                self.year = release_date[0:4]
+            self.release_date = info.get('release_date')
+            if self.release_date:
+                self.year = self.release_date[0:4]
             self.category = self.category_handler.get_movie_category(info)
         else:
             self.title = info.get('name')
             self.original_title = info.get('original_name')
             self.original_language = info.get('original_language')
-            first_air_date = info.get('first_air_date')
-            if first_air_date:
-                self.year = first_air_date[0:4]
+            self.release_date = info.get('first_air_date')
+            if self.release_date:
+                self.year = self.release_date[0:4]
             if self.type == MediaType.TV:
                 self.category = self.category_handler.get_tv_category(info)
             else:
@@ -457,7 +521,8 @@ class MetaBase(object):
                          upload_volume_factor=None,
                          download_volume_factor=None,
                          rssid=None,
-                         hit_and_run=None):
+                         hit_and_run=None,
+                         imdbid=None):
         if site:
             self.site = site
         if site_order:
@@ -484,6 +549,15 @@ class MetaBase(object):
             self.rssid = rssid
         if hit_and_run is not None:
             self.hit_and_run = hit_and_run
+        if imdbid is not None:
+            self.imdb_id = imdbid
+
+    # 整合下载参数
+    def set_download_info(self, download_setting=None, save_path=None):
+        if download_setting:
+            self.download_setting = download_setting
+        if save_path:
+            self.save_path = save_path
 
     # 判断电视剧是否为动漫
     def __get_tmdb_type(self, info):
@@ -509,7 +583,7 @@ class MetaBase(object):
     def init_subtitle(self, title_text):
         if not title_text:
             return
-        if re.search(r'[全第季集话話]', title_text, re.IGNORECASE):
+        if re.search(r'[全第季集话話期]', title_text, re.IGNORECASE):
             # 第x季
             season_str = re.search(r'%s' % self._subtitle_season_re, title_text, re.IGNORECASE)
             if season_str:
@@ -528,7 +602,7 @@ class MetaBase(object):
                     else:
                         begin_season = int(cn2an.cn2an(seasons, mode='smart'))
                 except Exception as err:
-                    print(str(err))
+                    ExceptionUtils.exception_traceback(err)
                     return
                 if self.begin_season is None and isinstance(begin_season, int):
                     self.begin_season = begin_season
@@ -559,7 +633,7 @@ class MetaBase(object):
                     else:
                         begin_episode = int(cn2an.cn2an(episodes, mode='smart'))
                 except Exception as err:
-                    print(str(err))
+                    ExceptionUtils.exception_traceback(err)
                     return
                 if self.begin_episode is None and isinstance(begin_episode, int):
                     self.begin_episode = begin_episode
@@ -589,9 +663,24 @@ class MetaBase(object):
                     try:
                         self.total_seasons = int(cn2an.cn2an(season_all.strip(), mode='smart'))
                     except Exception as err:
-                        print(str(err))
+                        ExceptionUtils.exception_traceback(err)
                         return
                     self.begin_season = 1
                     self.end_season = self.total_seasons
                     self.type = MediaType.TV
                     self._subtitle_flag = True
+
+    def to_dict(self):
+        """
+        转化为字典
+        """
+        return {
+            "title": self.title,
+            "year": self.year,
+            "type": self.type.value if self.type else "",
+            "imdb_id": self.imdb_id,
+            "tmdb_id": self.tmdb_id,
+            "overview": self.overview,
+            "poster_path": self.poster_path,
+            "backdrop_path": self.backdrop_path,
+        }

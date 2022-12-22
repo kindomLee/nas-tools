@@ -3,16 +3,13 @@ import re
 
 from lxml import etree
 
-from app.sites.siteuserinfo.site_user_info import ISiteUserInfo
+from app.sites.siteuserinfo._base import _ISiteUserInfo
 from app.utils import StringUtils
+from app.utils.types import SiteSchema
 
 
-class DiscuzUserInfo(ISiteUserInfo):
-    _site_schema = "Discuz!"
-    _brief_page = "index.php"
-    _user_traffic_page = None
-    _user_detail_page = None
-    _torrent_seeding_page = None
+class DiscuzUserInfo(_ISiteUserInfo):
+    schema = SiteSchema.DiscuzX
 
     def _parse_user_base_info(self, html_text):
         html_text = self._prepare_html_text(html_text)
@@ -26,11 +23,6 @@ class DiscuzUserInfo(ISiteUserInfo):
                 self._torrent_seeding_page = f"forum.php?&mod=torrents&cat_5up=on"
                 self._user_detail_page = user_info[0].attrib['href']
                 self.username = user_info[0].text.strip()
-
-        logout = html.xpath('//a[contains(@href, "logout") or contains(@data-url, "logout")'
-                            ' or contains(@onclick, "logout")]')
-        if not logout:
-            self.err_msg = "未检测到已登陆，请检查cookies是否过期"
 
     def _parse_site_page(self, html_text):
         # TODO
@@ -54,7 +46,7 @@ class DiscuzUserInfo(ISiteUserInfo):
         # 加入日期
         join_at_text = html.xpath('//li[em[text()="注册时间"]]/text()')
         if join_at_text:
-            self.join_at = join_at_text[0].strip()
+            self.join_at = StringUtils.unify_datetime_str(join_at_text[0].strip())
 
         # 分享率
         ratio_text = html.xpath('//li[contains(.//text(), "分享率")]//text()')
@@ -129,3 +121,9 @@ class DiscuzUserInfo(ISiteUserInfo):
 
     def _parse_user_traffic_info(self, html_text):
         pass
+
+    def _parse_message_unread_links(self, html_text, msg_links):
+        return None
+
+    def _parse_message_content(self, html_text):
+        return None, None, None

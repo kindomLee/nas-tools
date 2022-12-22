@@ -1,29 +1,10 @@
-import datetime
 import os
-from functools import lru_cache
-
-from app.utils import RequestUtils
+from app.utils import RequestUtils, SystemUtils
+from app.utils.exception_utils import ExceptionUtils
 from version import APP_VERSION
 
 
 class WebUtils:
-
-    @staticmethod
-    @lru_cache(maxsize=7)
-    def get_bing_wallpaper(today=datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d')):
-        """
-        获取Bing每日避纸
-        """
-        url = "http://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&today=%s" % today
-        try:
-            resp = RequestUtils().get_res(url)
-        except Exception as err:
-            print(str(err))
-            return ""
-        if resp and resp.status_code == 200:
-            for image in resp.json()['images']:
-                return f"https://cn.bing.com{image['url']}"
-        return ""
 
     @staticmethod
     def get_location(ip):
@@ -41,7 +22,7 @@ class WebUtils:
             c2 = c1.split('","')[0]
             return c2
         except Exception as err:
-            print(str(err))
+            ExceptionUtils.exception_traceback(err)
             return ""
 
     @staticmethod
@@ -49,5 +30,5 @@ class WebUtils:
         """
         获取当前版本号
         """
-        commit_id = os.popen('git rev-parse --short HEAD').readline().strip()
+        commit_id = SystemUtils.execute('git rev-parse --short HEAD')
         return "%s %s" % (APP_VERSION, commit_id)

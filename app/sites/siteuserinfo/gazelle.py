@@ -3,16 +3,13 @@ import re
 
 from lxml import etree
 
-from app.sites.siteuserinfo.site_user_info import ISiteUserInfo
+from app.sites.siteuserinfo._base import _ISiteUserInfo
 from app.utils import StringUtils
+from app.utils.types import SiteSchema
 
 
-class GazelleUserInfo(ISiteUserInfo):
-    _site_schema = "Gazelle"
-    _brief_page = "/"
-    _user_traffic_page = None
-    _user_detail_page = None
-    _torrent_seeding_page = None
+class GazelleSiteUserInfo(_ISiteUserInfo):
+    schema = SiteSchema.Gazelle
 
     def _parse_user_base_info(self, html_text):
         html_text = self._prepare_html_text(html_text)
@@ -49,11 +46,6 @@ class GazelleUserInfo(ISiteUserInfo):
                 if bonus_match and bonus_match.group(1).strip():
                     self.bonus = StringUtils.str_float(bonus_match.group(1))
 
-        logout = html.xpath('//a[contains(@href, "logout") or contains(@data-url, "logout")'
-                            ' or contains(@onclick, "logout")]')
-        if not logout:
-            self.err_msg = "未检测到已登陆，请检查cookies是否过期"
-
     def _parse_site_page(self, html_text):
         # TODO
         pass
@@ -76,7 +68,7 @@ class GazelleUserInfo(ISiteUserInfo):
         # 加入日期
         join_at_text = html.xpath('//*[@id="join-date-value"]/@data-value')
         if join_at_text:
-            self.join_at = join_at_text[0].strip()
+            self.join_at = StringUtils.unify_datetime_str(join_at_text[0].strip())
 
     def _parse_user_torrent_seeding_info(self, html_text, multi_page=False):
         """
@@ -134,3 +126,9 @@ class GazelleUserInfo(ISiteUserInfo):
     def _parse_user_traffic_info(self, html_text):
         # TODO
         pass
+
+    def _parse_message_unread_links(self, html_text, msg_links):
+        return None
+
+    def _parse_message_content(self, html_text):
+        return None, None, None
