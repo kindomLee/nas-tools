@@ -30,6 +30,11 @@ jobs:
           prompt: |
             You are an autonomous issue resolver. Your task is to analyze and fix the following issue.
 
+            ## Language Requirements
+            IMPORTANT: When posting comments to issues or PRs using `gh issue comment` or `gh pr comment`,
+            you MUST write in Traditional Chinese (繁體中文). Code, commit messages, branch names,
+            and internal execution can remain in English.
+
             ## Issue Details
             - Repository: ${{ github.repository }}
             - Issue Number: #${{ github.event.issue.number }}
@@ -43,8 +48,9 @@ jobs:
             2. Identify the root cause of the problem
             3. Implement a fix following the project's coding conventions
             4. Create a new branch named `fix/issue-${{ github.event.issue.number }}`
-            5. Commit your changes with a clear message referencing the issue
+            5. Commit your changes with a clear message referencing the issue (in English)
             6. Create a pull request that:
+               - Title and body in Traditional Chinese (繁體中文)
                - References the issue with "Fixes #${{ github.event.issue.number }}"
                - Describes what was changed and why
                - Lists any testing done
@@ -53,10 +59,10 @@ jobs:
             - Create branch: `git checkout -b fix/issue-${{ github.event.issue.number }}`
             - After changes: `git add . && git commit -m "fix: <description> (closes #${{ github.event.issue.number }})"`
             - Push: `git push -u origin fix/issue-${{ github.event.issue.number }}`
-            - Create PR: `gh pr create --title "Fix: <title>" --body "<description>\n\nFixes #${{ github.event.issue.number }}"`
+            - Create PR: `gh pr create --title "修復：<中文標題>" --body "<中文說明>\n\nFixes #${{ github.event.issue.number }}"`
 
             ## Important
-            - If you cannot fix the issue, comment on it explaining why and what additional information is needed
+            - If you cannot fix the issue, comment on it in Traditional Chinese explaining why and what additional information is needed
             - Follow existing code patterns and conventions
             - Make minimal, focused changes
             - Do not modify unrelated code

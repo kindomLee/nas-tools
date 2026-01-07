@@ -15,5 +15,8 @@ gen/
 ### Claude Memory Tool ###
 # Ignore claude-mem auto-generated files in subdirectories
 # Keep root CLAUDE.md for documentation
-**/CLAUDE.md
-!CLAUDE.md
+.github/**/CLAUDE.md
+config/**/CLAUDE.md
+docker/**/CLAUDE.md
+app/**/CLAUDE.md
+web/**/CLAUDE.md
