@@ -6,10 +6,13 @@ on:
 
 jobs:
   resolve-issue:
-    # Only run when issue has 'claude-fix' label or contains '@claude' in body
+    # Only run when issue author is repository owner AND has 'claude-fix' label or contains '@claude'
     if: |
-      (github.event.action == 'labeled' && github.event.label.name == 'claude-fix') ||
-      (github.event.action == 'opened' && contains(github.event.issue.body, '@claude'))
+      github.event.issue.user.login == github.repository_owner &&
+      (
+        (github.event.action == 'labeled' && github.event.label.name == 'claude-fix') ||
+        (github.event.action == 'opened' && contains(github.event.issue.body, '@claude'))
+      )
     runs-on: ubuntu-latest
     permissions:
       contents: write
