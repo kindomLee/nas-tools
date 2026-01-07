@@ -1,0 +1,65 @@
+name: Claude Issue Resolver
+
+on:
+  issues:
+    types: [opened, labeled]
+
+jobs:
+  resolve-issue:
+    # Only run when issue has 'claude-fix' label or contains '@claude' in body
+    if: |
+      (github.event.action == 'labeled' && github.event.label.name == 'claude-fix') ||
+      (github.event.action == 'opened' && contains(github.event.issue.body, '@claude'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve Issue with Claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            You are an autonomous issue resolver. Your task is to analyze and fix the following issue.
+
+            ## Issue Details
+            - Repository: ${{ github.repository }}
+            - Issue Number: #${{ github.event.issue.number }}
+            - Title: ${{ github.event.issue.title }}
+            - Author: ${{ github.event.issue.user.login }}
+            - Body:
+            ${{ github.event.issue.body }}
+
+            ## Instructions
+            1. First, understand the issue thoroughly by reading related code files
+            2. Identify the root cause of the problem
+            3. Implement a fix following the project's coding conventions
+            4. Create a new branch named `fix/issue-${{ github.event.issue.number }}`
+            5. Commit your changes with a clear message referencing the issue
+            6. Create a pull request that:
+               - References the issue with "Fixes #${{ github.event.issue.number }}"
+               - Describes what was changed and why
+               - Lists any testing done
+
+            ## Commands to use
+            - Create branch: `git checkout -b fix/issue-${{ github.event.issue.number }}`
+            - After changes: `git add . && git commit -m "fix: <description> (closes #${{ github.event.issue.number }})"`
+            - Push: `git push -u origin fix/issue-${{ github.event.issue.number }}`
+            - Create PR: `gh pr create --title "Fix: <title>" --body "<description>\n\nFixes #${{ github.event.issue.number }}"`
+
+            ## Important
+            - If you cannot fix the issue, comment on it explaining why and what additional information is needed
+            - Follow existing code patterns and conventions
+            - Make minimal, focused changes
+            - Do not modify unrelated code
+
+          claude_args: |
+            --allowedTools "Bash(git:*),Bash(gh issue:*),Bash(gh pr:*),Edit,Read,Glob,Grep,Write"
