@@ -3,7 +3,7 @@
     <div class="row align-items-center">
       <div class="col">
         <h2 class="page-title">
-          数据统计
+          資料統計
         </h2>
       </div>
     </div>
@@ -35,7 +35,7 @@
                 </div>
                 <div class="col">
                   <div class="d-flex align-items-center">
-                    <div class="subheader">总上传量</div>
+                    <div class="subheader">總上傳量</div>
                   </div>
                   <div class="d-flex align-items-baseline">
                     <div class="h1 mb-0 me-2">{{ TotalUpload | filesizeformat(true) }}</div>
@@ -67,7 +67,7 @@
                 </div>
                 <div class="col">
                   <div class="d-flex align-items-center">
-                    <div class="subheader">总下载量</div>
+                    <div class="subheader">總下載量</div>
                   </div>
                   <div class="d-flex align-items-baseline">
                     <div class="h1 mb-0 me-2">{{ TotalDownload | filesizeformat(true) }}</div>
@@ -98,7 +98,7 @@
                 </div>
                 <div class="col">
                   <div class="d-flex align-items-center">
-                    <div class="subheader">总做种数</div>
+                    <div class="subheader">總做種數</div>
                   </div>
                   <div class="d-flex align-items-baseline">
                     <div class="h1 mb-0 me-2">{{ TotalSeeding }}</div>
@@ -126,7 +126,7 @@
                 </div>
                 <div class="col">
                   <div class="d-flex align-items-center">
-                    <div class="subheader">总做种体积</div>
+                    <div class="subheader">總做種體積</div>
                   </div>
                   <div class="d-flex align-items-baseline">
                     <div class="h1 mb-0 me-2">{{ TotalSeedingSize | filesizeformat(true) }}</div>
@@ -142,7 +142,7 @@
           <div class="card">
             <div class="card-body">
               <div class="d-flex">
-                <h3 class="card-title">今日上传量 共{{ CurrentUpload | filesizeformat(true) }}</h3>
+                <h3 class="card-title">今日上傳量 共{{ CurrentUpload | filesizeformat(true) }}</h3>
               </div>
               <div id="chart-recent-upload"></div>
             </div>
@@ -152,7 +152,7 @@
           <div class="card">
             <div class="card-body">
               <div class="d-flex">
-                <h3 class="card-title">今日下载量 共{{ CurrentDownload | filesizeformat(true) }}</h3>
+                <h3 class="card-title">今日下載量 共{{ CurrentDownload | filesizeformat(true) }}</h3>
               </div>
               <div id="chart-recent-download"></div>
             </div>
@@ -162,13 +162,13 @@
           <div class="card">
             <div class="card-body">
               <div class="d-flex">
-                <h3 class="card-title" id="site-history-title">历史数据</h3>
+                <h3 class="card-title" id="site-history-title">歷史資料</h3>
               </div>
               <div class="row align-items-center">
                 <div class="col-auto ms-auto d-print-none">
                   <div class="btn-list">
                     <button id="btn-history-one-week" class="btn btn-ghost-info active btn-site-history"
-                            onclick="show_site_history(this, 7)">最近一周
+                            onclick="show_site_history(this, 7)">最近一週
                     </button>
                     <button id="btn-history-one-month" class="btn btn-ghost-info btn-site-history"
                             onclick="show_site_history(this, 30)">最近一月
@@ -187,10 +187,10 @@
           <div class="card">
             <div class="card-body">
               <div class="d-flex">
-                <h3 class="card-title">站点数据</h3>
+                <h3 class="card-title">站點資料</h3>
                 <div class="ms-2">
                   <a href="javascript:save_statistics_pic()" class="btn-icon"
-                     title="请在明亮模式（右上角切换）下生成数据图">
+                     title="請在明亮模式（右上角切換）下生成資料圖">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="icon icon-tabler icon-tabler-refresh" style="vertical-align: middle"
                          viewBox="0 0 16 16">
@@ -214,7 +214,7 @@
                   </a>
                 </div>
                 <div class="ms-2 text-muted">
-                  共 {{ SiteUserStatistics | count }} 条记录
+                  共 {{ SiteUserStatistics | count }} 條記錄
                 </div>
               </div>
             </div>
@@ -223,28 +223,28 @@
                 <thead>
                 <tr>
                   <th class="flex-fill">
-                    <button class="table-sort" data-sort="sort-name">站点</button>
+                    <button class="table-sort" data-sort="sort-name">站點</button>
                   </th>
-                  <th><span class="d-none d-lg-block">等级</span></th>
+                  <th><span class="d-none d-lg-block">等級</span></th>
                   <th>
-                    <button class="table-sort" data-sort="sort-data">数据量</button>
+                    <button class="table-sort" data-sort="sort-data">資料量</button>
                   </th>
                   <th>
                     <button class="table-sort" data-sort="sort-ratio">分享率</button>
                   </th>
                   <th>
-                    <button class="table-sort" data-sort="sort-seeding">做种数</button>
+                    <button class="table-sort" data-sort="sort-seeding">做種數</button>
                   </th>
                   <th>
-                    <button class="table-sort" data-sort="sort-size">做种体积</button>
+                    <button class="table-sort" data-sort="sort-size">做種體積</button>
                   </th>
                   <th>
-                    <button class="table-sort" data-sort="sort-bonus">魔力值(积分)</button>
+                    <button class="table-sort" data-sort="sort-bonus">魔力值(積分)</button>
                   </th>
                   <th><span class="d-none d-lg-block"><button class="table-sort"
-                                                              data-sort="sort-jtime">加入时间</button></span></th>
+                                                              data-sort="sort-jtime">加入時間</button></span></th>
                   <th><span class="d-none d-lg-block"><button class="table-sort"
-                                                              data-sort="sort-rtime">更新时间</button></span></th>
+                                                              data-sort="sort-rtime">更新時間</button></span></th>
                   <th></th>
                 </tr>
                 </thead>
@@ -259,7 +259,7 @@
                           {% else %}
                             <span class="badge bg-success me-1"></span>
                           {% endif %}
-                          <span onclick="navmenu('statistics?refresh_site={{ item.site }}')" title="点击刷新站点数据"
+                          <span onclick="navmenu('statistics?refresh_site={{ item.site }}')" title="點選重新整理站點資料"
                                class="avatar avatar-sm rounded me-2 siteicon-{{ item.site|hash }}" width="24"
                                 height="24" alt="" style="cursor:pointer"></span>
                           <div class="flex-fill">
@@ -340,7 +340,7 @@
                   {% endfor %}
                 {% else %}
                   <tr>
-                    <td colspan="8" align="center">没有数据</td>
+                    <td colspan="8" align="center">沒有資料</td>
                   </tr>
                 {% endif %}
                 </tbody>
@@ -355,7 +355,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="site-activity-title">站点信息</h5>
+          <h5 class="modal-title" id="site-activity-title">站點資訊</h5>
           <input type="hidden" id="site-activity-name" name="site-name" value="">
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -371,7 +371,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="site-seeding-info-title">站点信息</h5>
+          <h5 class="modal-title" id="site-seeding-info-title">站點資訊</h5>
           <input type="hidden" id="site-seeding-info-name" name="site-name" value="">
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -387,7 +387,7 @@
     $('#site-activity').off('shown.bs.modal').on('shown.bs.modal', function (e) {
       let site_name = $('#site-activity-name').val();
 
-      // 单站点历史数据图
+      // 單站點歷史資料圖
       if (typeof (chart_site_activity) != 'undefined') {
         chart_site_activity.dispose();
       }
@@ -444,7 +444,7 @@
                   }
                 },
                 legend: {
-                  data: ['总上传量', '总下载量', '做种体积', '积分']
+                  data: ['總上傳量', '總下載量', '做種體積', '積分']
                 },
                 xAxis: [
                   {
@@ -457,7 +457,7 @@
                 yAxis: [
                   {
                     type: 'value',
-                    name: '总上传量',
+                    name: '總上傳量',
                     position: 'left',
                     alignTicks: true,
                     axisLine: {
@@ -481,7 +481,7 @@
                   },
                   {
                     type: 'value',
-                    name: '总下载量',
+                    name: '總下載量',
                     position: 'right',
                     alignTicks: true,
                     offset: 70,
@@ -506,7 +506,7 @@
                   },
                   {
                     type: 'value',
-                    name: '做种体积',
+                    name: '做種體積',
                     position: 'right',
                     alignTicks: true,
                     axisLine: {
@@ -530,7 +530,7 @@
                   },
                   {
                     type: 'value',
-                    name: '积分',
+                    name: '積分',
                     position: 'right',
                     alignTicks: true,
                     offset: 140,
@@ -556,7 +556,7 @@
                 ],
                 series: [
                   {
-                    name: '总上传量',
+                    name: '總上傳量',
                     type: 'line',
                     large: true, smooth: true, symbol: 'none',
                     yAxisIndex: '0',
@@ -566,7 +566,7 @@
                     }
                   },
                   {
-                    name: '总下载量',
+                    name: '總下載量',
                     type: 'line',
                     large: true, smooth: true, symbol: 'none',
                     yAxisIndex: '1',
@@ -576,7 +576,7 @@
                     }
                   },
                   {
-                    name: '做种体积',
+                    name: '做種體積',
                     type: 'line',
                     large: true, smooth: true, symbol: 'none',
                     yAxisIndex: '2',
@@ -586,7 +586,7 @@
                     }
                   },
                   {
-                    name: '积分',
+                    name: '積分',
                     type: 'line',
                     large: true, smooth: true, symbol: 'none',
                     yAxisIndex: '3',
@@ -599,27 +599,27 @@
               };
               chart_site_activity.setOption(options_site_activity);
             } else {
-              show_fail_modal(`${site_name} 查询失败：${ret.msg}！`);
+              show_fail_modal(`${site_name} 查詢失敗：${ret.msg}！`);
             }
           }
       );
     });
 
     function show_site_activity(site_name) {
-      $('#site-activity-title').text(site_name + " 历史数据");
+      $('#site-activity-title').text(site_name + " 歷史資料");
       $('#site-activity-name').val(site_name);
       $('#site-activity').modal("show");
     }
 
     function show_site_seeding_info(site_name) {
       $('#site-seeding-info-name').val(site_name);
-      $('#site-seeding-info-title').text(site_name + " 做种分布");
+      $('#site-seeding-info-title').text(site_name + " 做種分佈");
       $('#site-seeding-info').modal("show");
     }
 
     $('#site-seeding-info').off('shown.bs.modal').on('shown.bs.modal', function (e) {
       let site_name = $('#site-seeding-info-name').val();
-      // 做种散点图
+      // 做種散點圖
       if (typeof (chart_seeding_info) != 'undefined') {
         chart_seeding_info.dispose();
       }
@@ -644,8 +644,8 @@
                   showDelay: 0,
                   trigger: 'item', formatter: function (params) {
                     return (
-                        '人数 : ' + params.value[0] +
-                        '<br/>' + '体积 : ' +
+                        '人數 : ' + params.value[0] +
+                        '<br/>' + '體積 : ' +
                         numeral(params.value[1]).format('0.0 ib')
                     );
                   }
@@ -653,7 +653,7 @@
                 xAxis: {
                   scale: true,
                   type: 'value',
-                  name: '做种人数'
+                  name: '做種人數'
                 },
                 yAxis: {
                   scale: true,
@@ -666,39 +666,39 @@
                 },
                 series: {
                   type: 'scatter',
-                  name: '做种人数',
+                  name: '做種人數',
                   encode: {tooltip: [1]}
                 }
               };
               chart_seeding_info.setOption(options_seeding_info);
             } else {
-              show_fail_modal(`${site_name} 查询失败：${ret.msg}！`);
+              show_fail_modal(`${site_name} 查詢失敗：${ret.msg}！`);
             }
           }
       );
 
     });
 
-    // 今日上传饼图
+    // 今日上傳餅圖
     if (typeof (pie_ul) != 'undefined')
       pie_ul.dispose();
     pie_ul = echarts.init($('#chart-recent-upload')[0], null, {
       height: 300
     });
-    // 今日下载饼图
+    // 今日下載餅圖
     if (typeof (pie_dl) != 'undefined')
       pie_dl.dispose();
     pie_dl = echarts.init($('#chart-recent-download')[0], null, {
       height: 300
     });
-    // 站点历史柱状图
+    // 站點歷史柱狀圖
     if (typeof (chart_history) != 'undefined')
       chart_history.dispose();
     chart_history = echarts.init($('#chart-site-history')[0], null, {
       height: 350
     });
 
-    // 响应大小调整
+    // 響應大小調整
     window.onresize = function () {
       pie_ul.resize();
       pie_dl.resize();
@@ -759,7 +759,7 @@
                   }
                 ],
                 series: [
-                  {name: "上传量", type: 'bar'}, {name: "下载量", type: 'bar'}
+                  {name: "上傳量", type: 'bar'}, {name: "下載量", type: 'bar'}
                 ]
               };
               chart_history.setOption(option_history);
@@ -774,15 +774,15 @@
               }
               up_all = numeral(up_all).format('0.0 ib')
               dl_all = numeral(dl_all).format('0.0 ib')
-              $('#site-history-title').text("历史数据 (上传量 " + up_all + " / 下载量 " + dl_all + ")")
+              $('#site-history-title').text("歷史資料 (上傳量 " + up_all + " / 下載量 " + dl_all + ")")
             } else {
-              show_fail_modal(`历史数据 查询失败：${ret.msg}！`);
+              show_fail_modal(`歷史資料 查詢失敗：${ret.msg}！`);
             }
           }
       );
     }
 
-    // 当前一周数据
+    // 當前一週資料
     $('#btn-history-one-week').trigger('click');
 
     pie_dl.showLoading();
@@ -853,7 +853,7 @@
             };
             pie_dl.setOption(option_dl)
           } else {
-            show_fail_modal(`历史数据 查询失败：${ret.msg}！`);
+            show_fail_modal(`歷史資料 查詢失敗：${ret.msg}！`);
           }
         }
     );
@@ -869,34 +869,34 @@
       ]
     });
 
-    // 生成统计数据图片并下载
+    // 生成統計資料圖片並下載
     function save_statistics_pic() {
       let table = $('#table-site-user-data-table').clone(true)[0];
       table.setAttribute("style", "width:500px; min-height: 300px;");
       let thead = table.childNodes[1];
       let tbody = table.childNodes[3];
       let thead_tr = thead.childNodes[1];
-      thead_tr.removeChild(thead_tr.childNodes[19]);//更新按钮
-      thead_tr.removeChild(thead_tr.childNodes[17]);//更新时间
-      thead_tr.removeChild(thead_tr.childNodes[15]);//加入时间
+      thead_tr.removeChild(thead_tr.childNodes[19]);//更新按鈕
+      thead_tr.removeChild(thead_tr.childNodes[17]);//更新時間
+      thead_tr.removeChild(thead_tr.childNodes[15]);//加入時間
       thead_tr.removeChild(thead_tr.childNodes[13]);//魔力值
-      thead_tr.removeChild(thead_tr.childNodes[3]);//等级
+      thead_tr.removeChild(thead_tr.childNodes[3]);//等級
       for (tbody_tr of tbody.childNodes) {
         let td_name = tbody_tr.childNodes[1];
         let div_name = td_name.childNodes[1];
         let img = div_name.childNodes[3];
         let div_name_text = div_name.childNodes[5];
         let id = div_name_text.childNodes[3];
-        img.setAttribute("style", "filter:blur(3px)");//站点图标模糊
-        id.setAttribute("style", "filter:blur(3px)");//站点id模糊
+        img.setAttribute("style", "filter:blur(3px)");//站點圖示模糊
+        id.setAttribute("style", "filter:blur(3px)");//站點id模糊
         div_name.removeChild(div_name.childNodes[1]);
-        tbody_tr.removeChild(tbody_tr.childNodes[19]);//更新按钮
-        tbody_tr.removeChild(tbody_tr.childNodes[17]);//更新时间
-        tbody_tr.removeChild(tbody_tr.childNodes[15]);//加入时间
+        tbody_tr.removeChild(tbody_tr.childNodes[19]);//更新按鈕
+        tbody_tr.removeChild(tbody_tr.childNodes[17]);//更新時間
+        tbody_tr.removeChild(tbody_tr.childNodes[15]);//加入時間
         tbody_tr.removeChild(tbody_tr.childNodes[13]);//魔力值
-        tbody_tr.removeChild(tbody_tr.childNodes[3]);//等级
+        tbody_tr.removeChild(tbody_tr.childNodes[3]);//等級
       }
-      // 生成图片（明亮风格使用素色背景，暗黑风格使用深色背景）并下载
+      // 生成圖片（明亮風格使用素色背景，暗黑風格使用深色背景）並下載
       let theme = localStorage.getItem("tablerTheme");
       let bgcolor = '';
       if (theme === "light") {
@@ -917,9 +917,9 @@
       <div class="empty">
         <div class="empty-img"><img src="./static/img/sign_in.svg" height="128" alt="">
         </div>
-        <p class="empty-title">没有数据</p>
+        <p class="empty-title">沒有資料</p>
         <p class="empty-subtitle text-muted">
-          没有生成站点统计数据，请确认是否正确配置站点信息
+          沒有生成站點統計資料，請確認是否正確配置站點資訊
         </p>
       </div>
     </div>

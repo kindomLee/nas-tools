@@ -13,7 +13,7 @@ from app.utils.types import MediaType
 
 class MetaAnime(MetaBase):
     """
-    识别动漫
+    識別動漫
     """
     _anime_no_words = ['CHS&CHT', 'MP4', 'GB MP4', 'WEB-DL']
     _name_nostring_re = r"S\d{2}\s*-\s*S\d{2}|S\d{2}|\s+S\d{1,2}|EP?\d{2,4}\s*-\s*EP?\d{2,4}|EP?\d{2,4}|\s+EP?\d{1,4}"
@@ -22,15 +22,15 @@ class MetaAnime(MetaBase):
         super().__init__(title, subtitle, fileflag)
         if not title:
             return
-        # 调用第三方模块识别动漫
+        # 呼叫第三方模組識別動漫
         try:
             original_title = title
-            # 字幕组信息会被预处理掉
+            # 字幕組資訊會被預處理掉
             anitopy_info_origin = anitopy.parse(title)
             title = self.__prepare_title(title)
             anitopy_info = anitopy.parse(title)
             if anitopy_info:
-                # 名称
+                # 名稱
                 name = anitopy_info.get("anime_title")
                 if name and name.find("/") != -1:
                     name = name.split("/")[-1].strip()
@@ -42,7 +42,7 @@ class MetaAnime(MetaBase):
                     name_match = re.search(r'\[(.+?)]', title)
                     if name_match and name_match.group(1):
                         name = name_match.group(1).strip()
-                # 拆份中英文名称
+                # 拆份中英文名稱
                 if name:
                     lastword_type = ""
                     for word in name.split():
@@ -73,7 +73,7 @@ class MetaAnime(MetaBase):
                 year = anitopy_info.get("anime_year")
                 if str(year).isdigit():
                     self.year = str(year)
-                # 季号
+                # 季號
                 anime_season = anitopy_info.get("anime_season")
                 if isinstance(anime_season, list):
                     if len(anime_season) == 1:
@@ -96,7 +96,7 @@ class MetaAnime(MetaBase):
                     else:
                         self.total_seasons = 1
                     self.type = MediaType.TV
-                # 集号
+                # 集號
                 episode_number = anitopy_info.get("episode_number")
                 if isinstance(episode_number, list):
                     if len(episode_number) == 1:
@@ -124,7 +124,7 @@ class MetaAnime(MetaBase):
                         self.begin_episode = None
                         self.end_episode = None
                     self.type = MediaType.TV
-                # 类型
+                # 型別
                 if not self.type:
                     anime_type = anitopy_info.get('anime_type')
                     if isinstance(anime_type, list):
@@ -133,7 +133,7 @@ class MetaAnime(MetaBase):
                         self.type = MediaType.TV
                     else:
                         self.type = MediaType.MOVIE
-                # 分辨率
+                # 解析度
                 self.resource_pix = anitopy_info.get("video_resolution")
                 if isinstance(self.resource_pix, list):
                     self.resource_pix = self.resource_pix[0]
@@ -144,19 +144,19 @@ class MetaAnime(MetaBase):
                         self.resource_pix = self.resource_pix.lower()
                     if str(self.resource_pix).isdigit():
                         self.resource_pix = str(self.resource_pix) + "p"
-                # 制作组/字幕组
+                # 製作組/字幕組
                 self.resource_team = \
                     anitopy_info_origin.get("release_group") or \
                     ReleaseGroupsMatcher().match(title=original_title) or None
-                # 视频编码
+                # 影片編碼
                 self.video_encode = anitopy_info.get("video_term")
                 if isinstance(self.video_encode, list):
                     self.video_encode = self.video_encode[0]
-                # 音频编码
+                # 音訊編碼
                 self.audio_encode = anitopy_info.get("audio_term")
                 if isinstance(self.audio_encode, list):
                     self.audio_encode = self.audio_encode[0]
-                # 解析副标题，只要季和集
+                # 解析副標題，只要季和集
                 self.init_subtitle(self.org_string)
                 if not self._subtitle_flag and self.subtitle:
                     self.init_subtitle(self.subtitle)
@@ -168,31 +168,31 @@ class MetaAnime(MetaBase):
     @staticmethod
     def __prepare_title(title):
         """
-        对命名进行预处理
+        對命名進行預處理
         """
         if not title:
             return title
-        # 所有【】换成[]
+        # 所有【】換成[]
         title = title.replace("【", "[").replace("】", "]").strip()
-        # 截掉xx番剧漫
-        match = re.search(r"新番|月?番|[日美国][漫剧]", title)
+        # 截掉xx番劇漫
+        match = re.search(r"新番|月?番|[日美國][漫劇]", title)
         if match and match.span()[1] < len(title) - 1:
-            title = re.sub(".*番.|.*[日美国][漫剧].", "", title)
+            title = re.sub(".*番.|.*[日美國][漫劇].", "", title)
         elif match:
             title = title[:title.rfind('[')]
-        # 截掉分类
+        # 截掉分類
         first_item = title.split(']')[0]
-        if first_item and re.search(r"[动漫画纪录片电影视连续剧集日美韩中港台海外亚洲华语大陆综艺原盘高清]{2,}|TV|Animation|Movie|Documentar|Anime",
+        if first_item and re.search(r"[動漫畫紀錄片電影視連續劇集日美韓中港臺海外亞洲華語大陸綜藝原盤高畫質]{2,}|TV|Animation|Movie|Documentar|Anime",
                                     zhconv.convert(first_item, "zh-hans"),
                                     re.IGNORECASE):
             title = re.sub(r"^[^]]*[]]", "", title).strip()
         # 去掉大小
         title = re.sub(r'[0-9.]+\s*[MGT]i?B(?![A-Z]+)', "", title, flags=re.IGNORECASE)
-        # 将TVxx改为xx
+        # 將TVxx改為xx
         title = re.sub(r"\[TV\s+(\d{1,4})", r"[\1", title, flags=re.IGNORECASE)
-        # 将4K转为2160p
+        # 將4K轉為2160p
         title = re.sub(r'\[4k]', '2160p', title, flags=re.IGNORECASE)
-        # 处理/分隔的中英文标题
+        # 處理/分隔的中英文標題
         names = title.split("]")
         if len(names) > 1 and title.find("- ") == -1:
             titles = []

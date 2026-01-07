@@ -8,7 +8,7 @@ class RssTitleUtils:
     @staticmethod
     def keepfriends_title(title):
         """
-        处理pt.keepfrds.com的RSS标题
+        處理pt.keepfrds.com的RSS標題
         """
         if not title:
             return ""

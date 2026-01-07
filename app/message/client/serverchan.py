@@ -19,17 +19,17 @@ class ServerChan(IMessageClient):
 
     def send_msg(self, title, text="", image="", url="", user_id=""):
         """
-        发送ServerChan消息
-        :param title: 消息标题
-        :param text: 消息内容
+        傳送ServerChan訊息
+        :param title: 訊息標題
+        :param text: 訊息內容
         :param image: 未使用
         :param url: 未使用
         :param user_id: 未使用
         """
         if not title and not text:
-            return False, "标题和内容不能同时为空"
+            return False, "標題和內容不能同時為空"
         if not self._sckey:
-            return False, "参数未配置"
+            return False, "引數未配置"
         try:
             sc_url = "https://sctapi.ftqq.com/%s.send?%s" % (self._sckey, urlencode({"title": title, "desp": text}))
             res = RequestUtils().get_res(sc_url)
@@ -42,7 +42,7 @@ class ServerChan(IMessageClient):
                 else:
                     return False, error
             else:
-                return False, "未获取到返回信息"
+                return False, "未獲取到返回資訊"
         except Exception as msg_e:
             ExceptionUtils.exception_traceback(msg_e)
             return False, str(msg_e)

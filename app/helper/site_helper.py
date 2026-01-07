@@ -9,11 +9,11 @@ class SiteHelper:
     @classmethod
     def schema(cls, html_text):
         """
-        获取当前站点框架
+        獲取當前站點框架
         :param html_text:
         :return:
         """
-        # 解析站点代码
+        # 解析站點程式碼
         html = etree.HTML(html_text)
         if not html:
             return SiteSchema.NexusPhp
@@ -43,13 +43,13 @@ class SiteHelper:
 
         if "IPTorrents" in html_text:
             return SiteSchema.Ipt
-        # 默认NexusPhp
+        # 預設NexusPhp
         return SiteSchema.NexusPhp
 
     @classmethod
     def is_logged_in(cls, html_text):
         """
-        判断站点是否已经登陆
+        判斷站點是否已經登陸
         :param html_text:
         :return:
         """
@@ -57,7 +57,7 @@ class SiteHelper:
         if not html:
             return False
 
-        # 是否存在登出和用户面板等链接
+        # 是否存在登出和使用者面板等連結
         logout_or_usercp = html.xpath('//a[contains(@href, "logout") or contains(@data-url, "logout")'
                                       ' or contains(@href, "mybonus") '
                                       ' or contains(@onclick, "logout") or contains(@href, "usercp")]')

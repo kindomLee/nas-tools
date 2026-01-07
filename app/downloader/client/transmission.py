@@ -13,7 +13,7 @@ from app.downloader.download_client import IDownloadClient
 
 
 class Transmission(IDownloadClient):
-    # 参考transmission web，仅查询需要的参数，加速种子检索
+    # 參考transmission web，僅查詢需要的引數，加速種子檢索
     _trarg = ["id", "name", "status", "labels", "hashString", "totalSize", "percentDone", "addedDate", "trackerStats",
               "leftUntilDone", "rateDownload", "rateUpload", "recheckProgress", "rateDownload", "rateUpload",
               "peersGettingFromUs", "peersSendingToUs", "uploadRatio", "uploadedEver", "downloadedEver", "downloadDir",
@@ -22,7 +22,7 @@ class Transmission(IDownloadClient):
     client_type = DownloaderType.TR
 
     def get_config(self):
-        # 读取配置文件
+        # 讀取配置檔案
         transmission = Config().get_config('transmission')
         if transmission:
             self.host = transmission.get('trhost')
@@ -36,11 +36,11 @@ class Transmission(IDownloadClient):
 
     def __login_transmission(self):
         """
-        连接transmission
-        :return: transmission对象
+        連線transmission
+        :return: transmission物件
         """
         try:
-            # 登录
+            # 登入
             trt = transmission_rpc.Client(host=self.host,
                                           port=self.port,
                                           username=self.username,
@@ -49,7 +49,7 @@ class Transmission(IDownloadClient):
             return trt
         except Exception as err:
             ExceptionUtils.exception_traceback(err)
-            log.error(f"【{self.client_type}】transmission连接出错：{str(err)}")
+            log.error(f"【{self.client_type}】transmission連線出錯：{str(err)}")
             return None
 
     def get_status(self):
@@ -57,8 +57,8 @@ class Transmission(IDownloadClient):
 
     def get_torrents(self, ids=None, status=None, tag=None):
         """
-        获取种子列表
-        返回结果 种子列表, 是否有错误
+        獲取種子列表
+        返回結果 種子列表, 是否有錯誤
         """
         if not self.trc:
             return [], True
@@ -92,8 +92,8 @@ class Transmission(IDownloadClient):
 
     def get_completed_torrents(self, tag=None):
         """
-        获取已完成的种子列表
-        return 种子列表, 是否有错误
+        獲取已完成的種子列表
+        return 種子列表, 是否有錯誤
         """
         if not self.trc:
             return []
@@ -106,8 +106,8 @@ class Transmission(IDownloadClient):
 
     def get_downloading_torrents(self, tag=None):
         """
-        获取正在下载的种子列表
-        return 种子列表, 是否有错误
+        獲取正在下載的種子列表
+        return 種子列表, 是否有錯誤
         """
         if not self.trc:
             return []
@@ -125,7 +125,7 @@ class Transmission(IDownloadClient):
             ids = [int(x) for x in ids if str(x).isdigit()]
         elif str(ids).isdigit():
             ids = int(ids)
-        # 合成标签
+        # 合成標籤
         if tags:
             if not isinstance(tags, list):
                 tags = [tags, "已整理"]
@@ -133,10 +133,10 @@ class Transmission(IDownloadClient):
                 tags = tags.append("已整理")
         else:
             tags = ["已整理"]
-        # 打标签
+        # 打標籤
         try:
             self.trc.change_torrent(labels=tags, ids=ids)
-            log.info(f"【{self.client_type}】设置transmission种子标签成功")
+            log.info(f"【{self.client_type}】設定transmission種子標籤成功")
         except Exception as err:
             ExceptionUtils.exception_traceback(err)
 
@@ -156,13 +156,13 @@ class Transmission(IDownloadClient):
                        ratio_limit=None,
                        seeding_time_limit=None):
         """
-        设置种子
+        設定種子
         :param tid: ID
-        :param tag: 标签
-        :param upload_limit: 上传限速 Kb/s
-        :param download_limit: 下载限速 Kb/s
+        :param tag: 標籤
+        :param upload_limit: 上傳限速 Kb/s
+        :param download_limit: 下載限速 Kb/s
         :param ratio_limit: 分享率限制
-        :param seeding_time_limit: 做种时间限制
+        :param seeding_time_limit: 做種時間限制
         :return: bool
         """
         if not tid:
@@ -215,13 +215,13 @@ class Transmission(IDownloadClient):
             ExceptionUtils.exception_traceback(err)
 
     def get_transfer_task(self, tag):
-        # 处理所有任务
+        # 處理所有任務
         torrents = self.get_completed_torrents(tag=tag)
         trans_tasks = []
         for torrent in torrents:
-            # 3.0版本以下的Transmission没有labels
+            # 3.0版本以下的Transmission沒有labels
             if not hasattr(torrent, "labels"):
-                log.error(f"【{self.client_type}】当前transmission版本可能过低，无labels属性，请安装3.0以上版本！")
+                log.error(f"【{self.client_type}】當前transmission版本可能過低，無labels屬性，請安裝3.0以上版本！")
                 break
             if torrent.labels and "已整理" in torrent.labels:
                 continue
@@ -246,13 +246,13 @@ class Transmission(IDownloadClient):
             return []
         tags = config.get("filter_tags")
         ratio = config.get("ratio")
-        # 做种时间 单位：小时
+        # 做種時間 單位：小時
         seeding_time = config.get("seeding_time")
-        # 大小 单位：GB
+        # 大小 單位：GB
         size = config.get("size")
         minsize = size[0]*1024*1024*1024 if size else 0
         maxsize = size[-1]*1024*1024*1024 if size else 0
-        # 平均上传速度 单位 KB/s
+        # 平均上傳速度 單位 KB/s
         upload_avs = config.get("upload_avs")
         savepath_key = config.get("savepath_key")
         tracker_key = config.get("tracker_key")
@@ -381,7 +381,7 @@ class Transmission(IDownloadClient):
 
     def get_files(self, tid):
         """
-        获取种子文件列表
+        獲取種子檔案列表
         """
         if not tid:
             return None
@@ -397,7 +397,7 @@ class Transmission(IDownloadClient):
 
     def set_files(self, **kwargs):
         """
-        设置下载文件的状态
+        設定下載檔案的狀態
         {
             <torrent id>: {
                 <file id>: {
@@ -429,7 +429,7 @@ class Transmission(IDownloadClient):
 
     def set_uploadspeed_limit(self, ids, limit):
         """
-        设置上传限速，单位 KB/sec
+        設定上傳限速，單位 KB/sec
         """
         if not self.trc:
             return
@@ -443,7 +443,7 @@ class Transmission(IDownloadClient):
 
     def set_downloadspeed_limit(self, ids, limit):
         """
-        设置下载限速，单位 KB/sec
+        設定下載限速，單位 KB/sec
         """
         if not self.trc:
             return

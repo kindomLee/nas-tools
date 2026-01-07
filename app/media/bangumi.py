@@ -32,7 +32,7 @@ class Bangumi(object):
 
     def get_bangumi_calendar(self, page=1):
         """
-        获取每日放送
+        獲取每日放送
         """
         infos = self.calendar()
         if not infos:

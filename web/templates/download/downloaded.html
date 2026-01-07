@@ -2,7 +2,7 @@
   <div class="page-header d-print-none">
     <div class="row align-items-center">
       <div class="col">
-        <h2 class="page-title">近期下载</h2>
+        <h2 class="page-title">近期下載</h2>
       </div>
     </div>
   </div>
@@ -14,13 +14,13 @@
         {% for item in Items %}
           <div class="col-6 col-sm-4 col-md-3 col-xl-2">
             <div class="card card-sm card-link-pop rounded-3">
-          <span class="badge badge-pill {% if item.TYPE == '电影' %}bg-green{% else %}bg-blue{% endif %}"
+          <span class="badge badge-pill {% if item.TYPE == '電影' %}bg-green{% else %}bg-blue{% endif %}"
                 style="position:absolute;top:10px;left:10px;">{{ item.TYPE }}</span>
               {% if item.VOTE > '0' %}
                 <div class="badge badge-pill bg-purple"
                      style="position:absolute;top:10px;right:10px;">{{ item.VOTE }}</div>
               {% endif %}
-              <a href='javascript:show_mediainfo_modal("{% if item.TYPE == "电影" %}MOV{% else %}TV{% endif %}", "{{ item.TITLE }}", "{{ item.YEAR }}", "{{ item.TMDBID }}")'
+              <a href='javascript:show_mediainfo_modal("{% if item.TYPE == "電影" %}MOV{% else %}TV{% endif %}", "{{ item.TITLE }}", "{{ item.YEAR }}", "{{ item.TMDBID }}")'
                  class="d-block">
                 <img src="{{ item.POSTER or '../static/img/no-image.png' }}"
                      onerror="this.src='../static/img/no-image.png'"
@@ -30,7 +30,7 @@
               <div class="card-body">
                 <div class="d-flex align-items-center">
                   <div>
-                    <div><strong title="站点：{{ item.SITE }}<br>种子：{{ item.TORRENT }}<br>时间：{{ item.DATE }}"
+                    <div><strong title="站點：{{ item.SITE }}<br>種子：{{ item.TORRENT }}<br>時間：{{ item.DATE }}"
                                  data-bs-toggle="tooltip" data-bs-html="true">{{ item.TITLE }}</strong></div>
                   </div>
                 </div>
@@ -47,16 +47,16 @@
       <div class="empty">
         <div class="empty-img"><img src="./static/img/posting_photo.svg" height="128" alt="">
         </div>
-        <p class="empty-title" id="search_tip_title">没有记录</p>
+        <p class="empty-title" id="search_tip_title">沒有記錄</p>
         <p class="empty-subtitle text-muted" id="search_tip_text">
-          近期没有下载任何影视资源
+          近期沒有下載任何影視資源
         </p>
       </div>
     </div>
   </div>
 {% endif %}
 <script type="text/javascript">
-  //状态标记
+  //狀態標記
   var loading = false;
   var CurrentPage = 1;
 
@@ -78,7 +78,7 @@
         let item = ret.Items[i];
         let html = '';
         html += '<div class="col-6 col-sm-4 col-md-3 col-xl-2"><div class="card card-sm card-link-pop rounded-3">';
-        if (item.TYPE == '电影') {
+        if (item.TYPE == '電影') {
           html += '<span class="badge badge-pill bg-green" style="position:absolute;top:10px;left:10px;">' + item.TYPE + '</span>';
         } else {
           html += '<span class="badge badge-pill bg-blue" style="position:absolute;top:10px;left:10px;">' + item.TYPE + '</span>';
@@ -86,7 +86,7 @@
         if (item.VOTE) {
           html += '<div class="badge badge-pill bg-purple" style="position:absolute;top:10px;right:10px;">' + item.VOTE + '</div>'
         }
-        if (item.TYPE == "电影") {
+        if (item.TYPE == "電影") {
           html += '<a href=\'javascript:show_mediainfo_modal("MOV", "' + item.TITLE + '", "' + item.YEAR + '", "' + item.TMDBID + '")\' class="d-block">';
         } else {
           html += '<a href=\'javascript:show_mediainfo_modal("TV", "' + item.TITLE + '", "' + item.YEAR + '", "' + item.TMDBID + '")\' class="d-block">';
@@ -98,7 +98,7 @@
         }
         html += '</a>';
         html += '<div class="card-body"><div class="d-flex align-items-center">';
-        html += '<div><strong id="' + current_tooltip_id + '" title="站点：' + item.SITE + '<br>种子：' + item.TORRENT + '<br>时间：' + item.DATE + '" data-bs-toggle="tooltip" data-bs-html="true">' + item.TITLE + '</strong></div>';
+        html += '<div><strong id="' + current_tooltip_id + '" title="站點：' + item.SITE + '<br>種子：' + item.TORRENT + '<br>時間：' + item.DATE + '" data-bs-toggle="tooltip" data-bs-html="true">' + item.TITLE + '</strong></div>';
         html += '<div class="ms-auto">';
         html += '</div>';
         html += '</div></div>';

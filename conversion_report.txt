@@ -1,0 +1,210 @@
+Simplified to Traditional Chinese Conversion Report
+================================================================================
+
+Conversion method: opencc
+Total files processed: 198
+Converted: 152
+Skipped: 46
+Errors: 0
+
+Converted files:
+  - README.md
+  - docker/readme.md
+  - .github/ISSUE_TEMPLATE/feature.md
+  - .github/ISSUE_TEMPLATE/bug.md
+  - config/config.yaml
+  - config/default-category.yaml
+  - docker/compose.yml
+  - web/templates/500.html
+  - web/templates/index.html
+  - web/templates/navigation.html
+  - web/templates/service.html
+  - web/templates/login.html
+  - web/templates/search.html
+  - web/templates/recommend.html
+  - web/templates/404.html
+  - web/templates/medialist.html
+  - web/templates/rss/movie_rss.html
+  - web/templates/rss/rss_calendar.html
+  - web/templates/rss/rss_history.html
+  - web/templates/rss/user_rss.html
+  - web/templates/rss/rss_parser.html
+  - web/templates/rss/tv_rss.html
+  - web/templates/rename/mediafile.html
+  - web/templates/rename/history.html
+  - web/templates/rename/unidentification.html
+  - web/templates/rename/tmdbcache.html
+  - web/templates/site/statistics.html
+  - web/templates/site/resources.html
+  - web/templates/site/site.html
+  - web/templates/site/brushtask.html
+  - web/templates/site/sitelist.html
+  - web/templates/setting/users.html
+  - web/templates/setting/basic.html
+  - web/templates/setting/subtitle.html
+  - web/templates/setting/mediaserver.html
+  - web/templates/setting/customwords.html
+  - web/templates/setting/library.html
+  - web/templates/setting/download_setting.html
+  - web/templates/setting/directorysync.html
+  - web/templates/setting/douban.html
+  - web/templates/setting/notification.html
+  - web/templates/setting/indexer.html
+  - web/templates/setting/filterrule.html
+  - web/templates/setting/downloader.html
+  - web/templates/download/downloading.html
+  - web/templates/download/userdownloader.html
+  - web/templates/download/torrent_remove.html
+  - web/templates/download/downloaded.html
+  - app/brushtask.py
+  - app/db/__init__.py
+  - app/db/main_db.py
+  - app/doubansync.py
+  - app/downloader/client/aria2.py
+  - app/downloader/client/client115.py
+  - app/downloader/client/py115.py
+  - app/downloader/client/qbittorrent.py
+  - app/downloader/client/transmission.py
+  - app/downloader/download_client.py
+  - app/downloader/downloader.py
+  - app/filetransfer.py
+  - app/filter.py
+  - app/helper/chrome_helper.py
+  - app/helper/db_helper.py
+  - app/helper/dict_helper.py
+  - app/helper/meta_helper.py
+  - app/helper/ocr_helper.py
+  - app/helper/progress_helper.py
+  - app/helper/security_helper.py
+  - app/helper/site_helper.py
+  - app/helper/sub_helper.py
+  - app/helper/words_helper.py
+  - app/indexer/client/builtin.py
+  - app/indexer/client/jackett.py
+  - app/indexer/client/prowlarr.py
+  - app/indexer/client/rarbg.py
+  - app/indexer/client/spider.py
+  - app/indexer/index_client.py
+  - app/indexer/indexer.py
+  - app/media/bangumi.py
+  - app/media/category.py
+  - app/media/douban.py
+  - app/media/doubanapi/apiv2.py
+  - app/media/doubanapi/webapi.py
+  - app/media/fanart.py
+  - app/media/media.py
+  - app/media/meta/metaanime.py
+  - app/media/meta/metabase.py
+  - app/media/meta/metainfo.py
+  - app/media/meta/metavideo.py
+  - app/media/meta/release_groups.py
+  - app/media/scraper.py
+  - app/mediaserver/client/emby.py
+  - app/mediaserver/client/jellyfin.py
+  - app/mediaserver/client/plex.py
+  - app/mediaserver/media_client.py
+  - app/mediaserver/media_server.py
+  - app/mediaserver/webhook_event.py
+  - app/message/client/bark.py
+  - app/message/client/gotify.py
+  - app/message/client/iyuu.py
+  - app/message/client/pushdeer.py
+  - app/message/client/pushplus.py
+  - app/message/client/serverchan.py
+  - app/message/client/slack.py
+  - app/message/client/telegram.py
+  - app/message/client/wechat.py
+  - app/message/message.py
+  - app/message/message_center.py
+  - app/message/message_client.py
+  - app/rss.py
+  - app/rsschecker.py
+  - app/scheduler.py
+  - app/searcher.py
+  - app/sites/site_user_info_factory.py
+  - app/sites/siteconf.py
+  - app/sites/sitecookie.py
+  - app/sites/sites.py
+  - app/sites/siteuserinfo/_base.py
+  - app/sites/siteuserinfo/discuz.py
+  - app/sites/siteuserinfo/gazelle.py
+  - app/sites/siteuserinfo/nexus_php.py
+  - app/sites/siteuserinfo/nexus_rabbit.py
+  - app/sites/siteuserinfo/small_horse.py
+  - app/sites/siteuserinfo/unit3d.py
+  - app/subscribe.py
+  - app/subtitle.py
+  - app/sync.py
+  - app/torrentremover.py
+  - app/utils/commons.py
+  - app/utils/dom_utils.py
+  - app/utils/episode_format.py
+  - app/utils/json_utils.py
+  - app/utils/path_utils.py
+  - app/utils/rsstitle_utils.py
+  - app/utils/string_utils.py
+  - app/utils/system_utils.py
+  - app/utils/torrent.py
+  - app/utils/types.py
+  - app/utils/web_utils.py
+  - check_config.py
+  - config.py
+  - dbscript_gen.py
+  - log.py
+  - run.py
+  - web/action.py
+  - web/apiv1.py
+  - web/backend/WXBizMsgCrypt3.py
+  - web/backend/search_torrents.py
+  - web/backend/user.py
+  - web/backend/wallpaper.py
+  - web/main.py
+  - web/security.py
+
+Skipped files:
+  - LICENSE.md: No Chinese characters
+  - app/__init__.py: No Chinese characters
+  - app/db/media_db.py: No Chinese characters
+  - app/db/models.py: No Chinese characters
+  - app/downloader/__init__.py: No Chinese characters
+  - app/downloader/client/__init__.py: No Chinese characters
+  - app/downloader/client/pyaria2.py: No Chinese characters
+  - app/helper/__init__.py: No Chinese characters
+  - app/helper/display_helper.py: No Chinese characters
+  - app/helper/indexer_helper.py: No Chinese characters
+  - app/helper/thread_helper.py: No Chinese characters
+  - app/indexer/__init__.py: No Chinese characters
+  - app/indexer/client/__init__.py: No Chinese characters
+  - app/media/__init__.py: No Chinese characters
+  - app/media/doubanapi/__init__.py: No Chinese characters
+  - app/media/meta/__init__.py: No Chinese characters
+  - app/media/tmdbv3api/__init__.py: No Chinese characters
+  - app/media/tmdbv3api/as_obj.py: No Chinese characters
+  - app/media/tmdbv3api/exceptions.py: No Chinese characters
+  - app/media/tmdbv3api/objs/__init__.py: No Chinese characters
+  - app/media/tmdbv3api/objs/find.py: No Chinese characters
+  - app/media/tmdbv3api/objs/movie.py: No Chinese characters
+  - app/media/tmdbv3api/objs/person.py: No Chinese characters
+  - app/media/tmdbv3api/objs/search.py: No Chinese characters
+  - app/media/tmdbv3api/objs/tv.py: No Chinese characters
+  - app/media/tmdbv3api/tmdb.py: No Chinese characters
+  - app/mediaserver/__init__.py: No Chinese characters
+  - app/mediaserver/client/__init__.py: No Chinese characters
+  - app/message/__init__.py: No Chinese characters
+  - app/message/client/__init__.py: No Chinese characters
+  - app/sites/__init__.py: No Chinese characters
+  - app/sites/siteuserinfo/__init__.py: No Chinese characters
+  - app/sites/siteuserinfo/ipt_project.py: Already in Traditional Chinese
+  - app/sites/siteuserinfo/nexus_project.py: No Chinese characters
+  - app/utils/__init__.py: No Chinese characters
+  - app/utils/build_sites.py: No Chinese characters
+  - app/utils/cache_manager.py: No Chinese characters
+  - app/utils/exception_utils.py: No Chinese characters
+  - app/utils/http_utils.py: No Chinese characters
+  - app/utils/number_utils.py: Already in Traditional Chinese
+  - app/utils/tokens.py: No Chinese characters
+  - app/utils/torrentParser.py: No Chinese characters
+  - convert_to_traditional.py: No Chinese characters
+  - version.py: No Chinese characters
+  - web/__init__.py: No Chinese characters
+  - web/backend/__init__.py: No Chinese characters

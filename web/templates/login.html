@@ -17,7 +17,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="NAStool">
-  <meta name="description" content="NAS媒体库资源归集整理自动化工具">
+  <meta name="description" content="NAS媒體庫資源歸集整理自動化工具">
   <meta name="format-detection" content="telephone=no">
   <meta name="referrer" content="never">
   <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -25,7 +25,7 @@
   <meta name="theme-color" content="#1e293b"/>
   <meta name="HandheldFriendly" content="True"/>
   <meta name="MobileOptimized" content="320"/>
-  <title>登录 - NAStool</title>
+  <title>登入 - NAStool</title>
   <!-- CSS files -->
   <link href="../static/css/tabler.min.css" rel="stylesheet"/>
 </head>
@@ -42,7 +42,7 @@
           <a href="/" class="navbar-brand navbar-brand-autodark"><img src="../static/img/logo-blue.png" height="48"
                                                                       alt=""></a>
         </div>
-        <label class="form-label">用户名</label>
+        <label class="form-label">使用者名稱</label>
         <div class="input-icon mb-3">
             <span class="input-icon-addon">
               <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
@@ -54,9 +54,9 @@
               </svg>
             </span>
           <input type="text" name="username" class="form-control {% if err_msg %}is-invalid{% endif %}"
-                 placeholder="用户名" value="" autocomplete="off">
+                 placeholder="使用者名稱" value="" autocomplete="off">
         </div>
-        <label class="form-label">密码</label>
+        <label class="form-label">密碼</label>
         <div class="input-icon">
             <span class="input-icon-addon">
               <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-keyboard" width="24"
@@ -75,17 +75,17 @@
               </svg>
             </span>
           <input type="password" class="form-control {% if err_msg %}is-invalid{% endif %}" name="password"
-                 placeholder="密码" autocomplete="off">
+                 placeholder="密碼" autocomplete="off">
         </div>
         <div class="invalid-feedback mb-3" id="login_retmsg" style="display:block">{{ err_msg }}</div>
         <div class="mb-3">
           <label class="form-check">
             <input type="checkbox" name="remember" class="form-check-input" checked/>
-            <span class="form-check-label">保持登录</span>
+            <span class="form-check-label">保持登入</span>
           </label>
         </div>
         <div class="form-footer">
-          <button type="submit" class="btn btn-primary w-100">登录</button>
+          <button type="submit" class="btn btn-primary w-100">登入</button>
         </div>
       </div>
     </form>

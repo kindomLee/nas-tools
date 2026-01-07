@@ -76,7 +76,7 @@ class Fanart:
 
     def get_backdrop(self, media_type, queryid, default=""):
         """
-        获取横幅背景图
+        獲取橫幅背景圖
         """
         if not media_type or not queryid:
             return ""
@@ -89,7 +89,7 @@ class Fanart:
 
     def get_poster(self, media_type, queryid, default=None):
         """
-        获取海报
+        獲取海報
         """
         if not media_type or not queryid:
             return None
@@ -102,7 +102,7 @@ class Fanart:
 
     def get_background(self, media_type, queryid, default=None):
         """
-        获取海报
+        獲取海報
         """
         if not media_type or not queryid:
             return None
@@ -115,7 +115,7 @@ class Fanart:
 
     def get_banner(self, media_type, queryid, default=None):
         """
-        获取海报
+        獲取海報
         """
         if not media_type or not queryid:
             return None
@@ -128,7 +128,7 @@ class Fanart:
 
     def get_disc(self, media_type, queryid, default=None):
         """
-        获取光盘封面
+        獲取光碟封面
         """
         if not media_type or not queryid:
             return None
@@ -141,7 +141,7 @@ class Fanart:
 
     def get_logo(self, media_type, queryid, default=None):
         """
-        获取海报
+        獲取海報
         """
         if not media_type or not queryid:
             return None
@@ -154,7 +154,7 @@ class Fanart:
 
     def get_thumb(self, media_type, queryid, default=None):
         """
-        获取缩略图
+        獲取縮圖
         """
         if not media_type or not queryid:
             return None
@@ -167,7 +167,7 @@ class Fanart:
 
     def get_clearart(self, media_type, queryid, default=None):
         """
-        获取clearart
+        獲取clearart
         """
         if not media_type or not queryid:
             return None
@@ -180,7 +180,7 @@ class Fanart:
 
     def get_seasonposter(self, media_type, queryid, season, default=None):
         """
-        获取seasonposter
+        獲取seasonposter
         """
         if not media_type or not queryid:
             return None
@@ -192,7 +192,7 @@ class Fanart:
 
     def get_seasonthumb(self, media_type, queryid, season, default=None):
         """
-        获取seasonposter
+        獲取seasonposter
         """
         if not media_type or not queryid:
             return None
@@ -204,7 +204,7 @@ class Fanart:
 
     def get_seasonbanner(self, media_type, queryid, season, default=None):
         """
-        获取seasonbanner
+        獲取seasonbanner
         """
         if not media_type or not queryid:
             return None

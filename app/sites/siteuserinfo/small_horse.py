@@ -29,7 +29,7 @@ class SmallHorseSiteUserInfo(_ISiteUserInfo):
 
     def _parse_user_traffic_info(self, html_text):
         """
-        上传/下载/分享率 [做种数/魔力值]
+        上傳/下載/分享率 [做種數/魔力值]
         :param html_text:
         :return:
         """

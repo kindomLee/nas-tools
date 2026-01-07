@@ -48,7 +48,7 @@ class WeChat(IMessageClient):
 
     def __get_access_token(self, force=False):
         """
-        获取微信Token
+        獲取微信Token
         :return： 微信Token
         """
         token_flag = True
@@ -77,14 +77,14 @@ class WeChat(IMessageClient):
 
     def __send_message(self, title, text, user_id=None):
         """
-        发送文本消息
-        :param title: 消息标题
-        :param text: 消息内容
-        :param user_id: 消息发送对象的ID，为空则发给所有人
-        :return: 发送状态，错误信息
+        傳送文字訊息
+        :param title: 訊息標題
+        :param text: 訊息內容
+        :param user_id: 訊息傳送物件的ID，為空則發給所有人
+        :return: 傳送狀態，錯誤資訊
         """
         if not self.__get_access_token():
-            return False, "参数未配置或配置不正确"
+            return False, "引數未配置或配置不正確"
         message_url = self._send_msg_url % self.__get_access_token()
         if text:
             conent = "%s\n%s" % (title, text.replace("\n\n", "\n"))
@@ -107,16 +107,16 @@ class WeChat(IMessageClient):
 
     def __send_image_message(self, title, text, image_url, url, user_id=None):
         """
-        发送图文消息
-        :param title: 消息标题
-        :param text: 消息内容
-        :param image_url: 图片地址
-        :param url: 点击消息跳转URL
-        :param user_id: 消息发送对象的ID，为空则发给所有人
-        :return: 发送状态，错误信息
+        傳送圖文訊息
+        :param title: 訊息標題
+        :param text: 訊息內容
+        :param image_url: 圖片地址
+        :param url: 點選訊息跳轉URL
+        :param user_id: 訊息傳送物件的ID，為空則發給所有人
+        :return: 傳送狀態，錯誤資訊
         """
         if not self.__get_access_token():
-            return False, "参数未配置或配置不正确"
+            return False, "引數未配置或配置不正確"
         message_url = self._send_msg_url % self.__get_access_token()
         if text:
             text = text.replace("\n\n", "\n")
@@ -141,16 +141,16 @@ class WeChat(IMessageClient):
 
     def send_msg(self, title, text="", image="", url="", user_id=None):
         """
-        微信消息发送入口，支持文本、图片、链接跳转、指定发送对象
-        :param title: 消息标题
-        :param text: 消息内容
-        :param image: 图片地址
-        :param url: 点击消息跳转URL
-        :param user_id: 消息发送对象的ID，为空则发给所有人
-        :return: 发送状态，错误信息
+        微信訊息傳送入口，支援文字、圖片、連結跳轉、指定傳送物件
+        :param title: 訊息標題
+        :param text: 訊息內容
+        :param image: 圖片地址
+        :param url: 點選訊息跳轉URL
+        :param user_id: 訊息傳送物件的ID，為空則發給所有人
+        :return: 傳送狀態，錯誤資訊
         """
         if not title and not text:
-            return False, "标题和内容不能同时为空"
+            return False, "標題和內容不能同時為空"
         if image:
             ret_code, ret_msg = self.__send_image_message(title, text, image, url, user_id)
         else:
@@ -159,12 +159,12 @@ class WeChat(IMessageClient):
 
     def send_list_msg(self, medias: list, user_id="", title="", **kwargs):
         """
-        发送列表类消息
+        傳送列表類訊息
         """
         if not self.__get_access_token():
-            return False, "参数未配置或配置不正确"
+            return False, "引數未配置或配置不正確"
         if not isinstance(medias, list):
-            return False, "数据错误"
+            return False, "資料錯誤"
         message_url = self._send_msg_url % self.__get_access_token()
         if not user_id:
             user_id = "@all"
@@ -194,7 +194,7 @@ class WeChat(IMessageClient):
 
     def __post_request(self, message_url, req_json):
         """
-        向微信发送请求
+        向微信傳送請求
         """
         headers = {'content-type': 'application/json'}
         try:

@@ -24,7 +24,7 @@ class SystemUtils:
     @staticmethod
     def get_used_of_partition(path):
         """
-        获取系统存储空间占用信息
+        獲取系統儲存空間佔用資訊
         """
         if not path:
             return 0, 0
@@ -40,7 +40,7 @@ class SystemUtils:
     @staticmethod
     def get_system():
         """
-        获取操作系统类型
+        獲取作業系統型別
         """
         if SystemUtils.is_windows():
             return OsType.WINDOWS
@@ -56,7 +56,7 @@ class SystemUtils:
     @staticmethod
     def get_free_space_gb(folder):
         """
-        计算目录剩余空间大小
+        計算目錄剩餘空間大小
         """
         total_b, used_b, free_b = shutil.disk_usage(folder)
         return free_b / 1024 / 1024 / 1024
@@ -64,7 +64,7 @@ class SystemUtils:
     @staticmethod
     def get_local_time(utc_time_str):
         """
-        通过UTC的时间字符串获取时间
+        透過UTC的時間字串獲取時間
         """
         try:
             utc_date = datetime.datetime.strptime(utc_time_str.replace('0000', ''), '%Y-%m-%dT%H:%M:%S.%fZ')
@@ -78,7 +78,7 @@ class SystemUtils:
     @staticmethod
     def check_process(pname):
         """
-        检查进程序是否存在
+        檢查程序序是否存在
         """
         if not pname:
             return False
@@ -88,7 +88,7 @@ class SystemUtils:
     @staticmethod
     def execute(cmd):
         """
-        执行命令，获得返回结果
+        執行命令，獲得返回結果
         """
         with os.popen(cmd) as p:
             return p.readline().strip()
@@ -112,7 +112,7 @@ class SystemUtils:
     @staticmethod
     def copy(src, dest):
         """
-        复制
+        複製
         """
         try:
             shutil.copy2(os.path.normpath(src), os.path.normpath(dest))
@@ -124,7 +124,7 @@ class SystemUtils:
     @staticmethod
     def move(src, dest):
         """
-        移动
+        移動
         """
         try:
             tmp_file = os.path.normpath(os.path.join(os.path.dirname(src),
@@ -139,11 +139,11 @@ class SystemUtils:
     @staticmethod
     def link(src, dest):
         """
-        硬链接
+        硬連結
         """
         try:
             if platform.release().find("-z4-") >= 0:
-                # 兼容极空间Z4
+                # 相容極空間Z4
                 tmp = os.path.normpath(os.path.join(PathUtils.get_parent_paths(dest, 2),
                                                     os.path.basename(dest)))
                 os.link(os.path.normpath(src), tmp)
@@ -158,7 +158,7 @@ class SystemUtils:
     @staticmethod
     def softlink(src, dest):
         """
-        软链接
+        軟連結
         """
         try:
             os.symlink(os.path.normpath(src), os.path.normpath(dest))
@@ -170,7 +170,7 @@ class SystemUtils:
     @staticmethod
     def rclone_move(src, dest):
         """
-        Rclone移动
+        Rclone移動
         """
         try:
             src = os.path.normpath(src)
@@ -187,7 +187,7 @@ class SystemUtils:
     @staticmethod
     def rclone_copy(src, dest):
         """
-        Rclone复制
+        Rclone複製
         """
         try:
             src = os.path.normpath(src)
@@ -204,7 +204,7 @@ class SystemUtils:
     @staticmethod
     def minio_move(src, dest):
         """
-        Minio移动
+        Minio移動
         """
         try:
             src = os.path.normpath(src)
@@ -224,7 +224,7 @@ class SystemUtils:
     @staticmethod
     def minio_copy(src, dest):
         """
-        Minio复制
+        Minio複製
         """
         try:
             src = os.path.normpath(src)
@@ -244,7 +244,7 @@ class SystemUtils:
     @staticmethod
     def get_windows_drives():
         """
-        获取Windows所有盘符
+        獲取Windows所有磁碟機代號
         """
         vols = []
         for i in range(65, 91):
@@ -255,7 +255,7 @@ class SystemUtils:
 
     def find_hardlinks(self, file, fdir=None):
         """
-        查找文件的所有硬链接
+        查詢檔案的所有硬連結
         """
         ret_files = []
         if os.name == "nt":

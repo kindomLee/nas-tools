@@ -25,19 +25,19 @@ class Gotify(IMessageClient):
 
     def send_msg(self, title, text="", image="", url="", user_id=""):
         """
-        发送Bark消息
-        :param title: 消息标题
-        :param text: 消息内容
+        傳送Bark訊息
+        :param title: 訊息標題
+        :param text: 訊息內容
         :param image: 未使用
-        :param url: 点击消息跳转URL, 为空时则没有任何动作
+        :param url: 點選訊息跳轉URL, 為空時則沒有任何動作
         :param user_id: 未使用
-        :return: 发送状态、错误信息
+        :return: 傳送狀態、錯誤資訊
         """
         if not title and not text:
-            return False, "标题和内容不能同时为空"
+            return False, "標題和內容不能同時為空"
         try:
             if not self._server or not self._token:
-                return False, "参数未配置"
+                return False, "引數未配置"
             sc_url = "%s/message?token=%s" % (self._server, self._token)
             sc_data = {
                 "title": title,

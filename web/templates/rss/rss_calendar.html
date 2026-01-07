@@ -41,7 +41,7 @@
     eventDisplay: 'list-item',
     eventClick: function (info) {
       var eventData = info.event.extendedProps;
-      if (eventData.type == "电影") {
+      if (eventData.type == "電影") {
         var type = "MOV";
       } else {
         var type = "TV";
@@ -50,19 +50,19 @@
     },
     eventContent: function (info) {
       var eventData = info.event.extendedProps;
-      if (eventData.type == '电影') {
+      if (eventData.type == '電影') {
         var border_color = 'bg-green';
       } else {
         var border_color = 'bg-primary';
       }
-      var innerText = '<a class="card card-link" href="javascript:void(0)"><div class="card-status-start ' + border_color + '"></div><div class="card-body" style="padding: 0.5rem 1rem; overflow: hidden;"><div class="row"><div class="col-auto rounded" style="width:40px; height:50px; background-image:url(' + eventData.poster + '); background-size:cover;"></div><div class="col media_calendar_item_info d-none d-xl-block"><div class="font-weight-medium" style="white-space:pre-wrap;word-break:break-all;"><strong>' + info.event.title + '</strong></div><div class="text-muted">' + eventData.type + ' 评分: ' + eventData.vote_average + '</div></div></div></div></a>';
+      var innerText = '<a class="card card-link" href="javascript:void(0)"><div class="card-status-start ' + border_color + '"></div><div class="card-body" style="padding: 0.5rem 1rem; overflow: hidden;"><div class="row"><div class="col-auto rounded" style="width:40px; height:50px; background-image:url(' + eventData.poster + '); background-size:cover;"></div><div class="col media_calendar_item_info d-none d-xl-block"><div class="font-weight-medium" style="white-space:pre-wrap;word-break:break-all;"><strong>' + info.event.title + '</strong></div><div class="text-muted">' + eventData.type + ' 評分: ' + eventData.vote_average + '</div></div></div></div></a>';
       return {html: innerText};
     }
   });
   calendar.render();
 </script>
 <script type="text/javascript">
-  //查询订阅电影的上映日期
+  //查詢訂閱電影的上映日期
   var RssMovieItems = {{ RssMovieItems| safe }};
 
   function init_rss_movies_event() {
@@ -87,7 +87,7 @@
       });
     }
   };
-  //查询订阅电视剧各集的上映日期
+  //查詢訂閱電視劇各集的上映日期
   var RssTvItems = {{ RssTvItems| safe }};
 
   function init_rss_tvs_event() {
@@ -116,8 +116,8 @@
       });
     }
   };
-  //拉取订阅电影
+  //拉取訂閱電影
   init_rss_movies_event();
-  //拉取订阅电视剧
+  //拉取訂閱電視劇
   init_rss_tvs_event();
 </script>

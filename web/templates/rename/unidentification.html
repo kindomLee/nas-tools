@@ -3,7 +3,7 @@
     <div class="row align-items-center">
       <div class="col">
         <h2 class="page-title">
-          手动识别
+          手動識別
         </h2>
       </div>
       <div class="col-auto ms-auto d-print-none">
@@ -20,7 +20,7 @@
               <path d="M18 10v-.875c0 -3.383 -2.686 -6.125 -6 -6.125"></path>
               <path d="M3 15l2 -2l2 2"></path>
             </svg>
-            自定义识别
+            自定義識別
           </a>
           <a href="javascript:show_rename_udf_modal()" class="btn btn-primary d-sm-none btn-icon">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-transform" width="24"
@@ -40,7 +40,7 @@
     </div>
   </div>
 </div>
-<!-- 业务页面代码 -->
+<!-- 業務頁面程式碼 -->
 <div class="page-body">
   <div class="container-xl">
     <div class="row row-cards">
@@ -49,11 +49,11 @@
           <div class="card-header">
             <div class="d-flex">
               <div class="text-muted">
-                共 {{ TotalCount }} 条记录
+                共 {{ TotalCount }} 條記錄
               </div>
             </div>
             <div class="card-actions btn-actions">
-              <a href="javascript:reidentification_all()" class="btn-action" title="批量重新识别">
+              <a href="javascript:reidentification_all()" class="btn-action" title="批次重新識別">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-refresh" width="24"
                      height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                      stroke-linecap="round" stroke-linejoin="round">
@@ -62,7 +62,7 @@
                   <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path>
                 </svg>
               </a>
-              <a href="javascript:delete_checked_unknown()" class="btn-action" title="删除选中">
+              <a href="javascript:delete_checked_unknown()" class="btn-action" title="刪除選中">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
                      stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -81,9 +81,9 @@
               <tr>
                 {% if TotalCount > 0 %}
                   <th class="w-1"><input class="form-check-input m-0 align-middle" id="unknown_check_all_btn"
-                                         type="checkbox" aria-label="全选"></th>
+                                         type="checkbox" aria-label="全選"></th>
                 {% endif %}
-                <th>文件名</th>
+                <th>檔名</th>
                 <th class="w-5"></th>
               </tr>
               </thead>
@@ -115,15 +115,15 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
                           <a class="dropdown-item" href='javascript:re_identification(["{{ Path.id }}"])'>
-                            重新识别
+                            重新識別
                           </a>
                           <a class="dropdown-item"
                              href='javascript:show_rename_modal("{{ Path.id }}", "{{ Path.name }}")'>
-                            手动识别
+                            手動識別
                           </a>
                           <div class="dropdown-divider"></div>
                           <a class="dropdown-item text-danger" href='javascript:del_unknown_path("{{ Path.id }}")'>
-                            删除
+                            刪除
                           </a>
                         </div>
                       </div>
@@ -132,7 +132,7 @@
                 {% endfor %}
               {% else %}
                 <tr>
-                  <td colspan="3" align="center">没有数据</td>
+                  <td colspan="3" align="center">沒有資料</td>
                 </tr>
               {% endif %}
               </tbody>
@@ -145,17 +145,17 @@
 </div>
 <script type="text/javascript">
 
-  //显示弹出窗口
+  //顯示彈出視窗
   function show_rename_modal(id, path) {
     show_manual_transfer_modal(1, path, '', '', id, '');
   }
 
-  //显示自定义识别窗口
+  //顯示自定義識別視窗
   function show_rename_udf_modal() {
     show_manual_transfer_modal(3, '', '', '', '', '');
   }
 
-  //删除路径
+  //刪除路徑
   function del_unknown_path(id) {
     if (id == "") {
       return;
@@ -167,7 +167,7 @@
     });
   }
 
-  //重新识别
+  //重新識別
   function re_identification(unknown_ids) {
     const cmd = "re_identification";
     const data = {"flag": "unknow", "ids": unknown_ids};
@@ -177,12 +177,12 @@
       if (ret.retcode == 0) {
         navmenu('unidentification');
       } else {
-        show_fail_modal(`重新识别失败：${ret.retmsg}！`);
+        show_fail_modal(`重新識別失敗：${ret.retmsg}！`);
       }
     });
   }
 
-  //批量删除
+  //批次刪除
   function delete_checked_unknown() {
     let ids = [];
     let i = 0;
@@ -198,7 +198,7 @@
     if (i == 0) {
       return;
     }
-    show_confirm_modal("是否确认删除所有选中的未识别记录？", function () {
+    show_confirm_modal("是否確認刪除所有選中的未識別記錄？", function () {
       hide_confirm_modal();
       const cmd = "del_unknown_path";
       const data = {"id": ids};
@@ -208,7 +208,7 @@
     })
   }
 
-  //批量重新识别
+  //批次重新識別
   function reidentification_all() {
     let i = 0;
     let ids = []
@@ -227,7 +227,7 @@
     }
   }
 
-  //全选事件
+  //全選事件
   $("#unknown_check_all_btn").change(function () {
     $(".table-responsive input[type=checkbox]").prop("checked", $(this).prop("checked"));
   });

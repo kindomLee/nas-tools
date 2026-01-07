@@ -16,7 +16,7 @@ class StringUtils:
     @staticmethod
     def num_filesize(text):
         """
-        将文件大小文本转化为字节
+        將檔案大小文字轉化為位元組
         """
         if not text:
             return 0
@@ -44,7 +44,7 @@ class StringUtils:
     @staticmethod
     def str_timelong(time_sec):
         """
-        将数字转换为时间描述
+        將數字轉換為時間描述
         """
         if not isinstance(time_sec, int) or not isinstance(time_sec, float):
             try:
@@ -52,7 +52,7 @@ class StringUtils:
             except Exception as e:
                 ExceptionUtils.exception_traceback(e)
                 return ""
-        d = [(0, '秒'), (60 - 1, '分'), (3600 - 1, '小时'), (86400 - 1, '天')]
+        d = [(0, '秒'), (60 - 1, '分'), (3600 - 1, '小時'), (86400 - 1, '天')]
         s = [x[0] for x in d]
         index = bisect.bisect_left(s, time_sec) - 1
         if index == -1:
@@ -64,7 +64,7 @@ class StringUtils:
     @staticmethod
     def is_chinese(word):
         """
-        判断是否含有中文
+        判斷是否含有中文
         """
         chn = re.compile(r'[\u4e00-\u9fff]')
         if chn.search(word):
@@ -91,7 +91,7 @@ class StringUtils:
     @staticmethod
     def is_all_chinese(word):
         """
-        判断是否全是中文
+        判斷是否全是中文
         """
         for ch in word:
             if ch == ' ':
@@ -105,21 +105,21 @@ class StringUtils:
     @staticmethod
     def xstr(s):
         """
-        字符串None输出为空
+        字串None輸出為空
         """
         return s if s else ''
 
     @staticmethod
     def str_sql(in_str):
         """
-        转化SQL字符
+        轉化SQL字元
         """
         return "" if not in_str else str(in_str)
 
     @staticmethod
     def str_int(text):
         """
-        web字符串转int
+        web字串轉int
         :param text:
         :return:
         """
@@ -134,7 +134,7 @@ class StringUtils:
     @staticmethod
     def str_float(text):
         """
-        web字符串转float
+        web字串轉float
         :param text:
         :return:
         """
@@ -148,9 +148,9 @@ class StringUtils:
     @staticmethod
     def handler_special_chars(text, replace_word="", allow_space=False):
         """
-        忽略特殊字符
+        忽略特殊字元
         """
-        # 需要忽略的特殊字符
+        # 需要忽略的特殊字元
         CONVERT_EMPTY_CHARS = r"\.|\(|\)|\[|]|-|\+|【|】|/|～|;|&|\||#|_|「|」|（|）|'|’|!|！|,|～|·|:|：|\-|~"
         if not text:
             return ""
@@ -164,7 +164,7 @@ class StringUtils:
     @staticmethod
     def str_filesize(size, pre=2):
         """
-        将字节计算为文件大小描述
+        將位元組計算為檔案大小描述
         """
         if not isinstance(size, int) or not isinstance(size, float):
             try:
@@ -184,7 +184,7 @@ class StringUtils:
     @staticmethod
     def url_equal(url1, url2):
         """
-        比较两个地址是否为同一个网站
+        比較兩個地址是否為同一個網站
         """
         if not url1 or not url2:
             return False
@@ -199,7 +199,7 @@ class StringUtils:
     @staticmethod
     def get_url_netloc(url):
         """
-        获取URL的协议和域名部分
+        獲取URL的協議和域名部分
         """
         if not url:
             return "", ""
@@ -211,7 +211,7 @@ class StringUtils:
     @staticmethod
     def get_url_domain(url):
         """
-        获取URL的域名部分，不含WWW和HTTP
+        獲取URL的域名部分，不含WWW和HTTP
         """
         _, netloc = StringUtils.get_url_netloc(url)
         if netloc:
@@ -221,7 +221,7 @@ class StringUtils:
     @staticmethod
     def get_base_url(url):
         """
-        获取URL根地址
+        獲取URL根地址
         """
         scheme, netloc = StringUtils.get_url_netloc(url)
         return f"{scheme}://{netloc}"
@@ -235,17 +235,17 @@ class StringUtils:
     @staticmethod
     def get_keyword_from_string(content):
         """
-        从检索关键字中拆分中年份、季、集、类型
+        從檢索關鍵字中拆分中年份、季、集、型別
         """
         if not content:
             return None, None, None, None, None
-        # 去掉查询中的电影或电视剧关键字
-        if re.search(r'^电视剧|\s+电视剧|^动漫|\s+动漫', content):
+        # 去掉查詢中的電影或電視劇關鍵字
+        if re.search(r'^電視劇|\s+電視劇|^動漫|\s+動漫', content):
             mtype = MediaType.TV
         else:
             mtype = None
-        content = re.sub(r'^电影|^电视剧|^动漫|\s+电影|\s+电视剧|\s+动漫', '', content).strip()
-        # 稍微切一下剧集吧
+        content = re.sub(r'^電影|^電視劇|^動漫|\s+電影|\s+電視劇|\s+動漫', '', content).strip()
+        # 稍微切一下劇集吧
         season_num = None
         episode_num = None
         year = None
@@ -275,7 +275,7 @@ class StringUtils:
     @staticmethod
     def generate_random_str(randomlength=16):
         """
-        生成一个指定长度的随机字符串
+        生成一個指定長度的隨機字串
         """
         random_str = ''
         base_str = 'ABCDEFGHIGKLMNOPQRSTUVWXYZabcdefghigklmnopqrstuvwxyz0123456789'
@@ -296,11 +296,11 @@ class StringUtils:
     @staticmethod
     def unify_datetime_str(datetime_str):
         """
-        日期时间格式化 统一转成 2020-10-14 07:48:04 这种格式
+        日期時間格式化 統一轉成 2020-10-14 07:48:04 這種格式
         :param datetime_str:
         :return:
         """
-        # 传入的参数如果是None 或者空字符串 直接返回
+        # 傳入的引數如果是None 或者空字串 直接返回
         if not datetime_str:
             return datetime_str
 
@@ -313,9 +313,9 @@ class StringUtils:
     @staticmethod
     def to_bool(text, default_val: bool = False) -> bool:
         """
-        字符串转bool
-        :param text: 要转换的值
-        :param default_val: 默认值
+        字串轉bool
+        :param text: 要轉換的值
+        :param default_val: 預設值
         :return:
         """
         if isinstance(text, str) and not text:
@@ -331,7 +331,7 @@ class StringUtils:
     @staticmethod
     def str_from_cookiejar(cj):
         """
-        将cookiejar转换为字符串
+        將cookiejar轉換為字串
         :param cj:
         :return:
         """
@@ -340,8 +340,8 @@ class StringUtils:
     @staticmethod
     def get_idlist_from_string(content, dicts):
         """
-        从字符串中提取id列表
-        :param content: 字符串
+        從字串中提取id列表
+        :param content: 字串
         :param dicts: 字典
         :return:
         """
@@ -358,7 +358,7 @@ class StringUtils:
     @staticmethod
     def str_title(s):
         """
-        讲英文的首字母大写
+        講英文的首字母大寫
         :param s: en_name string
         :return: string title
         """

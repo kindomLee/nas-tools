@@ -11,14 +11,14 @@ from config import RMT_MEDIAEXT
 
 def MetaInfo(title, subtitle=None, mtype=None):
     """
-    媒体整理入口，根据名称和副标题，判断是哪种类型的识别，返回对应对象
-    :param title: 标题、种子名、文件名
-    :param subtitle: 副标题、描述
-    :param mtype: 指定识别类型，为空则自动识别类型
+    媒體整理入口，根據名稱和副標題，判斷是哪種型別的識別，返回對應物件
+    :param title: 標題、種子名、檔名
+    :param subtitle: 副標題、描述
+    :param mtype: 指定識別型別，為空則自動識別型別
     :return: MetaAnime、MetaVideo
     """
 
-    # 应用自定义识别词
+    # 應用自定義識別詞
     if subtitle and title not in subtitle:
         name = f'{title}@@@{subtitle}'
         name, msg, used_info = WordsHelper().process(name)
@@ -30,7 +30,7 @@ def MetaInfo(title, subtitle=None, mtype=None):
     if msg:
         log.warn("【Meta】%s" % msg)
 
-    # 判断是否处理文件
+    # 判斷是否處理檔案
     if title and os.path.splitext(title)[-1] in RMT_MEDIAEXT:
         fileflag = True
     else:
@@ -50,9 +50,9 @@ def MetaInfo(title, subtitle=None, mtype=None):
 
 def is_anime(name):
     """
-    判断是否为动漫
-    :param name: 名称
-    :return: 是否动漫
+    判斷是否為動漫
+    :param name: 名稱
+    :return: 是否動漫
     """
     if not name:
         return False

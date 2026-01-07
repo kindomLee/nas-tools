@@ -37,7 +37,7 @@ class MainDb:
 
     def init_data(self):
         """
-        读取config目录下的sql文件，并初始化到数据库，只处理一次
+        讀取config目錄下的sql檔案，並初始化到資料庫，只處理一次
         """
         config = Config().get_config()
         init_files = Config().get_config("app").get("init_files") or []
@@ -59,7 +59,7 @@ class MainDb:
 
     def insert(self, data):
         """
-        插入数据
+        插入資料
         """
         if isinstance(data, list):
             self.session.add_all(data)
@@ -68,38 +68,38 @@ class MainDb:
 
     def query(self, *obj):
         """
-        查询对象
+        查詢物件
         """
         return self.session.query(*obj)
 
     def excute(self, sql):
         """
-        执行SQL语句
+        執行SQL語句
         """
         self.session.execute(sql)
 
     def flush(self):
         """
-        刷写
+        刷寫
         """
         self.session.flush()
 
     def commit(self):
         """
-        提交事务
+        提交事務
         """
         self.session.commit()
 
     def rollback(self):
         """
-        回滚事务
+        回滾事務
         """
         self.session.rollback()
 
 
 class DbPersist(object):
     """
-    数据库持久化装饰器
+    資料庫持久化裝飾器
     """
 
     def __init__(self, db):

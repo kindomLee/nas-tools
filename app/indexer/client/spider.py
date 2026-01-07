@@ -88,10 +88,10 @@ class TorrentSpider(feapder.AirSpider):
         if not self.search or not self.domain:
             self.is_complete = True
             return
-        # 种子路径
+        # 種子路徑
         torrentspath = self.search.get('paths', [{}])[0].get('path', '')
         if self.keyword:
-            # 关键字搜索
+            # 關鍵字搜尋
             if torrentspath.find("{keyword}") != -1:
                 searchurl = self.domain + \
                             torrentspath.replace("{keyword}", quote(self.keyword))
@@ -105,9 +105,9 @@ class TorrentSpider(feapder.AirSpider):
                                 "keyword": self.keyword
                             })
         else:
-            # 列表浏览
+            # 列表瀏覽
             if self.index:
-                # 有单独浏览路径
+                # 有單獨瀏覽路徑
                 indexpath = self.index.get("path")
                 indexstart = self.index.get("start") or 0
                 if self.page is not None:
@@ -121,7 +121,7 @@ class TorrentSpider(feapder.AirSpider):
                 else:
                     searchurl = self.domain + indexpath
             else:
-                # 复用搜索路径浏览
+                # 複用搜尋路徑瀏覽
                 torrentspath = torrentspath.replace("{keyword}", "")
                 if torrentspath.find("{page}") != -1:
                     searchurl = self.domain + \
@@ -427,7 +427,7 @@ class TorrentSpider(feapder.AirSpider):
 
     def Getinfo(self, torrent):
         """
-        解析单条种子数据
+        解析單條種子資料
         """
         self.torrents_info = {'indexer': self.indexerid}
         try:
@@ -446,13 +446,13 @@ class TorrentSpider(feapder.AirSpider):
             self.Getelapsed_date(torrent)
         except Exception as err:
             ExceptionUtils.exception_traceback(err)
-            log.error("【Spider】%s 检索出现错误：%s" % (self.indexername, str(err)))
+            log.error("【Spider】%s 檢索出現錯誤：%s" % (self.indexername, str(err)))
         return self.torrents_info
 
     @staticmethod
     def __filter_text(text, filters):
         """
-        对文件进行处理
+        對檔案進行處理
         """
         if not text or not filters or not isinstance(filters, list):
             return text
@@ -480,18 +480,18 @@ class TorrentSpider(feapder.AirSpider):
 
     def parse(self, request, response):
         """
-        解析整个页面
+        解析整個頁面
         """
         try:
-            # 获取网站文本
+            # 獲取網站文字
             self.article_list = response.extract()
-            # 获取站点种子xml
+            # 獲取站點種子xml
             self.fields = self.torrents.get('fields')
             html_doc = PyQuery(self.article_list)
-            # 种子筛选器
+            # 種子篩選器
             torrents_selector = self.torrents.get('list', {}).get('selector', '')
             str_list = list(torrents_selector)
-            # 兼容选择器中has()函数 部分情况下无双引号会报错
+            # 相容選擇器中has()函式 部分情況下無雙引號會報錯
             has_index = torrents_selector.find('has')
             if has_index != -1 and torrents_selector.find('"') == -1:
                 flag = 0
@@ -506,7 +506,7 @@ class TorrentSpider(feapder.AirSpider):
                         if flag == 0:
                             str_list.insert(i, '"')
                 torrents_selector = "".join(str_list)
-            # 遍历种子html列表
+            # 遍歷種子html列表
             for torn in html_doc(torrents_selector):
                 self.torrents_info_array.append(copy.deepcopy(self.Getinfo(PyQuery(torn))))
                 if len(self.torrents_info_array) >= int(self.result_num):
@@ -514,6 +514,6 @@ class TorrentSpider(feapder.AirSpider):
 
         except Exception as err:
             ExceptionUtils.exception_traceback(err)
-            log.warn("【Spider】错误：%s - %s" % (str(err), traceback.format_exc()))
+            log.warn("【Spider】錯誤：%s - %s" % (str(err), traceback.format_exc()))
         finally:
             self.is_complete = True

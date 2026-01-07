@@ -23,32 +23,32 @@ class TorrentRemover(object):
     _scheduler = None
     _remove_tasks = {}
 
-    # 适用下载器
+    # 適用下載器
     TORRENTREMOVER_DICT = {
         "Qb": {
             "name": "Qbittorrent",
             "img_url": "../static/img/qbittorrent.png",
             "downloader_type": DownloaderType.QB,
             "torrent_state": {
-                "downloading": "正在下载_传输数据",
-                "stalledDL": "正在下载_未建立连接",
-                "uploading": "正在上传_传输数据",
-                "stalledUP": "正在上传_未建立连接",
-                "error": "暂停_发生错误",
-                "pausedDL": "暂停_下载未完成",
-                "pausedUP": "暂停_下载完成",
-                "missingFiles": "暂停_文件丢失",
-                "checkingDL": "检查中_下载未完成",
-                "checkingUP": "检查中_下载完成",
-                "checkingResumeData": "检查中_启动时恢复数据",
-                "forcedDL": "强制下载_忽略队列",
-                "queuedDL": "等待下载_排队",
-                "forcedUP": "强制上传_忽略队列",
-                "queuedUP": "等待上传_排队",
-                "allocating": "分配磁盘空间",
-                "metaDL": "获取元数据",
-                "moving": "移动文件",
-                "unknown": "未知状态",
+                "downloading": "正在下載_傳輸資料",
+                "stalledDL": "正在下載_未建立連線",
+                "uploading": "正在上傳_傳輸資料",
+                "stalledUP": "正在上傳_未建立連線",
+                "error": "暫停_發生錯誤",
+                "pausedDL": "暫停_下載未完成",
+                "pausedUP": "暫停_下載完成",
+                "missingFiles": "暫停_檔案丟失",
+                "checkingDL": "檢查中_下載未完成",
+                "checkingUP": "檢查中_下載完成",
+                "checkingResumeData": "檢查中_啟動時恢復資料",
+                "forcedDL": "強制下載_忽略佇列",
+                "queuedDL": "等待下載_排隊",
+                "forcedUP": "強制上傳_忽略佇列",
+                "queuedUP": "等待上傳_排隊",
+                "allocating": "分配磁碟空間",
+                "metaDL": "獲取後設資料",
+                "moving": "移動檔案",
+                "unknown": "未知狀態",
             }
         },
         "Tr": {
@@ -56,13 +56,13 @@ class TorrentRemover(object):
             "img_url": "../static/img/transmission.png",
             "downloader_type": DownloaderType.TR,
             "torrent_state": {
-                "downloading": "正在下载",
-                "seeding": "正在上传",
-                "download_pending": "等待下载_排队",
-                "seed_pending": "等待上传_排队",
-                "checking": "正在检查",
-                "check_pending": "等待检查_排队",
-                "stopped": "暂停",
+                "downloading": "正在下載",
+                "seeding": "正在上傳",
+                "download_pending": "等待下載_排隊",
+                "seed_pending": "等待上傳_排隊",
+                "checking": "正在檢查",
+                "check_pending": "等待檢查_排隊",
+                "stopped": "暫停",
             }
         }
     }
@@ -74,7 +74,7 @@ class TorrentRemover(object):
         self.message = Message()
         self.downloader = Downloader()
         self.dbhelper = DbHelper()
-        # 移出现有任务
+        # 移出現有任務
         try:
             if self._scheduler:
                 self._scheduler.remove_all_jobs()
@@ -82,7 +82,7 @@ class TorrentRemover(object):
                 self._scheduler = None
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-        # 读取任务任务列表
+        # 讀取任務任務列表
         removetasks = self.dbhelper.get_torrent_remove_tasks()
         self._remove_tasks = {}
         for task in removetasks:
@@ -100,7 +100,7 @@ class TorrentRemover(object):
             }
         if not self._remove_tasks:
             return
-        # 启动删种任务
+        # 啟動刪種任務
         self._scheduler = BackgroundScheduler(timezone="Asia/Shanghai")
         remove_flag = False
         for task in self._remove_tasks.values():
@@ -113,11 +113,11 @@ class TorrentRemover(object):
         if remove_flag:
             self._scheduler.print_jobs()
             self._scheduler.start()
-            log.info("自动删种服务启动")
+            log.info("自動刪種服務啟動")
 
     def get_torrent_remove_tasks(self, taskid=None):
         """
-        获取删种任务详细信息
+        獲取刪種任務詳細資訊
         """
         if taskid:
             task = self._remove_tasks.get(str(taskid))
@@ -126,17 +126,17 @@ class TorrentRemover(object):
 
     def auto_remove_torrents(self, taskids=None):
         """
-        处理自动删种任务，由定时服务调用
-        :param taskids: 自动删种任务的ID
+        處理自動刪種任務，由定時服務呼叫
+        :param taskids: 自動刪種任務的ID
         """
-        # 获取自动删种任务
+        # 獲取自動刪種任務
         tasks = []
-        # 如果没有指定任务ID，则处理所有启用任务
+        # 如果沒有指定任務ID，則處理所有啟用任務
         if not taskids:
             for task in self._remove_tasks.values():
                 if task.get("enabled") and task.get("interval") and task.get("config"):
                     tasks.append(task)
-        # 如果指定任务id，则处理指定任务无论是否启用
+        # 如果指定任務id，則處理指定任務無論是否啟用
         elif isinstance(taskids, list):
             for taskid in taskids:
                 task = self._remove_tasks.get(str(taskid))
@@ -150,7 +150,7 @@ class TorrentRemover(object):
         for task in tasks:
             try:
                 lock.acquire()
-                # 获取需删除种子列表
+                # 獲取需刪除種子列表
                 downloader_type = self.TORRENTREMOVER_DICT.get(task.get("downloader")).get("downloader_type")
                 task.get("config")["samedata"] = task.get("samedata")
                 task.get("config")["onlynastool"] = task.get("onlynastool")
@@ -158,44 +158,44 @@ class TorrentRemover(object):
                     downloader=downloader_type,
                     config=task.get("config")
                 )
-                log.info(f"【TorrentRemover】自动删种任务：{task.get('name')} 获取符合处理条件种子数 {len(torrents)}")
-                title = f"自动删种任务：{task.get('name')}"
+                log.info(f"【TorrentRemover】自動刪種任務：{task.get('name')} 獲取符合處理條件種子數 {len(torrents)}")
+                title = f"自動刪種任務：{task.get('name')}"
                 text = ""
                 if task.get("action") == 1:
-                    text = f"共暂停{len(torrents)}个种子"
+                    text = f"共暫停{len(torrents)}個種子"
                     for torrent in torrents:
                         name = torrent.get("name")
                         site = torrent.get("site")
                         size = round(torrent.get("size")/1021/1024/1024, 3)
-                        text_item = f"{name} 来自站点：{site} 大小：{size} GB"
-                        log.info(f"【TorrentRemover】暂停种子：{text_item}")
+                        text_item = f"{name} 來自站點：{site} 大小：{size} GB"
+                        log.info(f"【TorrentRemover】暫停種子：{text_item}")
                         text = f"{text}\n{text_item}"
-                        # 暂停种子
+                        # 暫停種子
                         self.downloader.stop_torrents(downloader=downloader_type,
                                                       ids=[torrent.get("id")])
                 elif task.get("action") == 2:
-                    text = f"共删除{len(torrents)}个种子"
+                    text = f"共刪除{len(torrents)}個種子"
                     for torrent in torrents:
                         name = torrent.get("name")
                         site = torrent.get("site")
                         size = round(torrent.get("size") / 1021 / 1024 / 1024, 3)
-                        text_item = f"{name} 来自站点：{site} 大小：{size} GB"
-                        log.info(f"【TorrentRemover】删除种子：{text_item}")
+                        text_item = f"{name} 來自站點：{site} 大小：{size} GB"
+                        log.info(f"【TorrentRemover】刪除種子：{text_item}")
                         text = f"{text}\n{text_item}"
-                        # 删除种子
+                        # 刪除種子
                         self.downloader.delete_torrents(downloader=downloader_type,
                                                         delete_file=False,
                                                         ids=[torrent.get("id")])
                 elif task.get("action") == 3:
-                    text = f"共删除{len(torrents)}个种子（及文件）"
+                    text = f"共刪除{len(torrents)}個種子（及檔案）"
                     for torrent in torrents:
                         name = torrent.get("name")
                         site = torrent.get("site")
                         size = round(torrent.get("size") / 1021 / 1024 / 1024, 3)
-                        text_item = f"{name} 来自站点：{site} 大小：{size} GB"
-                        log.info(f"【TorrentRemover】删除种子及文件：{text_item}")
+                        text_item = f"{name} 來自站點：{site} 大小：{size} GB"
+                        log.info(f"【TorrentRemover】刪除種子及檔案：{text_item}")
                         text = f"{text}\n{text_item}"
-                        # 删除种子
+                        # 刪除種子
                         self.downloader.delete_torrents(downloader=downloader_type,
                                                         delete_file=True,
                                                         ids=[torrent.get("id")])
@@ -203,62 +203,62 @@ class TorrentRemover(object):
                     self.message.send_brushtask_remove_message(title=title, text=text)
             except Exception as e:
                 ExceptionUtils.exception_traceback(e)
-                log.error(f"【TorrentRemover】自动删种任务：{task.get('name')}异常：{str(e)}")
+                log.error(f"【TorrentRemover】自動刪種任務：{task.get('name')}異常：{str(e)}")
             finally:
                 lock.release()
 
     def update_torrent_remove_task(self, data):
         """
-        更新自动删种任务
+        更新自動刪種任務
         """
         tid = data.get("tid")
         name = data.get("name")
         if not name:
-            return False, "名称参数不合法"
+            return False, "名稱引數不合法"
         action = data.get("action")
         if not str(action).isdigit() or int(action) not in [1, 2, 3]:
-            return False, "动作参数不合法"
+            return False, "動作引數不合法"
         else:
             action = int(action)
         interval = data.get("interval")
         if not str(interval).isdigit():
-            return False, "运行间隔参数不合法"
+            return False, "執行間隔引數不合法"
         else:
             interval = int(interval)
         enabled = data.get("enabled")
         if not str(enabled).isdigit() or int(enabled) not in [0, 1]:
-            return False, "状态参数不合法"
+            return False, "狀態引數不合法"
         else:
             enabled = int(enabled)
         samedata = data.get("samedata")
         if not str(enabled).isdigit() or int(samedata) not in [0, 1]:
-            return False, "处理辅种参数不合法"
+            return False, "處理輔種引數不合法"
         else:
             samedata = int(samedata)
         onlynastool = data.get("onlynastool")
         if not str(enabled).isdigit() or int(onlynastool) not in [0, 1]:
-            return False, "仅处理NASTOOL添加种子参数不合法"
+            return False, "僅處理NASTOOL新增種子引數不合法"
         else:
             onlynastool = int(onlynastool)
         ratio = data.get("ratio") or 0
         if not str(ratio).replace(".", "").isdigit():
-            return False, "分享率参数不合法"
+            return False, "分享率引數不合法"
         else:
             ratio = round(float(ratio), 2)
         seeding_time = data.get("seeding_time") or 0
         if not str(seeding_time).isdigit():
-            return False, "做种时间参数不合法"
+            return False, "做種時間引數不合法"
         else:
             seeding_time = int(seeding_time)
         upload_avs = data.get("upload_avs") or 0
         if not str(upload_avs).isdigit():
-            return False, "平均上传速度参数不合法"
+            return False, "平均上傳速度引數不合法"
         else:
             upload_avs = int(upload_avs)
         size = data.get("size")
         size = str(size).split("-") if size else []
         if size and (len(size) != 2 or not str(size[0]).isdigit() or not str(size[-1]).isdigit()):
-            return False, "种子大小参数不合法"
+            return False, "種子大小引數不合法"
         else:
             size = [int(size[0]), int(size[-1])] if size else []
         tags = data.get("tags")
@@ -268,7 +268,7 @@ class TorrentRemover(object):
         tracker_key = data.get("tracker_key")
         downloader = data.get("downloader")
         if downloader not in self.TORRENTREMOVER_DICT.keys():
-            return False, "下载器参数不合法"
+            return False, "下載器引數不合法"
         if downloader == "Qb":
             qb_state = data.get("qb_state")
             qb_state = qb_state.split(";") if qb_state else []
@@ -276,7 +276,7 @@ class TorrentRemover(object):
             if qb_state:
                 for qb_state_item in qb_state:
                     if qb_state_item not in self.TORRENTREMOVER_DICT.get("Qb").get("torrent_state").keys():
-                        return False, "种子状态参数不合法"
+                        return False, "種子狀態引數不合法"
             qb_category = data.get("qb_category")
             qb_category = qb_category.split(";") if qb_category else []
             qb_category = [category for category in qb_category if category]
@@ -291,7 +291,7 @@ class TorrentRemover(object):
             if tr_state:
                 for tr_state_item in tr_state:
                     if tr_state_item not in self.TORRENTREMOVER_DICT.get("Tr").get("torrent_state").keys():
-                        return False, "种子状态参数不合法"
+                        return False, "種子狀態引數不合法"
             tr_error_key = data.get("tr_error_key")
         config = {
             "ratio": ratio,
@@ -322,7 +322,7 @@ class TorrentRemover(object):
 
     def delete_torrent_remove_task(self, taskid=None):
         """
-        删除自动删种任务
+        刪除自動刪種任務
         """
         if not taskid:
             return False
@@ -332,7 +332,7 @@ class TorrentRemover(object):
 
     def get_remove_torrents(self, taskid):
         """
-        获取满足自动删种任务的种子
+        獲取滿足自動刪種任務的種子
         """
         task = self._remove_tasks.get(str(taskid))
         if not task:

@@ -11,7 +11,7 @@ from config import Config
 @lru_cache(maxsize=1)
 def get_login_wallpaper(today=datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d')):
     """
-    获取Base64编码的壁纸图片
+    獲取Base64編碼的桌布圖片
     """
     wallpaper = Config().get_config('app').get('wallpaper')
     tmdbkey = Config().get_config('app').get('rmt_tmdbkey')
@@ -28,14 +28,14 @@ def get_login_wallpaper(today=datetime.datetime.strftime(datetime.datetime.now()
 
 def __get_themoviedb_wallpaper(today):
     """
-    获取TheMovieDb的随机背景图
+    獲取TheMovieDb的隨機背景圖
     """
     return Media().get_random_discover_backdrop()
 
 
 def __get_bing_wallpaper(today):
     """
-    获取Bing每日壁纸
+    獲取Bing每日桌布
     """
     url = "https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&today=%s" % today
     try:

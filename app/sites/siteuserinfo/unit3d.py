@@ -36,7 +36,7 @@ class Unit3dSiteUserInfo(_ISiteUserInfo):
 
     def _parse_user_detail_info(self, html_text):
         """
-        解析用户额外信息，加入时间，等级
+        解析使用者額外資訊，加入時間，等級
         :param html_text:
         :return:
         """
@@ -44,25 +44,25 @@ class Unit3dSiteUserInfo(_ISiteUserInfo):
         if not html:
             return None
 
-        # 用户等级
+        # 使用者等級
         user_levels_text = html.xpath('//div[contains(@class, "content")]//span[contains(@class, "badge-user")]/text()')
         if user_levels_text:
             self.user_level = user_levels_text[0].strip()
 
         # 加入日期
-        join_at_text = html.xpath('//div[contains(@class, "content")]//h4[contains(text(), "注册日期") '
+        join_at_text = html.xpath('//div[contains(@class, "content")]//h4[contains(text(), "註冊日期") '
                                   'or contains(text(), "註冊日期") '
                                   'or contains(text(), "Registration date")]/text()')
         if join_at_text:
             self.join_at = StringUtils.unify_datetime_str(
-                join_at_text[0].replace('注册日期', '').replace('註冊日期', '').replace('Registration date', ''))
+                join_at_text[0].replace('註冊日期', '').replace('註冊日期', '').replace('Registration date', ''))
 
     def _parse_user_torrent_seeding_info(self, html_text, multi_page=False):
         """
-        做种相关信息
+        做種相關資訊
         :param html_text:
-        :param multi_page: 是否多页数据
-        :return: 下页地址
+        :param multi_page: 是否多頁資料
+        :return: 下頁地址
         """
         html = etree.HTML(html_text)
         if not html:
@@ -70,10 +70,10 @@ class Unit3dSiteUserInfo(_ISiteUserInfo):
 
         size_col = 9
         seeders_col = 2
-        # 搜索size列
+        # 搜尋size列
         if html.xpath('//tr[position()=1]/th[contains(@class,"size")]'):
             size_col = len(html.xpath('//tr[position()=1]/th[contains(@class,"size")]/preceding-sibling::th')) + 1
-        # 搜索seeders列
+        # 搜尋seeders列
         if html.xpath('//tr[position()=1]/th[contains(@class,"seeders")]'):
             seeders_col = len(html.xpath('//tr[position()=1]/th[contains(@class,"seeders")]/preceding-sibling::th')) + 1
 
@@ -96,7 +96,7 @@ class Unit3dSiteUserInfo(_ISiteUserInfo):
         self.seeding_size += page_seeding_size
         self.seeding_info.extend(page_seeding_info)
 
-        # 是否存在下页数据
+        # 是否存在下頁資料
         next_page = None
         next_pages = html.xpath('//ul[@class="pagination"]/li[contains(@class,"active")]/following-sibling::li')
         if next_pages and len(next_pages) > 1:
@@ -108,10 +108,10 @@ class Unit3dSiteUserInfo(_ISiteUserInfo):
 
     def _parse_user_traffic_info(self, html_text):
         html_text = self._prepare_html_text(html_text)
-        upload_match = re.search(r"[^总]上[传傳]量?[:：_<>/a-zA-Z-=\"'\s#;]+([\d,.\s]+[KMGTPI]*B)", html_text,
+        upload_match = re.search(r"[^總]上[傳傳]量?[:：_<>/a-zA-Z-=\"'\s#;]+([\d,.\s]+[KMGTPI]*B)", html_text,
                                  re.IGNORECASE)
         self.upload = StringUtils.num_filesize(upload_match.group(1).strip()) if upload_match else 0
-        download_match = re.search(r"[^总子影力]下[载載]量?[:：_<>/a-zA-Z-=\"'\s#;]+([\d,.\s]+[KMGTPI]*B)", html_text,
+        download_match = re.search(r"[^總子影力]下[載載]量?[:：_<>/a-zA-Z-=\"'\s#;]+([\d,.\s]+[KMGTPI]*B)", html_text,
                                    re.IGNORECASE)
         self.download = StringUtils.num_filesize(download_match.group(1).strip()) if download_match else 0
         ratio_match = re.search(r"分享率[:：_<>/a-zA-Z-=\"'\s#;]+([\d,.\s]+)", html_text)

@@ -10,49 +10,49 @@ from app.utils.types import MediaType
 
 class MetaBase(object):
     """
-    媒体信息基类
+    媒體資訊基類
     """
     proxies = None
     category_handler = None
-    # 是否处理的文件
+    # 是否處理的檔案
     fileflag = False
-    # 原字符串
+    # 原字串
     org_string = None
-    # 副标题
+    # 副標題
     subtitle = None
-    # 类型 电影、电视剧
+    # 型別 電影、電視劇
     type = None
-    # 识别的中文名
+    # 識別的中文名
     cn_name = None
-    # 识别的英文名
+    # 識別的英文名
     en_name = None
-    # 总季数
+    # 總季數
     total_seasons = 0
-    # 识别的开始季 数字
+    # 識別的開始季 數字
     begin_season = None
-    # 识别的结束季 数字
+    # 識別的結束季 數字
     end_season = None
-    # 总集数
+    # 總集數
     total_episodes = 0
-    # 识别的开始集
+    # 識別的開始集
     begin_episode = None
-    # 识别的结束集
+    # 識別的結束集
     end_episode = None
     # Partx Cd Dvd Disk Disc
     part = None
-    # 识别的资源类型
+    # 識別的資源型別
     resource_type = None
-    # 识别的效果
+    # 識別的效果
     resource_effect = None
-    # 识别的分辨率
+    # 識別的解析度
     resource_pix = None
-    # 识别的制作组/字幕组
+    # 識別的製作組/字幕組
     resource_team = None
-    # 视频编码
+    # 影片編碼
     video_encode = None
-    # 音频编码
+    # 音訊編碼
     audio_encode = None
-    # 二级分类
+    # 二級分類
     category = None
     # TMDB ID
     tmdb_id = 0
@@ -62,77 +62,77 @@ class MetaBase(object):
     tvdb_id = 0
     # 豆瓣 ID
     douban_id = 0
-    # 媒体标题
+    # 媒體標題
     title = None
-    # 媒体原语种
+    # 媒體原語種
     original_language = None
-    # 媒体原发行标题
+    # 媒體原發行標題
     original_title = None
-    # 媒体发行日期
+    # 媒體發行日期
     release_date = None
-    # 媒体年份
+    # 媒體年份
     year = None
-    # 封面图片
+    # 封面圖片
     backdrop_path = None
     poster_path = None
     fanart_backdrop = None
     fanart_poster = None
-    # 评分
+    # 評分
     vote_average = 0
     # 描述
     overview = None
-    # TMDB 的其它信息
+    # TMDB 的其它資訊
     tmdb_info = {}
-    # 本地状态 1-已订阅 2-已存在
+    # 本地狀態 1-已訂閱 2-已存在
     fav = 0
-    # 站点列表
+    # 站點列表
     rss_sites = []
     search_sites = []
-    # 种子附加信息
-    # 站点名称
+    # 種子附加資訊
+    # 站點名稱
     site = None
-    # 站点优先级
+    # 站點優先順序
     site_order = 0
-    # 操作用户
+    # 操作使用者
     user_name = None
-    # 种子链接
+    # 種子連結
     enclosure = None
-    # 资源优先级
+    # 資源優先順序
     res_order = 0
-    # 种子大小
+    # 種子大小
     size = 0
-    # 做种者
+    # 做種者
     seeders = 0
-    # 下载者
+    # 下載者
     peers = 0
-    # 种子描述
+    # 種子描述
     description = None
-    # 详情页面
+    # 詳情頁面
     page_url = None
-    # 上传因子
+    # 上傳因子
     upload_volume_factor = None
-    # 下载因子
+    # 下載因子
     download_volume_factor = None
     # HR
     hit_and_run = None
-    # 订阅ID
+    # 訂閱ID
     rssid = None
-    # 保存目录
+    # 儲存目錄
     save_path = None
-    # 下载设置
+    # 下載設定
     download_setting = None
-    # 识别辅助
+    # 識別輔助
     ignored_words = None
     replaced_words = None
     offset_words = None
-    # 备注字典
+    # 備註字典
     note = {}
-    # 副标题解析
+    # 副標題解析
     _subtitle_flag = False
     _subtitle_season_re = r"[第\s]+([0-9一二三四五六七八九十S\-]+)\s*季"
     _subtitle_season_all_re = r"全\s*([0-9一二三四五六七八九十]+)\s*季|([0-9一二三四五六七八九十]+)\s*季全"
-    _subtitle_episode_re = r"[第\s]+([0-9一二三四五六七八九十EP\-]+)\s*[集话話期]"
-    _subtitle_episode_all_re = r"([0-9一二三四五六七八九十]+)\s*集全|全\s*([0-9一二三四五六七八九十]+)\s*[集话話期]"
+    _subtitle_episode_re = r"[第\s]+([0-9一二三四五六七八九十EP\-]+)\s*[集話話期]"
+    _subtitle_episode_all_re = r"([0-9一二三四五六七八九十]+)\s*集全|全\s*([0-9一二三四五六七八九十]+)\s*[集話話期]"
 
     def __init__(self, title, subtitle=None, fileflag=False):
         self.category_handler = Category()
@@ -162,20 +162,20 @@ class MetaBase(object):
 
     def get_star_string(self):
         if self.vote_average:
-            return "评分：%s" % self.get_stars()
+            return "評分：%s" % self.get_stars()
         else:
             return ""
 
     def get_vote_string(self):
         if self.vote_average:
-            return "评分：%s" % round(float(self.vote_average), 1)
+            return "評分：%s" % round(float(self.vote_average), 1)
         else:
             return ""
 
     def get_type_string(self):
         if not self.type:
             return ""
-        return "类型：%s" % self.type.value
+        return "型別：%s" % self.type.value
 
     def get_title_vote_string(self):
         if not self.vote_average:
@@ -194,8 +194,8 @@ class MetaBase(object):
 
     def get_overview_string(self, max_len=140):
         """
-        返回带限定长度的简介信息
-        :param max_len: 内容长度
+        返回帶限定長度的簡介資訊
+        :param max_len: 內容長度
         :return:
         """
         if not hasattr(self, "overview"):
@@ -207,7 +207,7 @@ class MetaBase(object):
         overview = (overview[:max_len] + placeholder) if len(overview) > max_len else overview
         return overview
 
-    # 返回季字符串
+    # 返回季字串
     def get_season_string(self):
         if self.begin_season is not None:
             return "S%s" % str(self.begin_season).rjust(2, "0") \
@@ -231,7 +231,7 @@ class MetaBase(object):
             else:
                 return "S01"
 
-    # 返回begin_season 的数字
+    # 返回begin_season 的數字
     def get_season_seq(self):
         if self.begin_season is not None:
             return str(self.begin_season)
@@ -241,7 +241,7 @@ class MetaBase(object):
             else:
                 return "1"
 
-    # 返回季的数组
+    # 返回季的陣列
     def get_season_list(self):
         if self.begin_season is None:
             if self.type == MediaType.MOVIE:
@@ -253,7 +253,7 @@ class MetaBase(object):
         else:
             return [self.begin_season]
 
-    # 返回集字符串
+    # 返回集字串
     def get_episode_string(self):
         if self.begin_episode is not None:
             return "E%s" % str(self.begin_episode).rjust(2, "0") \
@@ -265,7 +265,7 @@ class MetaBase(object):
         else:
             return ""
 
-    # 返回集的数组
+    # 返回集的陣列
     def get_episode_list(self):
         if self.begin_episode is None:
             return []
@@ -274,11 +274,11 @@ class MetaBase(object):
         else:
             return [self.begin_episode]
 
-    # 返回集的并列表达方式，用于支持单文件多集
+    # 返回集的並列表達方式，用於支援單檔案多集
     def get_episode_items(self):
         return "E%s" % "E".join(str(episode).rjust(2, '0') for episode in self.get_episode_list())
 
-    # 返回单文件多集的集数表达方式，用于支持单文件多集
+    # 返回單檔案多集的集數表達方式，用於支援單檔案多集
     def get_episode_seqs(self):
         episodes = self.get_episode_list()
         if episodes:
@@ -290,7 +290,7 @@ class MetaBase(object):
         else:
             return ""
 
-    # 返回begin_episode 的数字
+    # 返回begin_episode 的數字
     def get_episode_seq(self):
         episodes = self.get_episode_list()
         if episodes:
@@ -298,7 +298,7 @@ class MetaBase(object):
         else:
             return ""
 
-    # 返回季集字符串
+    # 返回季集字串
     def get_season_episode_string(self):
         if self.type == MediaType.MOVIE:
             return ""
@@ -313,7 +313,7 @@ class MetaBase(object):
                 return "%s" % episode
         return ""
 
-    # 返回资源类型字符串，含分辨率
+    # 返回資源型別字串，含解析度
     def get_resource_type_string(self):
         ret_string = ""
         if self.resource_type:
@@ -324,7 +324,7 @@ class MetaBase(object):
             ret_string = f"{ret_string} {self.resource_pix}"
         return ret_string
 
-    # 返回资源类型字符串，不含分辨率
+    # 返回資源型別字串，不含解析度
     def get_edtion_string(self):
         ret_string = ""
         if self.resource_type:
@@ -333,22 +333,22 @@ class MetaBase(object):
             ret_string = f"{ret_string} {self.resource_effect}"
         return ret_string.strip()
     
-    # 返回发布组/字幕组字符串
+    # 返回釋出組/字幕組字串
     def get_resource_team_string(self):
         if self.resource_team:
             return self.resource_team
         else:
             return ""
 
-    # 返回视频编码
+    # 返回影片編碼
     def get_video_encode_string(self):
         return self.video_encode or ""
 
-    # 返回音频编码
+    # 返回音訊編碼
     def get_audio_encode_string(self):
         return self.audio_encode or ""
 
-    # 返回背景图片地址
+    # 返回背景圖片地址
     def get_backdrop_image(self, default=True, original=False):
         if self.fanart_backdrop:
             return self.fanart_backdrop
@@ -365,7 +365,7 @@ class MetaBase(object):
         else:
             return "../static/img/tmdb.webp" if default else ""
 
-    # 返回消息图片地址
+    # 返回訊息圖片地址
     def get_message_image(self):
         if self.fanart_backdrop:
             return self.fanart_backdrop
@@ -381,7 +381,7 @@ class MetaBase(object):
         else:
             return DEFAULT_TMDB_IMAGE
 
-    # 返回海报图片地址
+    # 返回海報圖片地址
     def get_poster_image(self, original=False):
         if self.poster_path:
             if original:
@@ -393,7 +393,7 @@ class MetaBase(object):
                                                         queryid=self.tmdb_id if self.type == MediaType.MOVIE else self.tvdb_id)
         return self.fanart_poster or ""
 
-    # 查询TMDB详情页URL
+    # 查詢TMDB詳情頁URL
     def get_detail_url(self):
         if self.tmdb_id:
             if str(self.tmdb_id).startswith("DB:"):
@@ -406,13 +406,13 @@ class MetaBase(object):
             return "https://movie.douban.com/subject/%s" % self.douban_id
         return ""
 
-    # 返回评分星星个数
+    # 返回評分星星個數
     def get_stars(self):
         if not self.vote_average:
             return ""
         return "".rjust(int(self.vote_average), "★")
 
-    # 返回促销信息
+    # 返回促銷資訊
     def get_volume_factor_string(self):
         return self.get_free_string(self.upload_volume_factor, self.download_volume_factor)
 
@@ -422,9 +422,9 @@ class MetaBase(object):
             return "未知"
         free_strs = {
             "1.0 1.0": "普通",
-            "1.0 0.0": "免费",
+            "1.0 0.0": "免費",
             "2.0 1.0": "2X",
-            "2.0 0.0": "2X免费",
+            "2.0 0.0": "2X免費",
             "1.0 0.5": "50%",
             "2.0 0.5": "2X 50%",
             "1.0 0.7": "70%",
@@ -467,7 +467,7 @@ class MetaBase(object):
             else:
                 return int(episode) == self.begin_episode
 
-    # 整合TMDB识别的信息
+    # 整合TMDB識別的資訊
     def set_tmdb_info(self, info):
         if not info:
             return
@@ -507,7 +507,7 @@ class MetaBase(object):
         self.backdrop_path = TMDB_IMAGE_W500_URL % info.get('backdrop_path') if info.get(
             'backdrop_path') else ""
 
-    # 整合种了信息
+    # 整合種了資訊
     def set_torrent_info(self,
                          site=None,
                          site_order=0,
@@ -552,14 +552,14 @@ class MetaBase(object):
         if imdbid is not None:
             self.imdb_id = imdbid
 
-    # 整合下载参数
+    # 整合下載引數
     def set_download_info(self, download_setting=None, save_path=None):
         if download_setting:
             self.download_setting = download_setting
         if save_path:
             self.save_path = save_path
 
-    # 判断电视剧是否为动漫
+    # 判斷電視劇是否為動漫
     def __get_tmdb_type(self, info):
         if not info:
             return self.type
@@ -583,7 +583,7 @@ class MetaBase(object):
     def init_subtitle(self, title_text):
         if not title_text:
             return
-        if re.search(r'[全第季集话話期]', title_text, re.IGNORECASE):
+        if re.search(r'[全第季集話話期]', title_text, re.IGNORECASE):
             # 第x季
             season_str = re.search(r'%s' % self._subtitle_season_re, title_text, re.IGNORECASE)
             if season_str:
@@ -672,7 +672,7 @@ class MetaBase(object):
 
     def to_dict(self):
         """
-        转化为字典
+        轉化為字典
         """
         return {
             "title": self.title,

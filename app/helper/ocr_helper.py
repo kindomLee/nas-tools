@@ -13,7 +13,7 @@ class OcrHelper:
 
     def get_captcha_text(self, image_url=None, image_b64=None):
         """
-        根据图片地址，获取验证码图片，并识别内容
+        根據圖片地址，獲取驗證碼圖片，並識別內容
         """
         if not image_url and not image_b64:
             return ""

@@ -10,7 +10,7 @@
     </div>
   </div>
 </div>
-<!-- 业务页面代码 -->
+<!-- 業務頁面程式碼 -->
 <div class="page-body">
   <div class="container-xl">
     <div class="row row-cards">
@@ -24,7 +24,7 @@
           <div class="card-body text-center">
             <div class="card-title mb-1">OpenSubtitles</div>
             <div class="text-muted">{% if Config.subtitle %}{% if Config.subtitle.server == "opensubtitles" %}<span
-                    class="badge bg-green" title="已开启"></span> 正在使用{% endif %}{% endif %}</div>
+                    class="badge bg-green" title="已開啟"></span> 正在使用{% endif %}{% endif %}</div>
           </div>
         </a>
       </div>
@@ -39,7 +39,7 @@
           <div class="card-body text-center">
             <div class="card-title mb-1">ChineseSubFinder</div>
             <div class="text-muted">{% if Config.subtitle %}{% if Config.subtitle.server == "chinesesubfinder" %}<span
-                    class="badge bg-green" title="已开启"></span> 正在使用{% endif %}{% endif %}</div>
+                    class="badge bg-green" title="已開啟"></span> 正在使用{% endif %}{% endif %}</div>
           </div>
         </a>
       </div>
@@ -61,8 +61,8 @@
               <label class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="subtitle.opensubtitles.enable" {% if
                   Config.subtitle.opensubtitles and Config.subtitle.opensubtitles.enable %}checked{% endif %}>
-                <span class="form-check-label">开启opensubtitles.org字幕下载 <span class="form-help"
-                                                                                   title="需要确保网络能正常连通www.opensubtitles.org"
+                <span class="form-check-label">開啟opensubtitles.org字幕下載 <span class="form-help"
+                                                                                   title="需要確保網路能正常連通www.opensubtitles.org"
                                                                                    data-bs-toggle="tooltip">?</span></span>
               </label>
             </div>
@@ -72,7 +72,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-link me-auto" data-bs-dismiss="modal">取消</button>
         <a href="javascript:save_subtitle_config('opensubtitles')" id="opensubtitles_save_btn"
-           class="btn btn-primary">确定</a>
+           class="btn btn-primary">確定</a>
       </div>
     </div>
   </div>
@@ -89,8 +89,8 @@
         <div class="row">
           <div class="col-lg-6">
             <div class="mb-3">
-              <label class="form-label required">服务器地址 <span class="form-help"
-                                                                  title="配置IP地址和端口，如为https则需要增加https://前缀"
+              <label class="form-label required">伺服器地址 <span class="form-help"
+                                                                  title="配置IP地址和埠，如為https則需要增加https://字首"
                                                                   data-bs-toggle="tooltip">?</span></label>
               <input type="text"
                      value="{% if Config.subtitle %}{% if Config.subtitle.chinesesubfinder %}{{ Config.subtitle.chinesesubfinder.host or '' }}{% endif %}{% endif %}"
@@ -100,7 +100,7 @@
           <div class="col-lg-6">
             <div class="mb-3">
               <label class="form-label required">Api Key <span class="form-help"
-                                                               title="在ChineseSubFinder->配置中心->实验室->API Key处生成"
+                                                               title="在ChineseSubFinder->配置中心->實驗室->API Key處生成"
                                                                data-bs-toggle="tooltip">?</span></label>
               <input type="text"
                      value="{% if Config.subtitle %}{% if Config.subtitle.chinesesubfinder %}{{ Config.subtitle.chinesesubfinder.api_key or '' }}{% endif %}{% endif %}"
@@ -111,23 +111,23 @@
         <div class="row">
           <div class="col-lg-6">
             <div class="mb-3">
-              <label class="form-label">本地路径 <span class="form-help"
-                                                       title="NASTool本地媒体库的路径，如为Docker安装则为映射路径，如NASTool与ChineseSubFinder的媒体目录路径一致则不用配置"
+              <label class="form-label">本地路徑 <span class="form-help"
+                                                       title="NASTool本地媒體庫的路徑，如為Docker安裝則為對映路徑，如NASTool與ChineseSubFinder的媒體目錄路徑一致則不用配置"
                                                        data-bs-toggle="tooltip">?</span></label>
               <input type="text"
                      value="{% if Config.subtitle %}{% if Config.subtitle.chinesesubfinder %}{{ Config.subtitle.chinesesubfinder.local_path or '' }}{% endif %}{% endif %}"
                      id="subtitle.chinesesubfinder.local_path" class="form-control filetree-folders-only"
-                     placeholder="本地映射路径" autocomplete="off">
+                     placeholder="本地對映路徑" autocomplete="off">
             </div>
           </div>
           <div class="col-lg-6">
             <div class="mb-3">
-              <label class="form-label">远程路径 <span class="form-help"
-                                                       title="ChineseSubFinder的媒体目录映射路径，会用此路径替换掉本地路径后传递给ChineseSubFinder下载字幕，如NASTool与ChineseSubFinder的媒体目录路径一致则不用配置"
+              <label class="form-label">遠端路徑 <span class="form-help"
+                                                       title="ChineseSubFinder的媒體目錄對映路徑，會用此路徑替換掉本地路徑後傳遞給ChineseSubFinder下載字幕，如NASTool與ChineseSubFinder的媒體目錄路徑一致則不用配置"
                                                        data-bs-toggle="tooltip">?</span></label>
               <input type="text"
                      value="{% if Config.subtitle %}{% if Config.subtitle.chinesesubfinder %}{{ Config.subtitle.chinesesubfinder.remote_path or '' }}{% endif %}{% endif %}"
-                     id="subtitle.chinesesubfinder.remote_path" class="form-control" placeholder="远程映射路径"
+                     id="subtitle.chinesesubfinder.remote_path" class="form-control" placeholder="遠端對映路徑"
                      autocomplete="off">
             </div>
           </div>
@@ -136,16 +136,16 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-link me-auto" data-bs-dismiss="modal">取消</button>
         <a href="javascript:save_subtitle_config('chinesesubfinder')" id="chinesesubfinder_save_btn"
-           class="btn btn-primary">确定</a>
+           class="btn btn-primary">確定</a>
       </div>
     </div>
   </div>
 </div>
 <script type="text/javascript">
-  // 当前处理的类型
+  // 當前處理的型別
   var currType = "";
 
-  // 保存配置
+  // 儲存配置
   function save_config(type, func, test) {
     currType = type;
     let params = {"test": test || false};
@@ -163,7 +163,7 @@
     ajax_post("update_config", params, func);
   }
 
-  //保存配置、关闭和刷新页面
+  //儲存配置、關閉和重新整理頁面
   function save_subtitle_config(type) {
     $("#modal-" + type).modal('hide');
     save_config(type, function (ret) {

@@ -25,13 +25,13 @@ class SubHelper:
 
     def __search_subtitles_by_imdbid(self, imdbid):
         """
-        按TMDBID搜索OpenSubtitles
+        按TMDBID搜尋OpenSubtitles
         """
         return self.__parse_opensubtitles_results(url=self._url_imdbid % str(imdbid).replace("tt", ""))
 
     def __search_subtitles_by_keyword(self, keyword):
         """
-        按关键字搜索OpenSubtitles
+        按關鍵字搜尋OpenSubtitles
         """
         return self.__parse_opensubtitles_results(url=self._url_keyword % quote(keyword))
 
@@ -39,19 +39,19 @@ class SubHelper:
     @lru_cache(maxsize=128)
     def __parse_opensubtitles_results(cls, url):
         """
-        搜索并解析结果
+        搜尋並解析結果
         """
         chrome = ChromeHelper()
         if not chrome.get_status():
-            log.error("【Subtitle】未找到浏览器内核，当前环境无法检索opensubtitles字幕！")
+            log.error("【Subtitle】未找到瀏覽器核心，當前環境無法檢索opensubtitles字幕！")
             return []
         with CHROME_LOCK:
-            # 访问页面
+            # 訪問頁面
             chrome.visit(url)
-            # 源码
+            # 原始碼
             html_text = chrome.get_html()
             if not html_text:
-                log.error("【Subtitle】无法连接opensubtitles.org！")
+                log.error("【Subtitle】無法連線opensubtitles.org！")
                 return []
             # Cookie
             cls._cookie = chrome.get_cookies()
@@ -68,9 +68,9 @@ class SubHelper:
                 continue
             # 集
             episode = tr_doc('span[itemprop="episodeNumber"]').text()
-            # 标题
+            # 標題
             title = tr_doc('strong > a.bnone').text()
-            # 描述 下载链接
+            # 描述 下載連結
             if not global_season:
                 description = tr_doc('td:nth-child(1)').text()
                 if description and len(description.split("\n")) > 1:

@@ -15,7 +15,7 @@ class ProgressHelper(object):
         self._process_detail[ptype] = {
             "enable": False,
             "value": 0,
-            "text": "请稍候..."
+            "text": "請稍候..."
         }
 
     def start(self, ptype="search"):

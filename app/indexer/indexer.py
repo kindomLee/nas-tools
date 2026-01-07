@@ -29,7 +29,7 @@ class Indexer(object):
 
     def get_indexers(self):
         """
-        获取当前索引器的索引站点
+        獲取當前索引器的索引站點
         """
         if not self._client:
             return []
@@ -38,29 +38,29 @@ class Indexer(object):
     @staticmethod
     def get_builtin_indexers(check=True, public=True, indexer_id=None):
         """
-        获取内置索引器的索引站点
+        獲取內建索引器的索引站點
         """
         return BuiltinIndexer().get_indexers(check=check, public=public, indexer_id=indexer_id)
 
     @staticmethod
     def list_builtin_resources(index_id, page=0, keyword=None):
         """
-        获取内置索引器的资源列表
-        :param index_id: 内置站点ID
-        :param page: 页码
-        :param keyword: 搜索关键字
+        獲取內建索引器的資源列表
+        :param index_id: 內建站點ID
+        :param page: 頁碼
+        :param keyword: 搜尋關鍵字
         """
         return BuiltinIndexer().list(index_id=index_id, page=page, keyword=keyword)
 
     def get_client(self):
         """
-        获取当前索引器
+        獲取當前索引器
         """
         return self._client
 
     def get_client_type(self):
         """
-        获取当前索引器类型
+        獲取當前索引器型別
         """
         return self._client_type
 
@@ -70,31 +70,31 @@ class Indexer(object):
                           match_media=None,
                           in_from: SearchType = None):
         """
-        根据关键字调用 Index API 检索
-        :param key_word: 检索的关键字，不能为空
-        :param filter_args: 过滤条件，对应属性为空则不过滤，{"season":季, "episode":集, "year":年, "type":类型, "site":站点,
-                            "":, "restype":质量, "pix":分辨率, "sp_state":促销状态, "key":其它关键字}
-                            sp_state: 为UL DL，* 代表不关心，
-        :param match_media: 需要匹配的媒体信息
-        :param in_from: 搜索渠道
-        :return: 命中的资源媒体信息列表
+        根據關鍵字呼叫 Index API 檢索
+        :param key_word: 檢索的關鍵字，不能為空
+        :param filter_args: 過濾條件，對應屬性為空則不過濾，{"season":季, "episode":集, "year":年, "type":型別, "site":站點,
+                            "":, "restype":質量, "pix":解析度, "sp_state":促銷狀態, "key":其它關鍵字}
+                            sp_state: 為UL DL，* 代表不關心，
+        :param match_media: 需要匹配的媒體資訊
+        :param in_from: 搜尋渠道
+        :return: 命中的資源媒體資訊列表
         """
         if not key_word:
             return []
 
         indexers = self.get_indexers()
         if not indexers:
-            log.error(f"【{self._client_type}】没有有效的索引器配置！")
+            log.error(f"【{self._client_type}】沒有有效的索引器配置！")
             return []
-        # 计算耗时
+        # 計算耗時
         start_time = datetime.datetime.now()
         if filter_args and filter_args.get("site"):
-            log.info(f"【{self._client_type}】开始检索 %s，站点：%s ..." % (key_word, filter_args.get("site")))
-            self.progress.update(ptype='search', text="开始检索 %s，站点：%s ..." % (key_word, filter_args.get("site")))
+            log.info(f"【{self._client_type}】開始檢索 %s，站點：%s ..." % (key_word, filter_args.get("site")))
+            self.progress.update(ptype='search', text="開始檢索 %s，站點：%s ..." % (key_word, filter_args.get("site")))
         else:
-            log.info(f"【{self._client_type}】开始并行检索 %s，线程数：%s ..." % (key_word, len(indexers)))
-            self.progress.update(ptype='search', text="开始并行检索 %s，线程数：%s ..." % (key_word, len(indexers)))
-        # 多线程
+            log.info(f"【{self._client_type}】開始並行檢索 %s，執行緒數：%s ..." % (key_word, len(indexers)))
+            self.progress.update(ptype='search', text="開始並行檢索 %s，執行緒數：%s ..." % (key_word, len(indexers)))
+        # 多執行緒
         executor = ThreadPoolExecutor(max_workers=len(indexers))
         all_task = []
         for index in indexers:
@@ -115,11 +115,11 @@ class Indexer(object):
             self.progress.update(ptype='search', value=round(100 * (finish_count / len(all_task))))
             if result:
                 ret_array = ret_array + result
-        # 计算耗时
+        # 計算耗時
         end_time = datetime.datetime.now()
-        log.info(f"【{self._client_type}】所有站点检索完成，有效资源数：%s，总耗时 %s 秒"
+        log.info(f"【{self._client_type}】所有站點檢索完成，有效資源數：%s，總耗時 %s 秒"
                  % (len(ret_array), (end_time - start_time).seconds))
-        self.progress.update(ptype='search', text="所有站点检索完成，有效资源数：%s，总耗时 %s 秒"
+        self.progress.update(ptype='search', text="所有站點檢索完成，有效資源數：%s，總耗時 %s 秒"
                                                   % (len(ret_array), (end_time - start_time).seconds),
                              value=100)
         return ret_array

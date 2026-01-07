@@ -21,19 +21,19 @@ class Bark(IMessageClient):
 
     def send_msg(self, title, text="", image="", url="", user_id=""):
         """
-        发送Bark消息
-        :param title: 消息标题
-        :param text: 消息内容
+        傳送Bark訊息
+        :param title: 訊息標題
+        :param text: 訊息內容
         :param image: 未使用
         :param url: 未使用
         :param user_id: 未使用
-        :return: 发送状态、错误信息
+        :return: 傳送狀態、錯誤資訊
         """
         if not title and not text:
-            return False, "标题和内容不能同时为空"
+            return False, "標題和內容不能同時為空"
         try:
             if not self._server or not self._apikey:
-                return False, "参数未配置"
+                return False, "引數未配置"
             sc_url = "%s/%s/%s/%s" % (self._server, self._apikey, quote_plus(title), quote_plus(text))
             res = RequestUtils().post_res(sc_url)
             if res:
@@ -45,7 +45,7 @@ class Bark(IMessageClient):
                 else:
                     return False, message
             else:
-                return False, "未获取到返回信息"
+                return False, "未獲取到返回資訊"
         except Exception as msg_e:
             ExceptionUtils.exception_traceback(msg_e)
             return False, str(msg_e)

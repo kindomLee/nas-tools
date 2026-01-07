@@ -9,71 +9,71 @@ from config import Config
 
 def check_config():
     """
-    检查配置文件，如有错误进行日志输出
+    檢查配置檔案，如有錯誤進行日誌輸出
     """
-    # 检查日志输出
+    # 檢查日誌輸出
     if Config().get_config('app'):
         logtype = Config().get_config('app').get('logtype')
         if logtype:
-            print("日志输出类型为：%s" % logtype)
+            print("日誌輸出型別為：%s" % logtype)
         if logtype == "server":
             logserver = Config().get_config('app').get('logserver')
             if not logserver:
-                print("【Config】日志中心地址未配置，无法正常输出日志")
+                print("【Config】日誌中心地址未配置，無法正常輸出日誌")
             else:
-                print("日志将上送到服务器：%s" % logserver)
+                print("日誌將上送到伺服器：%s" % logserver)
         elif logtype == "file":
             logpath = Config().get_config('app').get('logpath')
             if not logpath:
-                print("【Config】日志文件路径未配置，无法正常输出日志")
+                print("【Config】日誌檔案路徑未配置，無法正常輸出日誌")
             else:
-                print("日志将写入文件：%s" % logpath)
+                print("日誌將寫入檔案：%s" % logpath)
 
-        # 检查WEB端口
+        # 檢查WEB埠
         web_port = Config().get_config('app').get('web_port')
         if not web_port:
-            print("WEB服务端口未设置，将使用默认3000端口")
+            print("WEB服務埠未設定，將使用預設3000埠")
 
-        # 检查登录用户和密码
+        # 檢查登入使用者和密碼
         login_user = Config().get_config('app').get('login_user')
         login_password = Config().get_config('app').get('login_password')
         if not login_user or not login_password:
-            print("WEB管理用户或密码未设置，将使用默认用户：admin，密码：password")
+            print("WEB管理使用者或密碼未設定，將使用預設使用者：admin，密碼：password")
         else:
-            print("WEB管理页面用户：%s" % str(login_user))
+            print("WEB管理頁面使用者：%s" % str(login_user))
 
-        # 检查HTTPS
+        # 檢查HTTPS
         ssl_cert = Config().get_config('app').get('ssl_cert')
         ssl_key = Config().get_config('app').get('ssl_key')
         if not ssl_cert or not ssl_key:
-            print("未启用https，请使用 http://IP:%s 访问管理页面" % str(web_port))
+            print("未啟用https，請使用 http://IP:%s 訪問管理頁面" % str(web_port))
         else:
             if not os.path.exists(ssl_cert):
-                print("ssl_cert文件不存在：%s" % ssl_cert)
+                print("ssl_cert檔案不存在：%s" % ssl_cert)
             if not os.path.exists(ssl_key):
-                print("ssl_key文件不存在：%s" % ssl_key)
-            print("已启用https，请使用 https://IP:%s 访问管理页面" % str(web_port))
+                print("ssl_key檔案不存在：%s" % ssl_key)
+            print("已啟用https，請使用 https://IP:%s 訪問管理頁面" % str(web_port))
 
         rmt_tmdbkey = Config().get_config('app').get('rmt_tmdbkey')
         if not rmt_tmdbkey:
-            print("TMDB API Key未配置，媒体整理、搜索下载等功能将无法正常运行！")
+            print("TMDB API Key未配置，媒體整理、搜尋下載等功能將無法正常執行！")
         rmt_match_mode = Config().get_config('app').get('rmt_match_mode')
         if rmt_match_mode:
             rmt_match_mode = rmt_match_mode.upper()
         else:
             rmt_match_mode = "NORMAL"
         if rmt_match_mode == "STRICT":
-            print("TMDB匹配模式：严格模式")
+            print("TMDB匹配模式：嚴格模式")
         else:
             print("TMDB匹配模式：正常模式")
     else:
-        print("配置文件格式错误，找不到app配置项！")
+        print("配置檔案格式錯誤，找不到app配置項！")
 
-    # 检查媒体库目录路径
+    # 檢查媒體庫目錄路徑
     if Config().get_config('media'):
         media_server = Config().get_config('media').get('media_server')
         if media_server:
-            print("媒体管理软件设置为：%s" % media_server)
+            print("媒體管理軟體設定為：%s" % media_server)
             if media_server == "jellyfin":
                 if not Config().get_config('jellyfin'):
                     print("jellyfin未配置")
@@ -98,23 +98,23 @@ def check_config():
 
         movie_paths = Config().get_config('media').get('movie_path')
         if not movie_paths:
-            print("未配置电影媒体库目录")
+            print("未配置電影媒體庫目錄")
         else:
             if not isinstance(movie_paths, list):
                 movie_paths = [movie_paths]
             for movie_path in movie_paths:
                 if not os.path.exists(movie_path):
-                    print("电影媒体库目录不存在：%s" % movie_path)
+                    print("電影媒體庫目錄不存在：%s" % movie_path)
 
         tv_paths = Config().get_config('media').get('tv_path')
         if not tv_paths:
-            print("未配置电视剧媒体库目录")
+            print("未配置電視劇媒體庫目錄")
         else:
             if not isinstance(tv_paths, list):
                 tv_paths = [tv_paths]
             for tv_path in tv_paths:
                 if not os.path.exists(tv_path):
-                    print("电视剧媒体库目录不存在：%s" % tv_path)
+                    print("電視劇媒體庫目錄不存在：%s" % tv_path)
 
         anime_paths = Config().get_config('media').get('anime_path')
         if anime_paths:
@@ -122,56 +122,56 @@ def check_config():
                 anime_paths = [anime_paths]
             for anime_path in anime_paths:
                 if not os.path.exists(anime_path):
-                    print("动漫媒体库目录不存在：%s" % anime_path)
+                    print("動漫媒體庫目錄不存在：%s" % anime_path)
 
         category = Config().get_config('media').get('category')
         if not category:
-            print("未配置分类策略")
+            print("未配置分類策略")
     else:
-        print("配置文件格式错误，找不到media配置项！")
+        print("配置檔案格式錯誤，找不到media配置項！")
 
-    # 检查站点配置
+    # 檢查站點配置
     if Config().get_config('pt'):
         pt_client = Config().get_config('pt').get('pt_client')
-        print("下载软件设置为：%s" % pt_client)
+        print("下載軟體設定為：%s" % pt_client)
 
         rmt_mode = Config().get_config('pt').get('rmt_mode', 'copy')
         if rmt_mode == "link":
-            print("默认文件转移模式为：硬链接")
+            print("預設檔案轉移模式為：硬連結")
         elif rmt_mode == "softlink":
-            print("默认文件转移模式为：软链接")
+            print("預設檔案轉移模式為：軟連結")
         elif rmt_mode == "move":
-            print("默认文件转移模式为：移动")
+            print("預設檔案轉移模式為：移動")
         elif rmt_mode == "rclone":
-            print("默认文件转移模式为：rclone移动")
+            print("預設檔案轉移模式為：rclone移動")
         elif rmt_mode == "rclonecopy":
-            print("默认文件转移模式为：rclone复制")
+            print("預設檔案轉移模式為：rclone複製")
         else:
-            print("默认文件转移模式为：复制")
+            print("預設檔案轉移模式為：複製")
 
         search_indexer = Config().get_config('pt').get('search_indexer')
         if search_indexer:
-            print("索引器设置为：%s" % search_indexer)
+            print("索引器設定為：%s" % search_indexer)
 
         search_auto = Config().get_config('pt').get('search_auto')
         if search_auto:
-            print("微信等移动端渠道搜索已开启自动择优下载")
+            print("微信等移動端渠道搜尋已開啟自動擇優下載")
 
         ptsignin_cron = Config().get_config('pt').get('ptsignin_cron')
         if not ptsignin_cron:
-            print("站点自动签到时间未配置，站点签到功能已关闭")
+            print("站點自動簽到時間未配置，站點簽到功能已關閉")
 
         pt_check_interval = Config().get_config('pt').get('pt_check_interval')
         if not pt_check_interval:
-            print("RSS订阅周期未配置，RSS订阅功能已关闭")
+            print("RSS訂閱週期未配置，RSS訂閱功能已關閉")
 
         pt_monitor = Config().get_config('pt').get('pt_monitor')
         if not pt_monitor:
-            print("下载软件监控未开启，下载器监控功能已关闭")
+            print("下載軟體監控未開啟，下載器監控功能已關閉")
     else:
-        print("配置文件格式错误，找不到pt配置项！")
+        print("配置檔案格式錯誤，找不到pt配置項！")
 
-    # 检查Douban配置
+    # 檢查Douban配置
     if not Config().get_config('douban'):
         print("豆瓣未配置")
     else:
@@ -183,19 +183,19 @@ def check_config():
 
 def update_config():
     """
-    升级配置文件
+    升級配置檔案
     """
     _config = Config().get_config()
     _dbhelper = DbHelper()
     overwrite_cofig = False
 
-    # 密码初始化
+    # 密碼初始化
     login_password = _config.get("app", {}).get("login_password") or "password"
     if login_password and not login_password.startswith("[hash]"):
         _config['app']['login_password'] = "[hash]%s" % generate_password_hash(login_password)
         overwrite_cofig = True
 
-    # 实验室配置初始化
+    # 實驗室配置初始化
     if not _config.get("laboratory"):
         _config['laboratory'] = {
             'search_keyword': False,
@@ -220,7 +220,7 @@ def update_config():
         }
         overwrite_cofig = True
 
-    # API密钥初始化
+    # API金鑰初始化
     if not _config.get("security", {}).get("api_key"):
         _config['security']['api_key'] = _config.get("security",
                                                      {}).get("subscribe_token") \
@@ -246,7 +246,7 @@ def update_config():
         }
         overwrite_cofig = True
 
-    # 刮削图片配置初始化
+    # 刮削圖片配置初始化
     if not _config.get("scraper_pic"):
         _config['scraper_pic'] = {
             "movie": {
@@ -271,7 +271,7 @@ def update_config():
         }
         overwrite_cofig = True
 
-    # 下载目录配置初始化
+    # 下載目錄配置初始化
     if not _config.get('downloaddir'):
         dl_client = _config.get('pt', {}).get('pt_client')
         if dl_client and _config.get(dl_client):
@@ -282,7 +282,7 @@ def update_config():
             if not isinstance(container_path, dict):
                 container_path = {"movie": container_path, "tv": container_path, "anime": container_path}
             downloaddir = []
-            type_dict = {"movie": "电影", "tv": "电视剧", "anime": "动漫"}
+            type_dict = {"movie": "電影", "tv": "電視劇", "anime": "動漫"}
             for mtype, path in save_path.items():
                 if not path:
                     continue
@@ -326,7 +326,7 @@ def update_config():
         _config['downloaddir'] = downloaddir_list
         overwrite_cofig = True
 
-    # 自定义识别词兼容旧配置
+    # 自定義識別詞相容舊配置
     try:
         ignored_words = Config().get_config('laboratory').get("ignored_words")
         if ignored_words:
@@ -387,7 +387,7 @@ def update_config():
     except Exception as e:
         ExceptionUtils.exception_traceback(e)
 
-    # 目录同步兼容旧配置
+    # 目錄同步相容舊配置
     try:
         sync_paths = Config().get_config('sync').get('sync_path')
         rmt_mode = Config().get_config('pt').get('sync_mod')
@@ -400,15 +400,15 @@ def update_config():
                                 'syncmod': rmt_mode,
                                 'rename': 1,
                                 'enabled': 1}
-                    # 是否启用
+                    # 是否啟用
                     if sync_items.startswith("#"):
                         SyncPath['enabled'] = 0
                         sync_items = sync_items[1:-1]
-                    # 是否重命名
+                    # 是否重新命名
                     if sync_items.startswith("["):
                         SyncPath['rename'] = 0
                         sync_items = sync_items[1:-1]
-                    # 转移方式
+                    # 轉移方式
                     config_items = sync_items.split("@")
                     if not config_items:
                         continue
@@ -418,7 +418,7 @@ def update_config():
                         SyncPath['syncmod'] = rmt_mode
                     if not SyncPath['syncmod']:
                         continue
-                    # 源目录|目的目录|未知目录
+                    # 源目錄|目的目錄|未知目錄
                     paths = config_items[0].split("|")
                     if not paths:
                         continue
@@ -430,7 +430,7 @@ def update_config():
                         SyncPath['to'] = os.path.normpath(paths[1])
                     if len(paths) > 2:
                         SyncPath['unknown'] = os.path.normpath(paths[2])
-                    # 相同from的同步目录不能同时开启
+                    # 相同from的同步目錄不能同時開啟
                     if SyncPath['enabled'] == 1:
                         _dbhelper.check_config_sync_paths(source=SyncPath['from'],
                                                           enabled=0)
@@ -452,7 +452,7 @@ def update_config():
     except Exception as e:
         ExceptionUtils.exception_traceback(e)
 
-    # 消息服务兼容旧配置
+    # 訊息服務相容舊配置
     try:
         message = Config().get_config('message') or {}
         msg_channel = message.get('msg_channel')
@@ -598,7 +598,7 @@ def update_config():
                                                     switchs=switchs,
                                                     interactive=interactive,
                                                     enabled=enabled)
-            # 删除旧配置
+            # 刪除舊配置
             if _config.get('message', {}).get('msg_channel'):
                 _config['message'].pop('msg_channel')
             if _config.get('message', {}).get('switch'):
@@ -619,24 +619,24 @@ def update_config():
     except Exception as e:
         ExceptionUtils.exception_traceback(e)
 
-    # 站点兼容旧配置
+    # 站點相容舊配置
     try:
         sites = _dbhelper.get_config_site()
         for site in sites:
             if not site.NOTE or str(site.NOTE).find('{') != -1:
                 continue
-            # 是否解析种子详情为|分隔的第1位
+            # 是否解析種子詳情為|分隔的第1位
             site_parse = str(site.NOTE).split("|")[0] or "Y"
-            # 站点过滤规则为|分隔的第2位
+            # 站點過濾規則為|分隔的第2位
             rule_groupid = str(site.NOTE).split("|")[1] if site.NOTE and len(str(site.NOTE).split("|")) > 1 else ""
-            # 站点未读消息为|分隔的第3位
+            # 站點未讀訊息為|分隔的第3位
             site_unread_msg_notify = str(site.NOTE).split("|")[2] if site.NOTE and len(
                 str(site.NOTE).split("|")) > 2 else "Y"
-            # 自定义UA为|分隔的第4位
+            # 自定義UA為|分隔的第4位
             ua = str(site.NOTE).split("|")[3] if site.NOTE and len(str(site.NOTE).split("|")) > 3 else ""
-            # 是否开启浏览器仿真为|分隔的第5位
+            # 是否開啟瀏覽器模擬為|分隔的第5位
             chrome = str(site.NOTE).split("|")[4] if site.NOTE and len(str(site.NOTE).split("|")) > 4 else "N"
-            # 是否使用代理为|分隔的第6位
+            # 是否使用代理為|分隔的第6位
             proxy = str(site.NOTE).split("|")[5] if site.NOTE and len(str(site.NOTE).split("|")) > 5 else "N"
             _dbhelper.update_config_site_note(tid=site.ID, note=json.dumps({
                 "parse": site_parse,
@@ -650,7 +650,7 @@ def update_config():
     except Exception as e:
         ExceptionUtils.exception_traceback(e)
 
-    # 订阅兼容旧配置
+    # 訂閱相容舊配置
     try:
         def __parse_rss_desc(desc):
             rss_sites = []
@@ -663,18 +663,18 @@ def update_config():
             total = None
             current = None
             notes = str(desc).split('#')
-            # 订阅站点
+            # 訂閱站點
             if len(notes) > 0:
                 if notes[0]:
                     rss_sites = [s for s in str(notes[0]).split('|') if s and len(s) < 20]
-            # 搜索站点
+            # 搜尋站點
             if len(notes) > 1:
                 if notes[1]:
                     search_sites = [s for s in str(notes[1]).split('|') if s]
             # 洗版
             if len(notes) > 2:
                 over_edition = notes[2]
-            # 过滤条件
+            # 過濾條件
             if len(notes) > 3:
                 if notes[3]:
                     filters = notes[3].split('@')
@@ -686,7 +686,7 @@ def update_config():
                         rule = int(filters[2]) if filters[2].isdigit() else None
                     if len(filters) > 3:
                         team = filters[3]
-            # 总集数及当前集数
+            # 總集數及當前集數
             if len(notes) > 4:
                 if notes[4]:
                     ep_info = notes[4].split('@')
@@ -706,22 +706,22 @@ def update_config():
                 "current": current
             }
 
-        # 电影订阅
+        # 電影訂閱
         rss_movies = _dbhelper.get_rss_movies()
         for movie in rss_movies:
             if not movie.DESC or str(movie.DESC).find('#') == -1:
                 continue
-            # 更新到具体字段
+            # 更新到具體欄位
             _dbhelper.update_rss_movie_desc(
                 rid=movie.ID,
                 desc=json.dumps(__parse_rss_desc(movie.DESC))
             )
-        # 电视剧订阅
+        # 電視劇訂閱
         rss_tvs = _dbhelper.get_rss_tvs()
         for tv in rss_tvs:
             if not tv.DESC or str(tv.DESC).find('#') == -1:
                 continue
-            # 更新到具体字段
+            # 更新到具體欄位
             _dbhelper.update_rss_tv_desc(
                 rid=tv.ID,
                 desc=json.dumps(__parse_rss_desc(tv.DESC))
@@ -730,6 +730,6 @@ def update_config():
     except Exception as e:
         ExceptionUtils.exception_traceback(e)
 
-    # 重写配置文件
+    # 重寫配置檔案
     if overwrite_cofig:
         Config().save_config(_config)

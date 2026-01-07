@@ -51,22 +51,22 @@ class Subtitle:
 
     def download_subtitle(self, items, server=None):
         """
-        字幕下载入口
+        字幕下載入口
         :param items: {"type":, "file", "file_ext":, "name":, "title", "year":, "season":, "episode":, "bluray":}
-        :param server: 字幕下载服务器
-        :return: 是否成功，消息内容
+        :param server: 字幕下載伺服器
+        :return: 是否成功，訊息內容
         """
         if not items:
-            return False, "参数有误"
+            return False, "引數有誤"
         _server = self._server if not server else server
         if not _server:
-            return False, "未配置字幕下载器"
+            return False, "未配置字幕下載器"
         if _server == "opensubtitles":
             if server or self._opensubtitles_enable:
                 return self.__download_opensubtitles(items)
         elif _server == "chinesesubfinder":
             return self.__download_chinesesubfinder(items)
-        return False, "未配置字幕下载器"
+        return False, "未配置字幕下載器"
 
     def __search_opensubtitles(self, item):
         """
@@ -78,7 +78,7 @@ class Subtitle:
 
     def __download_opensubtitles(self, items):
         """
-        调用OpenSubtitles Api下载字幕
+        呼叫OpenSubtitles Api下載字幕
         """
         if not self.subhelper:
             return False, "未配置OpenSubtitles"
@@ -91,27 +91,27 @@ class Subtitle:
             if not item.get("name") or not item.get("file"):
                 continue
             if item.get("type") == MediaType.TV and not item.get("imdbid"):
-                log.warn("【Subtitle】电视剧类型需要imdbid检索字幕，跳过...")
-                ret_msg = "电视剧需要imdbid检索字幕"
+                log.warn("【Subtitle】電視劇型別需要imdbid檢索字幕，跳過...")
+                ret_msg = "電視劇需要imdbid檢索字幕"
                 continue
             subtitles = subtitles_cache.get(item.get("name"))
             if subtitles is None:
                 log.info(
-                    "【Subtitle】开始从Opensubtitle.org检索字幕: %s，imdbid=%s" % (item.get("name"), item.get("imdbid")))
+                    "【Subtitle】開始從Opensubtitle.org檢索字幕: %s，imdbid=%s" % (item.get("name"), item.get("imdbid")))
                 subtitles = self.__search_opensubtitles(item)
                 if not subtitles:
                     subtitles_cache[item.get("name")] = []
-                    log.info("【Subtitle】%s 未检索到字幕" % item.get("name"))
-                    ret_msg = "%s 未检索到字幕" % item.get("name")
+                    log.info("【Subtitle】%s 未檢索到字幕" % item.get("name"))
+                    ret_msg = "%s 未檢索到字幕" % item.get("name")
                 else:
                     subtitles_cache[item.get("name")] = subtitles
-                    log.info("【Subtitle】opensubtitles.org返回数据：%s" % len(subtitles))
+                    log.info("【Subtitle】opensubtitles.org返回資料：%s" % len(subtitles))
             if not subtitles:
                 continue
-            # 成功数
+            # 成功數
             subtitle_count = 0
             for subtitle in subtitles:
-                # 标题
+                # 標題
                 if not item.get("imdbid"):
                     if str(subtitle.get('title')) != "%s (%s)" % (item.get("name"), item.get("year")):
                         continue
@@ -123,18 +123,18 @@ class Subtitle:
                 if item.get('episode') \
                         and str(subtitle.get('episode')) != str(item.get('episode')):
                     continue
-                # 字幕文件名
+                # 字幕檔名
                 SubFileName = subtitle.get('description')
-                # 下载链接
+                # 下載連結
                 Download_Link = subtitle.get('link')
-                # 下载后的字幕文件路径
+                # 下載後的字幕檔案路徑
                 Media_File = "%s.chi.zh-cn%s" % (item.get("file"), item.get("file_ext"))
-                log.info("【Subtitle】正在从opensubtitles.org下载字幕 %s 到 %s " % (SubFileName, Media_File))
-                # 下载
+                log.info("【Subtitle】正在從opensubtitles.org下載字幕 %s 到 %s " % (SubFileName, Media_File))
+                # 下載
                 ret = RequestUtils(cookies=self.subhelper.get_cookie(),
                                    headers=self.subhelper.get_ua()).get_res(Download_Link)
                 if ret and ret.status_code == 200:
-                    # 保存ZIP
+                    # 儲存ZIP
                     file_name = self.__get_url_subtitle_name(ret.headers.get('content-disposition'), Download_Link)
                     if not file_name:
                         continue
@@ -142,36 +142,36 @@ class Subtitle:
                     zip_path = os.path.splitext(zip_file)[0]
                     with open(zip_file, 'wb') as f:
                         f.write(ret.content)
-                    # 解压文件
+                    # 解壓檔案
                     shutil.unpack_archive(zip_file, zip_path, format='zip')
-                    # 遍历转移文件
+                    # 遍歷轉移檔案
                     for sub_file in PathUtils.get_dir_files(in_path=zip_path, exts=RMT_SUBEXT):
                         self.__transfer_subtitle(sub_file, Media_File)
-                    # 删除临时文件
+                    # 刪除臨時檔案
                     try:
                         shutil.rmtree(zip_path)
                         os.remove(zip_file)
                     except Exception as err:
                         ExceptionUtils.exception_traceback(err)
                 else:
-                    log.error("【Subtitle】下载字幕文件失败：%s" % Download_Link)
+                    log.error("【Subtitle】下載字幕檔案失敗：%s" % Download_Link)
                     continue
-                # 最多下载3个字幕
+                # 最多下載3個字幕
                 subtitle_count += 1
                 if subtitle_count > 2:
                     break
             if not subtitle_count:
                 if item.get('episode'):
-                    log.info("【Subtitle】%s 第%s季 第%s集 未找到符合条件的字幕" % (
+                    log.info("【Subtitle】%s 第%s季 第%s集 未找到符合條件的字幕" % (
                         item.get("name"), item.get("season"), item.get("episode")))
-                    ret_msg = "%s 第%s季 第%s集 未找到符合条件的字幕" % (
+                    ret_msg = "%s 第%s季 第%s集 未找到符合條件的字幕" % (
                         item.get("name"), item.get("season"), item.get("episode"))
                 else:
-                    log.info("【Subtitle】%s 未找到符合条件的字幕" % item.get("name"))
-                    ret_msg = "%s 未找到符合条件的字幕" % item.get("name")
+                    log.info("【Subtitle】%s 未找到符合條件的字幕" % item.get("name"))
+                    ret_msg = "%s 未找到符合條件的字幕" % item.get("name")
             else:
-                log.info("【Subtitle】%s 共下载了 %s 个字幕" % (item.get("name"), subtitle_count))
-                ret_msg = "%s 共下载了 %s 个字幕" % (item.get("name"), subtitle_count)
+                log.info("【Subtitle】%s 共下載了 %s 個字幕" % (item.get("name"), subtitle_count))
+                ret_msg = "%s 共下載了 %s 個字幕" % (item.get("name"), subtitle_count)
                 success = True
         if success:
             return True, ret_msg
@@ -180,7 +180,7 @@ class Subtitle:
 
     def __download_chinesesubfinder(self, items):
         """
-        调用ChineseSubFinder下载字幕
+        呼叫ChineseSubFinder下載字幕
         """
         if not self._host or not self._api_key:
             return False, "未配置ChineseSubFinder"
@@ -201,14 +201,14 @@ class Subtitle:
                 else:
                     file_path = item.get("file")
 
-            # 路径替换
+            # 路徑替換
             if self._local_path and self._remote_path and file_path.startswith(self._local_path):
                 file_path = file_path.replace(self._local_path, self._remote_path).replace('\\', '/')
 
-            # 一个名称只建一个任务
+            # 一個名稱只建一個任務
             if file_path not in notify_items:
                 notify_items.append(file_path)
-                log.info("【Subtitle】通知ChineseSubFinder下载字幕: %s" % file_path)
+                log.info("【Subtitle】通知ChineseSubFinder下載字幕: %s" % file_path)
                 params = {
                     "video_type": 0 if item.get("type") == MediaType.MOVIE else 1,
                     "physical_video_file_full_path": file_path,
@@ -221,27 +221,27 @@ class Subtitle:
                         "Authorization": "Bearer %s" % self._api_key
                     }).post(req_url, json=params)
                     if not res or res.status_code != 200:
-                        log.error("【Subtitle】调用ChineseSubFinder API失败！")
-                        ret_msg = "调用ChineseSubFinder API失败"
+                        log.error("【Subtitle】呼叫ChineseSubFinder API失敗！")
+                        ret_msg = "呼叫ChineseSubFinder API失敗"
                     else:
-                        # 如果文件目录没有识别的nfo元数据， 此接口会返回控制符，推测是ChineseSubFinder的原因
-                        # emby refresh元数据时异步的
+                        # 如果檔案目錄沒有識別的nfo後設資料， 此介面會返回控制符，推測是ChineseSubFinder的原因
+                        # emby refresh後設資料時非同步的
                         if res.text:
                             job_id = res.json().get("job_id")
                             message = res.json().get("message")
                             if not job_id:
-                                log.warn("【Subtitle】ChineseSubFinder下载字幕出错：%s" % message)
-                                ret_msg = "ChineseSubFinder下载字幕出错：%s" % message
+                                log.warn("【Subtitle】ChineseSubFinder下載字幕出錯：%s" % message)
+                                ret_msg = "ChineseSubFinder下載字幕出錯：%s" % message
                             else:
-                                log.info("【Subtitle】ChineseSubFinder任务添加成功：%s" % job_id)
-                                ret_msg = "ChineseSubFinder任务添加成功：%s" % job_id
+                                log.info("【Subtitle】ChineseSubFinder任務新增成功：%s" % job_id)
+                                ret_msg = "ChineseSubFinder任務新增成功：%s" % job_id
                         else:
-                            log.error("【Subtitle】%s 目录缺失nfo元数据" % file_path)
-                            ret_msg = "%s 目录下缺失nfo元数据：" % file_path
+                            log.error("【Subtitle】%s 目錄缺失nfo後設資料" % file_path)
+                            ret_msg = "%s 目錄下缺失nfo後設資料：" % file_path
                 except Exception as e:
                     ExceptionUtils.exception_traceback(e)
-                    log.error("【Subtitle】连接ChineseSubFinder出错：" + str(e))
-                    ret_msg = "连接ChineseSubFinder出错：%s" % str(e)
+                    log.error("【Subtitle】連線ChineseSubFinder出錯：" + str(e))
+                    ret_msg = "連線ChineseSubFinder出錯：%s" % str(e)
         if success:
             return True, ret_msg
         else:
@@ -250,7 +250,7 @@ class Subtitle:
     @staticmethod
     def __transfer_subtitle(sub_file, media_file):
         """
-        转移字幕
+        轉移字幕
         """
         new_sub_file = "%s%s" % (os.path.splitext(media_file)[0], os.path.splitext(sub_file)[-1])
         if os.path.exists(new_sub_file):
@@ -260,21 +260,21 @@ class Subtitle:
 
     def download_subtitle_from_site(self, media_info, cookie, ua, download_dir):
         """
-        从站点下载字幕文件，并保存到本地
+        從站點下載字幕檔案，並儲存到本地
         """
         if not media_info.page_url:
             return
-        # 字幕下载目录
-        log.info("【Subtitle】开始从站点下载字幕: %s" % media_info.page_url)
+        # 字幕下載目錄
+        log.info("【Subtitle】開始從站點下載字幕: %s" % media_info.page_url)
         if not download_dir:
-            log.warn("【Subtitle】未找到字幕下载目录")
+            log.warn("【Subtitle】未找到字幕下載目錄")
             return
-        # 读取网站代码
+        # 讀取網站程式碼
         request = RequestUtils(cookies=cookie, headers=ua)
         res = request.get_res(media_info.page_url)
         if res and res.status_code == 200:
             if not res.text:
-                log.warn(f"【Subtitle】读取页面代码失败：{media_info.page_url}")
+                log.warn(f"【Subtitle】讀取頁面程式碼失敗：{media_info.page_url}")
                 return
             html = etree.HTML(res.text)
             sublink = None
@@ -290,33 +290,33 @@ class Subtitle:
                             sublink = "%s/%s" % (base_url, sublink)
                     break
             if sublink:
-                log.info(f"【Subtitle】找到字幕下载链接: {sublink}，开始下载...")
-                # 下载
+                log.info(f"【Subtitle】找到字幕下載連結: {sublink}，開始下載...")
+                # 下載
                 ret = request.get_res(sublink)
                 if ret and ret.status_code == 200:
-                    # 如果目录不存在,则先创建
+                    # 如果目錄不存在,則先建立
                     if not os.path.isdir(download_dir):
                         os.makedirs(download_dir)
-                    # 保存ZIP
+                    # 儲存ZIP
                     file_name = self.__get_url_subtitle_name(ret.headers.get('content-disposition'), sublink)
                     if not file_name:
-                        log.warn(f"【Subtitle】链接不是字幕文件：{sublink}")
+                        log.warn(f"【Subtitle】連結不是字幕檔案：{sublink}")
                         return
                     if file_name.lower().endswith(".zip"):
                         # ZIP包
                         zip_file = os.path.join(self._save_tmp_path, file_name)
-                        # 解压路径
+                        # 解壓路徑
                         zip_path = os.path.splitext(zip_file)[0]
                         with open(zip_file, 'wb') as f:
                             f.write(ret.content)
-                        # 解压文件
+                        # 解壓檔案
                         shutil.unpack_archive(zip_file, zip_path, format='zip')
-                        # 遍历转移文件
+                        # 遍歷轉移檔案
                         for sub_file in PathUtils.get_dir_files(in_path=zip_path, exts=RMT_SUBEXT):
                             media_file = os.path.join(download_dir, os.path.basename(sub_file))
-                            log.info(f"【Subtitle】转移字幕 {sub_file} 到 {media_file}")
+                            log.info(f"【Subtitle】轉移字幕 {sub_file} 到 {media_file}")
                             self.__transfer_subtitle(sub_file, media_file)
-                        # 删除临时文件
+                        # 刪除臨時檔案
                         try:
                             shutil.rmtree(zip_path)
                             os.remove(zip_file)
@@ -324,26 +324,26 @@ class Subtitle:
                             ExceptionUtils.exception_traceback(err)
                     else:
                         sub_file = os.path.join(self._save_tmp_path, file_name)
-                        # 保存
+                        # 儲存
                         with open(sub_file, 'wb') as f:
                             f.write(ret.content)
                         media_file = os.path.join(download_dir, os.path.basename(sub_file))
-                        log.info(f"【Subtitle】转移字幕 {sub_file} 到 {media_file}")
+                        log.info(f"【Subtitle】轉移字幕 {sub_file} 到 {media_file}")
                         self.__transfer_subtitle(sub_file, media_file)
                 else:
-                    log.error(f"【Subtitle】下载字幕文件失败：{sublink}")
+                    log.error(f"【Subtitle】下載字幕檔案失敗：{sublink}")
                     return
             else:
                 return
         elif res is not None:
-            log.warn(f"【Subtitle】连接 {media_info.page_url} 失败，状态码：{res.status_code}")
+            log.warn(f"【Subtitle】連線 {media_info.page_url} 失敗，狀態碼：{res.status_code}")
         else:
-            log.warn(f"【Subtitle】无法打开链接：{media_info.page_url}")
+            log.warn(f"【Subtitle】無法開啟連結：{media_info.page_url}")
 
     @staticmethod
     def __get_url_subtitle_name(disposition, url):
         """
-        从下载请求中获取字幕文件名
+        從下載請求中獲取字幕檔名
         """
         file_name = re.findall(r"filename=\"?(.+)\"?", disposition or "")
         if file_name:

@@ -17,7 +17,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="NAStool">
-  <meta name="description" content="NAS媒体库资源归集整理自动化工具">
+  <meta name="description" content="NAS媒體庫資源歸集整理自動化工具">
   <meta name="format-detection" content="telephone=no">
   <meta name="referrer" content="never">
   <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -25,7 +25,7 @@
   <meta name="theme-color" content="#1e293b"/>
   <meta name="HandheldFriendly" content="True"/>
   <meta name="MobileOptimized" content="320"/>
-  <title>NAStool - 资源归集、整理自动化工具</title>
+  <title>NAStool - 資源歸集、整理自動化工具</title>
   <!-- CSS files -->
   <link href="../static/css/font-awesome.min.css" rel="stylesheet">
   <link href="../static/css/tabler.min.css" rel="stylesheet"/>
@@ -33,7 +33,7 @@
   <link href="../static/css/fullcalendar.min.css" rel="stylesheet"/>
   <link href="../static/css/jquery.filetree.css" rel="stylesheet"/>
   <link href="../static/css/dropzone.css" rel="stylesheet"/>
-  <!-- 字体 -->
+  <!-- 字型 -->
   <style>
       @import url('https://rsms.me/inter/inter.css');
 
@@ -41,7 +41,7 @@
           --tblr-font-sans-serif: Inter, -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
       }
   </style>
-  <!-- 附加样式 -->
+  <!-- 附加樣式 -->
   <style>
       body,
       .page {
@@ -98,7 +98,7 @@
           padding-top: env(safe-area-inset-top) !important;
       }
   </style>
-  <!-- 站点图标 -->
+  <!-- 站點圖示 -->
   <style>
   {% for site_name, site_icon in SiteFavicons.items() %}
       .siteicon-{{ site_name|hash }} {
@@ -141,20 +141,20 @@
             </div>
           </a>
           <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-            <a class="dropdown-item hide-theme-dark" href="?theme=dark" role="button">暗黑风格</a>
-            <a class="dropdown-item hide-theme-light" href="?theme=light" role="button">明亮风格</a>
+            <a class="dropdown-item hide-theme-dark" href="?theme=dark" role="button">暗黑風格</a>
+            <a class="dropdown-item hide-theme-light" href="?theme=light" role="button">明亮風格</a>
             <div class="dropdown-divider"></div>
-            {% if "系统设置" in UserPris %}
+            {% if "系統設定" in UserPris %}
               <a class="dropdown-item" data-bs-toggle="offcanvas" href="#offcanvasEnd" role="button"
-                 aria-controls="offcanvasEnd">消息中心</a>
-              <a class="dropdown-item" href="javascript:show_logging_modal()" role="button">实时日志</a>
+                 aria-controls="offcanvasEnd">訊息中心</a>
+              <a class="dropdown-item" href="javascript:show_logging_modal()" role="button">實時日誌</a>
               <div class="dropdown-divider"></div>
               {% if SystemFlag > 0 %}
-                <a href="javascript:restart()" class="dropdown-item">重启</a>
+                <a href="javascript:restart()" class="dropdown-item">重啟</a>
                 <a href="javascript:update()" class="dropdown-item">更新</a>
               {% endif %}
             {% endif %}
-            <a href="javascript:logout()" class="dropdown-item">注销</a>
+            <a href="javascript:logout()" class="dropdown-item">登出</a>
           </div>
         </div>
       </div>
@@ -169,11 +169,11 @@
                   <line x1="21" y1="21" x2="15" y2="15"/>
                 </svg>
               </span>
-            <input type="text" value="" class="form-control theme-dark home_search_word" placeholder="搜索/订阅...">
+            <input type="text" value="" class="form-control theme-dark home_search_word" placeholder="搜尋/訂閱...">
           </div>
         </div>
         <ul class="navbar-nav pt-lg-3">
-          {% if "我的媒体库" in UserPris %}
+          {% if "我的媒體庫" in UserPris %}
             <li class="nav-item">
               <a class="nav-link" href="javascript:void(0)" onclick="navmenu('index')">
                 <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -187,12 +187,12 @@
                   </svg>
                 </span>
                 <span class="nav-link-title">
-                  开始
+                  開始
                 </span>
               </a>
             </li>
           {% endif %}
-          {% if "资源搜索" in UserPris %}
+          {% if "資源搜尋" in UserPris %}
             <li class="nav-item">
               <a class="nav-link" href="javascript:void(0)" onclick="navmenu('search')">
                 <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -205,12 +205,12 @@
                   </svg>
                 </span>
                 <span class="nav-link-title">
-                  资源搜索
+                  資源搜尋
                 </span>
               </a>
             </li>
           {% endif %}
-          {% if "推荐" in UserPris %}
+          {% if "推薦" in UserPris %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="false"
                  role="button" aria-expanded="false">
@@ -224,44 +224,44 @@
                   </svg>
                 </span>
                 <span class="nav-link-title">
-                  推荐
+                  推薦
                 </span>
               </a>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('recommend?t=hm')">
-                  TMDB热门电影
+                  TMDB熱門電影
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('recommend?t=ht')">
-                  TMDB热门电视剧
+                  TMDB熱門電視劇
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('recommend?t=nm')">
-                  TMDB最新电影
+                  TMDB最新電影
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('recommend?t=nt')">
-                  TMDB最新电视剧
+                  TMDB最新電視劇
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('recommend?t=dbom')">
-                  正在热映
+                  正在熱映
                   <span class="badge badge-sm bg-orange text-case ms-2">HOT</span>
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('recommend?t=dbnm')">
-                  即将上映
+                  即將上映
                   <span class="badge badge-sm bg-green text-case ms-2">NEW</span>
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('recommend?t=dbhm')">
-                  豆瓣热门电影
+                  豆瓣熱門電影
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('recommend?t=dbtop')">
-                  豆瓣电影TOP250
+                  豆瓣電影TOP250
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('recommend?t=dbht')">
-                  豆瓣热门电视剧
+                  豆瓣熱門電視劇
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('recommend?t=dbdh')">
-                  豆瓣热门动漫
+                  豆瓣熱門動漫
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('recommend?t=dbzy')">
-                  豆瓣热门综艺
+                  豆瓣熱門綜藝
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('recommend?t=bangumi')">
                   Bangumi每日放送
@@ -269,7 +269,7 @@
               </div>
             </li>
           {% endif %}
-          {% if "站点管理" in UserPris %}
+          {% if "站點管理" in UserPris %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="false"
                  role="button" aria-expanded="false">
@@ -287,26 +287,26 @@
                   </svg>
                 </span>
                 <span class="nav-link-title">
-                  站点管理
+                  站點管理
                 </span>
               </a>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('site')">
-                  站点维护
+                  站點維護
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('statistics')">
-                  数据统计
+                  資料統計
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('brushtask')">
-                  刷流任务
+                  刷流任務
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('sitelist')">
-                  站点资源
+                  站點資源
                 </a>
               </div>
             </li>
           {% endif %}
-          {% if "订阅管理" in UserPris %}
+          {% if "訂閱管理" in UserPris %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="false"
                  role="button" aria-expanded="false">
@@ -320,26 +320,26 @@
                   </svg>
                 </span>
                 <span class="nav-link-title">
-                  订阅管理
+                  訂閱管理
                 </span>
               </a>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('movie_rss')">
-                  电影订阅
+                  電影訂閱
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('tv_rss')">
-                  电视剧订阅
+                  電視劇訂閱
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('user_rss')">
-                  自定义订阅
+                  自定義訂閱
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('rss_calendar')">
-                  订阅日历
+                  訂閱日曆
                 </a>
               </div>
             </li>
           {% endif %}
-          {% if "下载管理" in UserPris %}
+          {% if "下載管理" in UserPris %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="false"
                  role="button" aria-expanded="false">
@@ -354,23 +354,23 @@
                   </svg>
                 </span>
                 <span class="nav-link-title">
-                  下载管理
+                  下載管理
                 </span>
               </a>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('downloading')">
-                  正在下载
+                  正在下載
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('downloaded')">
-                  近期下载
+                  近期下載
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('torrent_remove')">
-                  自动删种
+                  自動刪種
                 </a>
               </div>
             </li>
           {% endif %}
-          {% if "媒体整理" in UserPris %}
+          {% if "媒體整理" in UserPris %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="false"
                  role="button" aria-expanded="false">
@@ -390,26 +390,26 @@
                   </svg>
                 </span>
                 <span class="nav-link-title">
-                  媒体整理
+                  媒體整理
                 </span>
               </a>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('mediafile')">
-                  文件管理
+                  檔案管理
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('unidentification')">
-                  手动识别
+                  手動識別
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('history')">
-                  历史记录
+                  歷史記錄
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('tmdbcache')">
-                  TMDB缓存
+                  TMDB快取
                 </a>
               </div>
             </li>
           {% endif %}
-          {% if "服务" in UserPris %}
+          {% if "服務" in UserPris %}
             <li class="nav-item">
               <a class="nav-link" href="javascript:void(0)" onclick="navmenu('service')">
                 <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -424,12 +424,12 @@
                   </svg>
                 </span>
                 <span class="nav-link-title">
-                  服务
+                  服務
                 </span>
               </a>
             </li>
           {% endif %}
-          {% if "系统设置" in UserPris %}
+          {% if "系統設定" in UserPris %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="false"
                  role="button" aria-expanded="false">
@@ -445,39 +445,39 @@
                   </svg>
                 </span>
                 <span class="nav-link-title">
-                  设置
+                  設定
                 </span>
               </a>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('basic')">
-                  基础设置
+                  基礎設定
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('users')">
-                  用户管理
+                  使用者管理
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('library')">
-                  媒体库
+                  媒體庫
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('directorysync')">
-                  目录同步
+                  目錄同步
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('notification')">
-                  消息通知
+                  訊息通知
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('filterrule')">
-                  过滤规则
+                  過濾規則
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('customwords')">
-                  自定义识别词
+                  自定義識別詞
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('indexer')">
                   索引器
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('downloader')">
-                  下载器
+                  下載器
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('mediaserver')">
-                  媒体服务器
+                  媒體伺服器
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" onclick="navmenu('subtitle')">
                   字幕
@@ -509,14 +509,14 @@
           </div>
         </div>
         <div class="d-none d-md-flex">
-          <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="暗黑风格" data-bs-placement="bottom">
+          <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="暗黑風格" data-bs-placement="bottom">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
                  stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
               <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"/>
             </svg>
           </a>
-          <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="明亮风格" data-bs-placement="bottom">
+          <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="明亮風格" data-bs-placement="bottom">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
                  stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -548,9 +548,9 @@
                         <div class="d-block text-muted text-truncate mt-n1" id="new_version_info">
                         </div>
                       </div>
-                      {% if SystemFlag > 0 and "系统设置" in UserPris %}
+                      {% if SystemFlag > 0 and "系統設定" in UserPris %}
                         <div class="col-auto">
-                          <a href="javascript:update(NewVersion)" class="list-group-item-actions" title="升级版本">
+                          <a href="javascript:update(NewVersion)" class="list-group-item-actions" title="升級版本">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                  class="icon icon-tabler icon-tabler-arrow-big-up-lines" width="24" height="24"
                                  viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
@@ -589,17 +589,17 @@
             </div>
           </a>
           <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-            {% if "系统设置" in UserPris %}
+            {% if "系統設定" in UserPris %}
               <a class="dropdown-item" data-bs-toggle="offcanvas" href="#offcanvasEnd" role="button"
-                 aria-controls="offcanvasEnd">消息中心</a>
-              <a class="dropdown-item" href="javascript:show_logging_modal()" role="button">实时日志</a>
+                 aria-controls="offcanvasEnd">訊息中心</a>
+              <a class="dropdown-item" href="javascript:show_logging_modal()" role="button">實時日誌</a>
               <div class="dropdown-divider"></div>
               {% if SystemFlag > 0 %}
-                <a href="javascript:restart()" class="dropdown-item">重启</a>
+                <a href="javascript:restart()" class="dropdown-item">重啟</a>
                 <a href="javascript:update()" class="dropdown-item">更新</a>
               {% endif %}
             {% endif %}
-            <a href="javascript:logout()" class="dropdown-item">注销</a>
+            <a href="javascript:logout()" class="dropdown-item">登出</a>
           </div>
         </div>
       </div>
@@ -615,8 +615,8 @@
                   <line x1="21" y1="21" x2="15" y2="15"/>
                 </svg>
               </span>
-            <input type="text" value="" class="form-control home_search_word" placeholder="搜索/订阅…"
-                   aria-label="资源搜索/订阅">
+            <input type="text" value="" class="form-control home_search_word" placeholder="搜尋/訂閱…"
+                   aria-label="資源搜尋/訂閱">
           </div>
         </div>
       </div>
@@ -644,9 +644,9 @@
     </footer>
   </div>
 </div>
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEnd" aria-labelledby="消息中心">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEnd" aria-labelledby="訊息中心">
   <div class="offcanvas-header">
-    <h2 class="offcanvas-title" id="offcanvasEndLabel">消息中心</h2>
+    <h2 class="offcanvas-title" id="offcanvasEndLabel">訊息中心</h2>
     <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body" style="padding:0.5rem 0.5rem;">
@@ -654,7 +654,7 @@
     </div>
     <div class="mt-3" align="center">
       <button class="btn btn-primary" type="button" data-bs-dismiss="offcanvas">
-        关闭
+        關閉
       </button>
     </div>
   </div>
@@ -665,7 +665,7 @@
     <div class="spinner-border text-primary m-auto"></div>
   </div>
 </div>
-<!-- 进度框 -->
+<!-- 進度框 -->
 <div class="modal modal-blur" id="modal-process" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-md modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -677,13 +677,13 @@
         <div class="card-body text-center">
           <h3 class="card-title strong" id="modal_process_title">
           </h3>
-          <small class="text-muted" id="modal_process_text">请稍候...</small>
+          <small class="text-muted" id="modal_process_text">請稍候...</small>
         </div>
       </div>
     </div>
   </div>
 </div>
-<!-- 危险确认提示框 -->
+<!-- 危險確認提示框 -->
 <div class="modal modal-blur fade" id="system-confirm-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -697,8 +697,8 @@
           <path d="M12 9v2m0 4v.01"/>
           <path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"/>
         </svg>
-        <h3>确认</h3>
-        <div class="text-muted text-wrap" id="system_confirm_message" style="overflow: hidden">是否确定？</div>
+        <h3>確認</h3>
+        <div class="text-muted text-wrap" id="system_confirm_message" style="overflow: hidden">是否確定？</div>
       </div>
       <div class="modal-footer">
         <div class="w-100">
@@ -710,7 +710,7 @@
             </div>
             <div class="col">
               <button class="btn btn-danger w-100" id="system_confirm_btn">
-                确定
+                確定
               </button>
             </div>
           </div>
@@ -719,7 +719,7 @@
     </div>
   </div>
 </div>
-<!-- 成功带后续操作提示框 -->
+<!-- 成功帶後續操作提示框 -->
 <div class="modal modal-blur fade" id="system-success-action-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -741,12 +741,12 @@
           <div class="row">
             <div class="col">
               <a href="#" class="btn w-100" data-bs-dismiss="modal">
-                关闭
+                關閉
               </a>
             </div>
             <div class="col" id="system_success_action_div">
               <button class="btn btn-success w-100" id="system_success_action_btn">
-                确定
+                確定
               </button>
             </div>
           </div>
@@ -755,17 +755,17 @@
     </div>
   </div>
 </div>
-<!-- 询问框 -->
+<!-- 詢問框 -->
 <div class="modal modal-blur fade" id="system-ask-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        <div class="modal-title">询问</div>
-        <div id="system_ask_message" class="text-wrap" style="overflow: hidden">是否执行？</div>
+        <div class="modal-title">詢問</div>
+        <div id="system_ask_message" class="text-wrap" style="overflow: hidden">是否執行？</div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">取消</button>
-        <button type="button" class="btn btn-danger" id="system_ask_btn">确定</button>
+        <button type="button" class="btn btn-danger" id="system_ask_btn">確定</button>
       </div>
     </div>
   </div>
@@ -793,7 +793,7 @@
             <div class="col">
               <a href="javascript:void(0)" id="system_success_modal_btn" class="btn btn-success w-100"
                  data-bs-dismiss="modal">
-                确定
+                確定
               </a>
             </div>
           </div>
@@ -802,7 +802,7 @@
     </div>
   </div>
 </div>
-<!-- 失败提示 -->
+<!-- 失敗提示 -->
 <div class="modal modal-blur fade" id="system-fail-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -816,15 +816,15 @@
           <path d="M12 9v2m0 4v.01"/>
           <path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"/>
         </svg>
-        <h3>失败</h3>
-        <div class="text-muted text-wrap" id="system_fail_message" style="overflow:hidden">失败！</div>
+        <h3>失敗</h3>
+        <div class="text-muted text-wrap" id="system_fail_message" style="overflow:hidden">失敗！</div>
       </div>
       <div class="modal-footer">
         <div class="w-100">
           <div class="row">
             <div class="col">
               <a href="#" id="system_fail_modal_btn" class="btn btn-warning w-100" data-bs-dismiss="modal">
-                确定
+                確定
               </a>
             </div>
           </div>
@@ -833,7 +833,7 @@
     </div>
   </div>
 </div>
-<!-- 媒体详情 -->
+<!-- 媒體詳情 -->
 <div class="modal modal-blur fade" id="system-media-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -859,36 +859,36 @@
         </div>
         <div class="d-flex">
           <a href="#" target="_blank" class="card-btn" id="system_media_url_btn">
-            详情
+            詳情
           </a>
           <a href="javascript:void(0)" data-bs-toggle="dropdown" class="dropdown-toggle card-btn"
              id="system_media_rss_btn">
-            订阅
+            訂閱
           </a>
           <div class="dropdown-menu" id="system_media_rss_dropdown"></div>
           <a href="javascript:void(0)" class="card-btn" id="system_media_search_btn"
              style="border-left:1px solid var(--tblr-border-color)">
-            搜索
+            搜尋
           </a>
           <a href="javascript:void(0)" class="card-btn" id="system_media_refresh_btn"
              style="border-left:1px solid var(--tblr-border-color)">
-            刷新
+            重新整理
           </a>
           <a href="javascript:void(0)" class="card-btn d-none d-md-block" data-bs-dismiss="modal">
-            关闭
+            關閉
           </a>
         </div>
       </div>
     </div>
   </div>
 </div>
-<!-- 实时日志 -->
+<!-- 實時日誌 -->
 <div class="modal modal-blur fade" id="modal-logging" tabindex="-1" role="dialog" aria-hidden="true"
      data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">实时日志</h5>
+        <h5 class="modal-title">實時日誌</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                 id="logging_close_head"></button>
       </div>
@@ -896,9 +896,9 @@
       <table class="table table-vcenter card-table table-hover table-striped">
         <thead>
           <tr>
-            <th class="w-3">时间</th>
-            <th class="w-3">来源</th>
-            <th>内容</th>
+            <th class="w-3">時間</th>
+            <th class="w-3">來源</th>
+            <th>內容</th>
           </tr>
         </thead>
         <tbody id="logging_content" class="table-tbody">
@@ -907,20 +907,20 @@
       </div>
       <div class="modal-footer">
         <a href="javascript:pause_logging()" class="btn btn-link me-auto" id="logging_stop_btn">
-          暂停
+          暫停
         </a>
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="logging_close_btn">关闭</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="logging_close_btn">關閉</button>
       </div>
     </div>
   </div>
 </div>
-<!-- 订阅季 -->
+<!-- 訂閱季 -->
 <div class="modal modal-blur fade" id="system-rss-seasons" tabindex="-1" role="dialog" aria-hidden="true"
      data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">选择订阅季</h5>
+        <h5 class="modal-title">選擇訂閱季</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -934,18 +934,18 @@
         </div>
       </div>
       <div class="modal-footer">
-        <a href="javascript:void(0)" id="system_rss_seasons_btn" class="btn btn-primary">确定</a>
+        <a href="javascript:void(0)" id="system_rss_seasons_btn" class="btn btn-primary">確定</a>
       </div>
     </div>
   </div>
 </div>
-<!-- 手动订阅 -->
+<!-- 手動訂閱 -->
 <div class="modal modal-blur fade" id="modal-manual-rss" tabindex="-1" role="dialog" aria-hidden="true"
      data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="rss_modal_title">新增订阅</h5>
+        <h5 class="modal-title" id="rss_modal_title">新增訂閱</h5>
         <input type="hidden" id="rss_id">
         <input type="hidden" id="rss_type">
         <input type="hidden" id="rss_tmdbid">
@@ -955,8 +955,8 @@
         <div class="row">
           <div class="col-lg-8">
             <div class="mb-3">
-              <label class="form-label required">标题</label>
-              <input type="text" value="" id="rss_name" class="form-control" placeholder="标题">
+              <label class="form-label required">標題</label>
+              <input type="text" value="" id="rss_name" class="form-control" placeholder="標題">
             </div>
           </div>
           <div class="col-lg-4">
@@ -971,22 +971,22 @@
             <div class="mb-3">
               <label class="form-label required">季</label>
               <select class="form-select" id="rss_season">
-                <option value="" selected>请选择</option>
+                <option value="" selected>請選擇</option>
               </select>
             </div>
           </div>
           <div class="col-lg-4">
             <div class="mb-3">
-              <label class="form-label">总集数 <span class="form-help"
-                                                     title="可留空应用TMDB剧集信息"
+              <label class="form-label">總集數 <span class="form-help"
+                                                     title="可留空應用TMDB劇集資訊"
                                                      data-bs-toggle="tooltip">?</span></label>
-              <input type="text" value="" id="rss_total_ep" class="form-control" placeholder="总集数">
+              <input type="text" value="" id="rss_total_ep" class="form-control" placeholder="總集數">
             </div>
           </div>
           <div class="col-lg-4">
             <div class="mb-3">
-              <label class="form-label">开始订阅集数</label>
-              <input type="text" value="" id="rss_current_ep" class="form-control" placeholder="开始订阅集数">
+              <label class="form-label">開始訂閱集數</label>
+              <input type="text" value="" id="rss_current_ep" class="form-control" placeholder="開始訂閱集數">
             </div>
           </div>
         </div>
@@ -997,7 +997,7 @@
                 <input class="form-check-input" type="checkbox" id="fuzzy_match"
                        onclick="javascript:change_match_check(this)">
                 <span class="form-check-label">模糊匹配 <span class="form-help"
-                                                              title="开启后不检查TMDB是否有媒体信息，只要种子名称、标题、年份任一匹配关键字即会下载，此时标题可以配置正则表达式实现模糊匹配"
+                                                              title="開啟後不檢查TMDB是否有媒體資訊，只要種子名稱、標題、年份任一匹配關鍵字即會下載，此時標題可以配置正規表示式實現模糊匹配"
                                                               data-bs-toggle="tooltip">?</span></span>
               </label>
             </div>
@@ -1008,7 +1008,7 @@
                 <input class="form-check-input" type="checkbox" id="over_edition"
                        onclick="javascript:change_over_edition_check(this)">
                 <span class="form-check-label">洗版 <span class="form-help"
-                                                          title="开启后RSS不检查媒体库是否已存在，命中即会下载"
+                                                          title="開啟後RSS不檢查媒體庫是否已存在，命中即會下載"
                                                           data-bs-toggle="tooltip">?</span></span>
               </label>
             </div>
@@ -1017,7 +1017,7 @@
         <div class="row">
           <div class="col-lg-3">
             <div class="mb-3">
-              <label class="form-label">质量</label>
+              <label class="form-label">質量</label>
               <select class="form-select" id="rss_restype">
                 <option value="" selected>全部</option>
                 {% for Restype in RestypeDict %}
@@ -1028,7 +1028,7 @@
           </div>
           <div class="col-lg-3">
             <div class="mb-3">
-              <label class="form-label">分辨率</label>
+              <label class="form-label">解析度</label>
               <select class="form-select" id="rss_pix">
                 <option value="" selected>全部</option>
                 {% for Pix in PixDict %}
@@ -1039,14 +1039,14 @@
           </div>
           <div class="col-lg-3">
             <div class="mb-3">
-              <label class="form-label">制作组/字幕组</label>
-              <input type="text" value="" id="rss_team" class="form-control" placeholder="支持正则表达式">
+              <label class="form-label">製作組/字幕組</label>
+              <input type="text" value="" id="rss_team" class="form-control" placeholder="支援正規表示式">
             </div>
           </div>
           <div class="col-lg-3">
             <div class="mb-3">
-              <label class="form-label">过滤规则 <span class="form-help"
-                                                       title="质量、分辨率与过滤规则为“与”的关系，过滤规则不选择时将使用站点的过滤规则，站点也未设置过滤规则时将使用默认过滤规则"
+              <label class="form-label">過濾規則 <span class="form-help"
+                                                       title="質量、解析度與過濾規則為“與”的關係，過濾規則不選擇時將使用站點的過濾規則，站點也未設定過濾規則時將使用預設過濾規則"
                                                        data-bs-toggle="tooltip">?</span></label>
               <select class="form-select" id="rss_rule">
               </select>
@@ -1056,7 +1056,7 @@
         <div class="row">
           <div class="col-lg-4">
             <div class="mb-3">
-              <label class="form-label">下载设置</label>
+              <label class="form-label">下載設定</label>
               <select class="form-select" id="rss_download_setting"
                       onchange="refresh_savepath_select('rss_save_path', true, $(this).val())">
               </select>
@@ -1064,22 +1064,22 @@
           </div>
           <div class="col-lg-8">
             <div class="mb-3">
-              <label class="form-label">保存路径</label>
-              <select class="form-select" id="rss_save_path" aria-label="保存目录">
+              <label class="form-label">儲存路徑</label>
+              <select class="form-select" id="rss_save_path" aria-label="儲存目錄">
               </select>
             </div>
           </div>
         </div>
         <div class="row rss_sites_container" id="rss_sites_div">
           <div class="mb-3">
-            <label class="form-label">订阅站点</label>
+            <label class="form-label">訂閱站點</label>
             <div class="form-selectgroup" id="rss_sites_group">
             </div>
           </div>
         </div>
         <div class="row rss_sites_container" id="rss_search_sites_div">
           <div class="mb-3">
-            <label class="form-label">搜索站点</label>
+            <label class="form-label">搜尋站點</label>
             <div class="form-selectgroup" id="rss_search_sites_group">
             </div>
           </div>
@@ -1087,30 +1087,30 @@
       </div>
       <div class="modal-footer">
         <a href="javascript:rss_sites_select()" class="btn btn-link me-auto" id="rss_sites_select_btn">
-          取消全选
+          取消全選
         </a>
         <a href="#" class="btn btn-link text-red" id="rss_delete_btn">
-          取消订阅
+          取消訂閱
         </a>
-        <a href="javascript:add_rss_manual()" id="rss_add_btn" class="btn btn-primary">确定</a>
+        <a href="javascript:add_rss_manual()" id="rss_add_btn" class="btn btn-primary">確定</a>
       </div>
     </div>
   </div>
 </div>
-<!-- 手动识别 -->
+<!-- 手動識別 -->
 <div class="modal modal-blur fade" id="modal-media-identification" tabindex="-1" role="dialog" aria-hidden="true"
      data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="rename_header">手动识别</h5>
+        <h5 class="modal-title" id="rename_header">手動識別</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="row" id="rename_path_div">
           <div class="col-lg-9">
             <div class="mb-3">
-              <label class="form-label required">路径</label>
+              <label class="form-label required">路徑</label>
               <input type="text" id="rename_path" class="form-control" readonly>
               <input type="hidden" id="rename_manual_type">
               <input type="hidden" id="unknown_id">
@@ -1120,56 +1120,56 @@
           </div>
           <div class="col-lg-3">
             <div class="mb-3">
-              <label class="form-label required">转移方式</label>
+              <label class="form-label required">轉移方式</label>
               <select id="rename_syncmod_manual" class="form-select">
-                <option value="link" {% if SyncMod=="link" %} selected="selected" {% endif %}>硬链接</option>
-                <option value="softlink" {% if SyncMod=="softlink" %} selected="selected" {% endif %}>软链接</option>
-                <option value="copy" {% if SyncMod=="copy" %} selected="selected" {% endif %}>复制</option>
-                <option value="move" {% if SyncMod=="move" %} selected="selected" {% endif %}>移动</option>
-                <option value="rclonecopy" {% if SyncMod=="rclonecopy" %} selected="selected" {% endif %}>Rclone复制
+                <option value="link" {% if SyncMod=="link" %} selected="selected" {% endif %}>硬連結</option>
+                <option value="softlink" {% if SyncMod=="softlink" %} selected="selected" {% endif %}>軟連結</option>
+                <option value="copy" {% if SyncMod=="copy" %} selected="selected" {% endif %}>複製</option>
+                <option value="move" {% if SyncMod=="move" %} selected="selected" {% endif %}>移動</option>
+                <option value="rclonecopy" {% if SyncMod=="rclonecopy" %} selected="selected" {% endif %}>Rclone複製
                 </option>
-                <option value="rclone" {% if SyncMod=="rclone" %} selected="selected" {% endif %}>Rclone移动</option>
-                <option value="miniocopy" {% if SyncMod=="miniocopy" %} selected="selected" {% endif %}>Minio复制
+                <option value="rclone" {% if SyncMod=="rclone" %} selected="selected" {% endif %}>Rclone移動</option>
+                <option value="miniocopy" {% if SyncMod=="miniocopy" %} selected="selected" {% endif %}>Minio複製
                 </option>
-                <option value="minio" {% if SyncMod=="minio" %} selected="selected" {% endif %}>Minio移动</option>
+                <option value="minio" {% if SyncMod=="minio" %} selected="selected" {% endif %}>Minio移動</option>
               </select>
             </div>
           </div>
         </div>
         <div class="mb-3" id="rename_inpath_div">
-          <label class="form-label required">输入路径</label>
+          <label class="form-label required">輸入路徑</label>
           <input type="text" id="rename_inpath" class="form-control filetree-folders-only"
-                 placeholder="需要转移的目录或文件"
+                 placeholder="需要轉移的目錄或檔案"
                  autocomplete="off">
           <div class="invalid-feedback" id="rename_udf_retmsg"></div>
         </div>
         <div class="row" id="rename_outpath_div">
           <div class="col-lg-9">
             <div class="mb-3">
-              <label class="form-label">输出路径</label>
+              <label class="form-label">輸出路徑</label>
               <input type="text" id="rename_outpath" class="form-control filetree-folders-only"
-                     placeholder="转移后文件存储路径，留空则转移至媒体库" autocomplete="off">
+                     placeholder="轉移後檔案儲存路徑，留空則轉移至媒體庫" autocomplete="off">
             </div>
           </div>
           <div class="col-lg-3">
             <div class="mb-3">
-              <label class="form-label required">转移方式</label>
+              <label class="form-label required">轉移方式</label>
               <select id="rename_syncmod_customize" class="form-select">
-                <option value="link" {% if SyncMod=="link" %} selected="selected" {% endif %}>硬链接</option>
-                <option value="softlink" {% if SyncMod=="softlink" %} selected="selected" {% endif %}>软链接</option>
-                <option value="copy" {% if SyncMod=="copy" %} selected="selected" {% endif %}>复制</option>
-                <option value="move" {% if SyncMod=="move" %} selected="selected" {% endif %}>移动</option>
-                <option value="rclonecopy" {% if SyncMod=="rclonecopy" %} selected="selected" {% endif %}>Rclone复制
+                <option value="link" {% if SyncMod=="link" %} selected="selected" {% endif %}>硬連結</option>
+                <option value="softlink" {% if SyncMod=="softlink" %} selected="selected" {% endif %}>軟連結</option>
+                <option value="copy" {% if SyncMod=="copy" %} selected="selected" {% endif %}>複製</option>
+                <option value="move" {% if SyncMod=="move" %} selected="selected" {% endif %}>移動</option>
+                <option value="rclonecopy" {% if SyncMod=="rclonecopy" %} selected="selected" {% endif %}>Rclone複製
                 </option>
-                <option value="rclone" {% if SyncMod=="rclone" %} selected="selected" {% endif %}>Rclone移动</option>
-                <option value="miniocopy" {% if SyncMod=="miniocopy" %} selected="selected" {% endif %}>Minio复制
+                <option value="rclone" {% if SyncMod=="rclone" %} selected="selected" {% endif %}>Rclone移動</option>
+                <option value="miniocopy" {% if SyncMod=="miniocopy" %} selected="selected" {% endif %}>Minio複製
                 </option>
-                <option value="minio" {% if SyncMod=="minio" %} selected="selected" {% endif %}>Minio移动</option>
+                <option value="minio" {% if SyncMod=="minio" %} selected="selected" {% endif %}>Minio移動</option>
               </select>
             </div>
           </div>
         </div>
-        <label class="form-label">类型</label>
+        <label class="form-label">型別</label>
         <div class="form-selectgroup-boxes row mb-3">
           <div class="col-lg-4">
             <div class="mb-1">
@@ -1181,7 +1181,7 @@
                       <span class="form-selectgroup-check"></span>
                     </span>
                     <span class="form-selectgroup-label-content">
-                      <span class="form-selectgroup-title strong mb-1">电影</span>
+                      <span class="form-selectgroup-title strong mb-1">電影</span>
                     </span>
                   </span>
               </label>
@@ -1196,7 +1196,7 @@
                       <span class="form-selectgroup-check"></span>
                     </span>
                     <span class="form-selectgroup-label-content">
-                      <span class="form-selectgroup-title strong mb-1">电视剧</span>
+                      <span class="form-selectgroup-title strong mb-1">電視劇</span>
                     </span>
                   </span>
               </label>
@@ -1212,7 +1212,7 @@
                       <span class="form-selectgroup-check"></span>
                     </span>
                     <span class="form-selectgroup-label-content">
-                      <span class="form-selectgroup-title strong mb-1">动漫</span>
+                      <span class="form-selectgroup-title strong mb-1">動漫</span>
                     </span>
                   </span>
               </label>
@@ -1225,27 +1225,27 @@
           <div class="col-lg-4">
             <div class="mb-3">
               <label class="form-label">TMDB ID</label>
-              <input type="text" id="rename_tmdb" class="form-control" placeholder="留空自动识别">
+              <input type="text" id="rename_tmdb" class="form-control" placeholder="留空自動識別">
             </div>
           </div>
           <div class="col-lg-4" id="rename_season_div">
             <div class="mb-3">
               <label class="form-label">季</label>
               <select class="form-select" id="rename_season">
-                <option value="" selected>请选择</option>
+                <option value="" selected>請選擇</option>
               </select>
             </div>
           </div>
           <div class="col-lg-4" id="rename_min_filesize_div">
             <div class="mb-3">
-              <label class="form-label">最小文件大小</label>
-              <input type="text" id="rename_min_filesize" class="form-control" placeholder="最小文件大小(MB)">
+              <label class="form-label">最小檔案大小</label>
+              <input type="text" id="rename_min_filesize" class="form-control" placeholder="最小檔案大小(MB)">
             </div>
           </div>
           <div class="col-lg-12" id="rename_episode_div">
             <div class="mb-3">
-              <label class="form-label">集数定位 <span class="form-help"
-                                                       title="3个都不填，用默认识别<br>{ep}: 标定集数位置，例如：<br>&nbsp;&nbsp;&nbsp;&nbsp;(BD)十二国記 第45話「東の海神 西の滄海 五章」(1440x1080 x264-10bpp flac).mkv<br>&nbsp;&nbsp;&nbsp;&nbsp;(BD)十二国記 第32話「風の万里 黎明の空　九章」(1440x1080 x264-10bpp flac).mkv<br>&nbsp;&nbsp;&nbsp;&nbsp;此处可以填(BD)十二国記 第{ep}話{a}(1440x1080 x264-10bpp flac).mkv ep表示集，a表示理解成一个变量，随意用一个变量表示，如果没有变化的部分，只标定ep就行<br>start_ep[, end_ep], 裁定范围， 如果输入是文件，输出就是单个文件，如果输入是目录，输出可以根据填的值批量识别<br>&nbsp;&nbsp;&nbsp;&nbsp;例如 '1' 表示第一集, '2,4' 只取第2集到第4集，'1-2'表示第1-2集，此选项优先级最高<br>offset: 集数偏移, 例如ep定位出集数是11, 实际是第一集, 此处填-10, 以应付多季合集的场景 "
+              <label class="form-label">集數定位 <span class="form-help"
+                                                       title="3個都不填，用預設識別<br>{ep}: 標定集數位置，例如：<br>&nbsp;&nbsp;&nbsp;&nbsp;(BD)十二國記 第45話「東の海神 西の滄海 五章」(1440x1080 x264-10bpp flac).mkv<br>&nbsp;&nbsp;&nbsp;&nbsp;(BD)十二國記 第32話「風の萬里 黎明の空　九章」(1440x1080 x264-10bpp flac).mkv<br>&nbsp;&nbsp;&nbsp;&nbsp;此處可以填(BD)十二國記 第{ep}話{a}(1440x1080 x264-10bpp flac).mkv ep表示集，a表示理解成一個變數，隨意用一個變數表示，如果沒有變化的部分，只標定ep就行<br>start_ep[, end_ep], 裁定範圍， 如果輸入是檔案，輸出就是單個檔案，如果輸入是目錄，輸出可以根據填的值批次識別<br>&nbsp;&nbsp;&nbsp;&nbsp;例如 '1' 表示第一集, '2,4' 只取第2集到第4集，'1-2'表示第1-2集，此選項優先順序最高<br>offset: 集數偏移, 例如ep定位出集數是11, 實際是第一集, 此處填-10, 以應付多季合集的場景 "
                                                        data-bs-toggle="tooltip" data-bs-html="true">?</span></label>
               <div class="row">
                 <div class="col-4">
@@ -1253,10 +1253,10 @@
                 </div>
                 <div class="col-4">
                   <input type="text" id="rename_episode_details" class="form-control"
-                         placeholder="start_ep[, end_ep] 可选">
+                         placeholder="start_ep[, end_ep] 可選">
                 </div>
                 <div class="col-4">
-                  <input type="text" id="rename_episode_offset" class="form-control" placeholder="offset, 可选">
+                  <input type="text" id="rename_episode_offset" class="form-control" placeholder="offset, 可選">
                 </div>
               </div>
             </div>
@@ -1266,41 +1266,41 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-link me-auto" data-bs-dismiss="modal">取消</button>
         <button type="button" id="identification_action_btn" class="btn btn-primary"
-                onclick="manual_media_transfer()">转移
+                onclick="manual_media_transfer()">轉移
         </button>
       </div>
     </div>
   </div>
 </div>
-<!-- 手动下载 -->
+<!-- 手動下載 -->
 <div class="modal modal-blur fade" id="modal-search-download" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-md modal-dialog-centered" role="document">
     <input type="hidden" id="search_download_id">
     <input type="hidden" id="search_download_name">
     <div class="modal-content">
       <div class="modal-body">
-        <div class="modal-title" id="search_download_message">添加下载</div>
+        <div class="modal-title" id="search_download_message">新增下載</div>
         <div class="row mt-3">
           <div class="col-md">
             <div class="form-floating mb-1">
-              <select class="form-select" id="search_download_setting" aria-label="下载设置" onchange="refresh_download_setting_dirs()">
+              <select class="form-select" id="search_download_setting" aria-label="下載設定" onchange="refresh_download_setting_dirs()">
               </select>
-              <label for="floatingSelect">下载设置</label>
+              <label for="floatingSelect">下載設定</label>
             </div>
           </div>
           <div class="col-md">
             <div class="form-floating mb-1">
-              <select class="form-select" id="search_download_dir" aria-label="保存目录">
+              <select class="form-select" id="search_download_dir" aria-label="儲存目錄">
               </select>
-              <label for="floatingSelect">保存目录</label>
+              <label for="floatingSelect">儲存目錄</label>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">取消</button>
-        <button type="button" class="btn btn-primary" id="search_download_btn" title="自动选择目录下载">
-          下载
+        <button type="button" class="btn btn-primary" id="search_download_btn" title="自動選擇目錄下載">
+          下載
         </button>
       </div>
     </div>
@@ -1321,9 +1321,9 @@
 <script src="../static/js/dom-to-image.min.js"></script>
 <script src="../static/js/FileSaver.min.js"></script>
 
-<!-- 提示弹窗 -->
+<!-- 提示彈窗 -->
 <script type="text/javascript">
-  //显示全局加载框
+  //顯示全域性載入框
   function show_wait_process(blur) {
     if (blur) {
       $('#modal-wait').addClass('modal-blur');
@@ -1333,12 +1333,12 @@
     $("#modal-wait").modal("show");
   }
 
-  //关闭全局加载框
+  //關閉全域性載入框
   function hide_wait_process() {
     $("#modal-wait").modal("hide");
   }
 
-  //刷新进度及文件
+  //重新整理進度及檔案
   let refresh_process_flag = false;
   let refresh_fail_count = 0;
 
@@ -1359,7 +1359,7 @@
     });
   }
 
-  //显示全局进度框
+  //顯示全域性進度框
   function show_refresh_process(title) {
     if (title) {
       $("#modal_process_title").text(title);
@@ -1367,45 +1367,45 @@
       $("#modal_process_title").hide();
     }
     $("#modal_process_bar").attr("style", "width: 0%").attr("aria-valuenow", 0);
-    $("#modal_process_text").text("请稍候...");
+    $("#modal_process_text").text("請稍候...");
     $("#modal-process").modal("show");
-    //刷新进度
+    //重新整理進度
     refresh_process_flag = true;
     refresh_fail_count = 0;
     refresh_process();
   }
 
-  //关闭全局进度框
+  //關閉全域性進度框
   function hide_refresh_process() {
     refresh_process_flag = false;
     $("#modal-process").modal("hide");
   }
 
-  //显示确认提示框
+  //顯示確認提示框
   function show_confirm_modal(title, func) {
     $("#system_confirm_message").text(title);
     $("#system_confirm_btn").unbind('click').click(func);
     $("#system-confirm-modal").modal("show");
   }
 
-  //隐藏确认提示框
+  //隱藏確認提示框
   function hide_confirm_modal() {
     $("#system-confirm-modal").modal("hide");
   }
 
-  //显示询问提示框
+  //顯示詢問提示框
   function show_ask_modal(title, func) {
     $("#system_ask_message").text(title);
     $("#system_ask_btn").unbind('click').click(func);
     $("#system-ask-modal").modal("show");
   }
 
-  //隐藏询问提示框
+  //隱藏詢問提示框
   function hide_ask_modal() {
     $("#system-ask-modal").modal("hide");
   }
 
-  //显示成功提示
+  //顯示成功提示
   function show_success_modal(title, func) {
     $("#system_success_message").text(title);
     if (func) {
@@ -1416,7 +1416,7 @@
     $("#system-success-modal").modal("show");
   }
 
-  //显示失败提示
+  //顯示失敗提示
   function show_fail_modal(title, func) {
     $("#system_fail_message").text(title);
     if (func) {
@@ -1428,9 +1428,9 @@
   }
 </script>
 
-<!-- 媒体弹窗 -->
+<!-- 媒體彈窗 -->
 <script type="text/javascript">
-  //显示媒体详情
+  //顯示媒體詳情
   function show_mediainfo_modal(rtype, name, year, tmdbid, page, rssid) {
     let doubanid;
     show_wait_process();
@@ -1460,7 +1460,7 @@
     }, function (ret) {
       hide_wait_process();
       if (ret.code === 0) {
-        //显示信息
+        //顯示資訊
         $("#system_media_name").text(ret.title);
         $("#system_release_date").text(ret.release_date)
         if (ret.poster_path) {
@@ -1478,52 +1478,52 @@
         } else {
           $("#system_media_vote").text(ret.vote_average).show();
         }
-        //订阅按钮、搜索按钮
+        //訂閱按鈕、搜尋按鈕
         if ($("#system_media_rss_dropdown").hasClass("show")) {
           $("#system_media_rss_btn").dropdown("toggle");
         }
-        //先隐藏所有按钮，有需要再显示
+        //先隱藏所有按鈕，有需要再顯示
         $("#system_media_rss_btn").hide();
         $("#system_media_search_btn").hide();
         $("#system_media_refresh_btn").hide();
         $("#system_media_url_btn").hide();
         if (ret.rssid) {
-          //取消订阅按钮
-          $("#system_media_rss_btn").text("取消订阅")
+          //取消訂閱按鈕
+          $("#system_media_rss_btn").text("取消訂閱")
               .removeAttr("data-bs-toggle")
               .removeClass("dropdown-toggle")
               .attr("href", 'javascript:remove_rss_media("' + ret.title + '","' + ret.year + '","' + ret.type + '","' + ret.rssid + '","' + ret.page + '")')
               .show();
-          //搜索按钮
-          $("#system_media_search_btn").text("搜索")
+          //搜尋按鈕
+          $("#system_media_search_btn").text("搜尋")
               .attr("href", 'javascript:search_mediainfo_media("' + ret.tmdbid + '", "' + ret.doubanid + '", "' + ret.title + '", "' + ret.type_str + '")')
               .show();
-          //刷新和编辑按钮
+          //重新整理和編輯按鈕
           if (ret.page.startsWith("movie_rss") || ret.page.startsWith("tv_rss")) {
-            //编辑
-            $("#system_media_url_btn").text("编辑")
+            //編輯
+            $("#system_media_url_btn").text("編輯")
                 .removeAttr("target")
                 .attr("href", "javascript:show_edit_rss_media_modal('" + ret.rssid + "', '" + ret.type_str + "')")
                 .show();
-            //刷新
-            $("#system_media_refresh_btn").text("刷新")
+            //重新整理
+            $("#system_media_refresh_btn").text("重新整理")
                 .attr("href", 'javascript:refresh_rss_media("' + ret.type + '","' + ret.rssid + '","' + ret.page + '")')
                 .show();
           } else {
-            //详情按钮
-            $("#system_media_url_btn").text("详情")
+            //詳情按鈕
+            $("#system_media_url_btn").text("詳情")
                 .attr("target", "_blank")
                 .attr("href", ret.link_url)
                 .show();
           }
         } else {
-          //详情按钮
-          $("#system_media_url_btn").text("详情")
+          //詳情按鈕
+          $("#system_media_url_btn").text("詳情")
               .attr("target", "_blank")
               .attr("href", ret.link_url)
               .show();
-          //订阅按钮
-          $("#system_media_rss_btn").text("订阅");
+          //訂閱按鈕
+          $("#system_media_rss_btn").text("訂閱");
           $("#system_media_rss_dropdown").empty();
           if (ret.seasons.length === 0) {
             $("#system_media_rss_btn").removeAttr("data-bs-toggle")
@@ -1533,36 +1533,36 @@
             $("#system_media_rss_btn").prop("data-bs-toggle", "dropdown")
                 .addClass("dropdown-toggle")
                 .attr("href", 'javascript:$("#system_media_rss_btn").dropdown("toggle")')
-            //订阅季的下拉框
+            //訂閱季的下拉框
             for (let i = 0; i < ret.seasons.length; i++) {
               $("#system_media_rss_dropdown").append('<a class="dropdown-item" href=\'javascript:add_rss_media("' + ret.title + '","' + ret.year + '","' + ret.type + '","' + ret.tmdbid + '","' + ret.doubanid + '","' + ret.page + '","' + ret.seasons[i].num + '")\'>' + ret.seasons[i].text + '</a>');
             }
           }
           $("#system_media_rss_btn").show();
-          //搜索按钮
-          $("#system_media_search_btn").text("搜索")
+          //搜尋按鈕
+          $("#system_media_search_btn").text("搜尋")
               .attr("href", 'javascript:search_mediainfo_media("' + ret.tmdbid + '", "' + ret.doubanid + '", "' + ret.title + '", "' + ret.type_str + '")')
               .show();
         }
         $("#system_media_name_link").attr("href", ret.link_url);
-        //弹窗
+        //彈窗
         $("#system-media-modal").modal("show");
       } else if (ret.code === 1) {
         if (ret.rssid) {
           show_edit_rss_media_modal(ret.rssid, ret.type_str);
         } else {
-          show_fail_modal(`${name} 未查询到TMDB媒体信息！`);
+          show_fail_modal(`${name} 未查詢到TMDB媒體資訊！`);
         }
       }
     });
   }
 
-  //隐藏媒体详情
+  //隱藏媒體詳情
   function hide_mediainfo_modal() {
     $("#system-media-modal").modal("hide");
   }
 
-  //新增订阅
+  //新增訂閱
   function add_rss_media(name, year, type, tmdbid, doubanid, page, season, func) {
     hide_mediainfo_modal();
     let data = {
@@ -1584,15 +1584,15 @@
           if (func) {
             func();
           }
-          show_rss_success_modal(ret.rssid, type, name + " 添加订阅成功！")
+          show_rss_success_modal(ret.rssid, type, name + " 新增訂閱成功！")
         }
       } else {
-        show_fail_modal(`${ret.name} 添加订阅失败：${ret.msg}！`);
+        show_fail_modal(`${ret.name} 新增訂閱失敗：${ret.msg}！`);
       }
     });
   }
 
-  // 取消订阅
+  // 取消訂閱
   function remove_rss_media(name, year, type, rssid, page, tmdbid, func) {
     hide_mediainfo_modal();
     let data = {"name": name, "type": type, "year": year, "rssid": rssid, "page": page, "tmdbid": tmdbid};
@@ -1602,12 +1602,12 @@
       } else if (ret.page) {
         navmenu(ret.page);
       } else {
-        show_success_modal(ret.name + " 已从订阅中移除！");
+        show_success_modal(ret.name + " 已從訂閱中移除！");
       }
     });
   }
 
-  // 刷新订阅
+  // 重新整理訂閱
   function refresh_rss_media(type, rssid, page) {
     hide_mediainfo_modal();
     ajax_post("refresh_rss", {"type": type, "rssid": rssid, "page": page}, function (ret) {
@@ -1619,7 +1619,7 @@
     });
   }
 
-  //显示订阅季选择框
+  //顯示訂閱季選擇框
   function show_rss_seasons_modal(name, year, type, tmdbid, doubanid, seasons, func) {
     $("#system_rss_seasons_group").empty();
     for (var i = 0; i < seasons.length; i++) {
@@ -1642,14 +1642,14 @@
     $("#system-rss-seasons").modal('show');
   }
 
-  //搜索
+  //搜尋
   function search_mediainfo_media(tmdbid, doubanid, title, typestr) {
     hide_mediainfo_modal();
     if (!tmdbid && doubanid) {
       tmdbid = "DB:" + doubanid;
     }
     const param = {"tmdbid": tmdbid, "search_word": title, "media_type": typestr};
-    show_refresh_process("正在搜索 " + title + " ...");
+    show_refresh_process("正在搜尋 " + title + " ...");
     ajax_post("search", param, function (ret) {
       hide_refresh_process();
       if (ret.code === 0) {
@@ -1660,7 +1660,7 @@
     });
   }
 
-  //新增订阅
+  //新增訂閱
   function add_rss_manual() {
     const mtype = $("#rss_type").val();
     const name = $("#rss_name").val();
@@ -1691,7 +1691,7 @@
     } else {
       $("#rss_year").removeClass("is-invalid");
     }
-    if (!fuzzy_match && !season && (mtype == "TV" || mtype == "电视剧")) {
+    if (!fuzzy_match && !season && (mtype == "TV" || mtype == "電視劇")) {
       $("#rss_season").addClass("is-invalid");
       return;
     } else {
@@ -1715,7 +1715,7 @@
     } else {
       doubanid = "";
     }
-    //订阅站点
+    //訂閱站點
     let rss_sites = [];
     let rss_all = true;
     $("input[name=rss_sites]").each(function () {
@@ -1728,7 +1728,7 @@
     if (rss_all) {
       rss_sites = [];
     }
-    //搜索站点
+    //搜尋站點
     let search_sites = [];
     if (!fuzzy_match) {
       let search_all = true;
@@ -1774,48 +1774,48 @@
         } else if (CURRENT_PAGE_URI.startsWith("movie_rss")) {
           navmenu("movie_rss");
         } else {
-          show_rss_success_modal(ret.rssid, type, name + " 添加订阅成功！")
+          show_rss_success_modal(ret.rssid, type, name + " 新增訂閱成功！")
         }
       } else {
         if (CURRENT_PAGE_URI.startsWith("tv_rss") || CURRENT_PAGE_URI.startsWith("movie_rss")) {
-          show_fail_modal(`${ret.name} 订阅失败：${ret.msg}！`, function () {
+          show_fail_modal(`${ret.name} 訂閱失敗：${ret.msg}！`, function () {
             $("#modal-manual-rss").modal("show");
           });
         } else {
-          show_fail_modal(`${ret.name} 订阅失败：${ret.msg}！`);
+          show_fail_modal(`${ret.name} 訂閱失敗：${ret.msg}！`);
         }
       }
     });
   }
 
   //初始化下拉框
-  $("#rss_season").empty().append('<option value="">请选择</option>');
+  $("#rss_season").empty().append('<option value="">請選擇</option>');
   for (let i = 1; i <= 50; i++) {
     $("#rss_season").append('<option value="' + i + '">第' + i + '季</option>');
   }
 
-  //RSS站点批量选择
+  //RSS站點批次選擇
   let rss_sites_select_all = true;
 
   function rss_sites_select() {
     if (rss_sites_select_all) {
-      // 取消全选
+      // 取消全選
       $(".rss_sites_container").find("input[type=checkbox]").each(function () {
         $(this).prop("checked", false);
       });
       rss_sites_select_all = false;
-      $("#rss_sites_select_btn").text("全选");
+      $("#rss_sites_select_btn").text("全選");
     } else {
-      //全选
+      //全選
       $(".rss_sites_container").find("input[type=checkbox]").each(function () {
         $(this).prop("checked", true);
       });
       rss_sites_select_all = true;
-      $("#rss_sites_select_btn").text("取消全选");
+      $("#rss_sites_select_btn").text("取消全選");
     }
   }
 
-  // 选择模糊匹配
+  // 選擇模糊匹配
   function change_match_check(obj) {
     if ($(obj).prop("checked")) {
       $("#rss_search_sites_div").hide();
@@ -1825,7 +1825,7 @@
     }
   }
 
-  // 选择洗版
+  // 選擇洗版
   function change_over_edition_check(obj) {
     if ($(obj).prop("checked")) {
       $("#fuzzy_match").prop("checked", false);
@@ -1834,7 +1834,7 @@
   }
 
 
-  //取消订阅
+  //取消訂閱
   function remove_rss_manual(type, name, year, rssid) {
     $("#modal-manual-rss").modal('hide');
     let page;
@@ -1848,14 +1848,14 @@
     remove_rss_media(name, year, type, rssid, page);
   }
 
-  // 显示新增电视剧订阅
+  // 顯示新增電視劇訂閱
   function show_add_tvrss_media_modal() {
-    // 刷新下拉框
+    // 重新整理下拉框
     refresh_rss_download_setting_dirs();
 
-    // 界面初始化
+    // 介面初始化
     $("#rss_id").val("");
-    $("#rss_modal_title").text("新增订阅");
+    $("#rss_modal_title").text("新增訂閱");
     $("#rss_type").val("TV");
     $("#rss_name").val("").attr("readonly", false);
     $("#rss_year").val("").attr("readonly", false);
@@ -1881,14 +1881,14 @@
     $("#modal-manual-rss").modal('show');
   }
 
-  // 显示新增电影订阅
+  // 顯示新增電影訂閱
   function show_add_movierss_media_modal() {
-    // 刷新下拉框
+    // 重新整理下拉框
     refresh_rss_download_setting_dirs();
 
-    // 界面初始化
+    // 介面初始化
     $("#rss_id").val("");
-    $("#rss_modal_title").text("新增订阅");
+    $("#rss_modal_title").text("新增訂閱");
     $("#rss_type").val("MOV");
     $("#rss_name").val("").attr("readonly", false);
     $("#rss_year").val("").attr("readonly", false);
@@ -1912,17 +1912,17 @@
     $("#modal-manual-rss").modal('show');
   }
 
-  // 显示编辑订阅
+  // 顯示編輯訂閱
   function show_edit_rss_media_modal(rssid, type) {
     $("#system-media-modal").modal('hide');
     $("#rss_id").val(rssid);
     $("#rss_type").val(type);
-    $("#rss_modal_title").text("编辑订阅");
+    $("#rss_modal_title").text("編輯訂閱");
 
-    // 刷新下拉框
+    // 重新整理下拉框
     refresh_rss_download_setting_dirs();
 
-    // 获取订阅信息
+    // 獲取訂閱資訊
     show_wait_process();
     ajax_post("rss_detail", {"rssid": rssid, "rsstype": type}, function (ret) {
       hide_wait_process();
@@ -1930,7 +1930,7 @@
         $("#rss_tmdbid").val(ret.detail.tmdbid);
         $("#rss_name").val(ret.detail.name).attr("readonly", true);
         $("#rss_year").val(ret.detail.year).attr("readonly", true);
-        if (type == "MOV" || type == "电影") {
+        if (type == "MOV" || type == "電影") {
           $("#rss_tv_season_div").hide();
           $("#rss_season").val("");
           $("#rss_total_ep").val("");
@@ -1993,11 +1993,11 @@
     });
   }
 
-  // 显示订阅成功（带后续操作）
+  // 顯示訂閱成功（帶後續操作）
   function show_rss_success_modal(rssid, type, text) {
     $("#system_success_action_message").text(text);
     if (rssid) {
-      $("#system_success_action_btn").text("编辑订阅")
+      $("#system_success_action_btn").text("編輯訂閱")
           .unbind('click').click(function () {
         $("#system-success-action-modal").modal('hide');
         show_edit_rss_media_modal(rssid, type);
@@ -2010,13 +2010,13 @@
     $("#system-success-action-modal").modal('show');
   }
 
-  // 刷新规则下拉框
+  // 重新整理規則下拉框
   function refresh_filter_select(obj_id, aync = true) {
     ajax_post("get_filterrules", {}, function (ret) {
       if (ret.code === 0) {
         let rule_select = $("#" + obj_id);
         rule_select.empty();
-        rule_select.append(`<option value="">站点规则</option>`);
+        rule_select.append(`<option value="">站點規則</option>`);
         for (let i = 0; i < ret.ruleGroups.length; i++) {
           rule_select.append(`<option value="${ret.ruleGroups[i].id}">${ret.ruleGroups[i].name}</option>`);
         }
@@ -2024,7 +2024,7 @@
     }, aync);
   }
 
-  // 刷新订阅站点列表
+  // 重新整理訂閱站點列表
   var RSS_SITES_LENGTH = 0;
 
   function refresh_rsssites_select(obj_id, aync = true) {
@@ -2050,7 +2050,7 @@
     }, aync);
   }
 
-  // 刷新搜索站点列表
+  // 重新整理搜尋站點列表
   function refresh_searchsites_select(obj_id, aync = true) {
     ajax_post("get_indexers", {check: true, basic: true}, function (ret) {
       if (ret.code === 0) {
@@ -2073,13 +2073,13 @@
     }, aync);
   }
 
-  // 刷新保存路径
+  // 重新整理儲存路徑
   function refresh_savepath_select(obj_id, aync = true, sid = "") {
     ajax_post("get_download_dirs", {sid: sid}, function (ret) {
       if (ret.code === 0) {
         let savepath_select = $("#" + obj_id);
         savepath_select.empty();
-        savepath_select.append(`<option value="">自动</option>`);
+        savepath_select.append(`<option value="">自動</option>`);
         for (let i = 0; i < ret.paths.length; i++) {
           savepath_select.append(`<option value="${ret.paths[i]}">${ret.paths[i]}</option>`);
         }
@@ -2087,7 +2087,7 @@
     }, aync);
   }
 
-  // 刷新下载设置
+  // 重新整理下載設定
   function refresh_downloadsetting_select(obj_id, aync = true) {
     ajax_post("get_download_setting", {}, function (ret) {
       if (ret.code === 0) {
@@ -2100,7 +2100,7 @@
     }, aync);
   }
 
-  // 刷新订阅框的下载设置及目录等选项
+  // 重新整理訂閱框的下載設定及目錄等選項
   function refresh_rss_download_setting_dirs(){
     show_wait_process();
     refresh_rsssites_select("rss_sites_group", false);
@@ -2111,20 +2111,20 @@
     hide_wait_process();
   }
 
-  // 刷新下载框的下载设置及目录选项
+  // 重新整理下載框的下載設定及目錄選項
   function refresh_search_download_setting_dirs(){
     refresh_downloadsetting_select("search_download_setting", false);
     refresh_savepath_select("search_download_dir", true, $("#search_download_setting").val());
   }
 
-  // 显示下载提示框
+  // 顯示下載提示框
   function show_download_modal(id, name, func) {
     $("#search_download_id").val(id);
     $("#search_download_name").val(name);
-    $("#search_download_message").text("下载 " + name);
-    // 根据下载设置刷新下载目录选项
+    $("#search_download_message").text("下載 " + name);
+    // 根據下載設定重新整理下載目錄選項
     refresh_search_download_setting_dirs();
-    // 绑定下载按钮事件
+    // 繫結下載按鈕事件
     if (func) {
       $("#search_download_btn").unbind("click").click(func);
     }else{
@@ -2133,7 +2133,7 @@
     $("#modal-search-download").modal('show');
   }
 
-  //点击链接下载
+  //點選連結下載
   function download_link() {
     const id = $("#search_download_id").val();
     const name = $("#search_download_name").val();
@@ -2142,19 +2142,19 @@
     $("#modal-search-download").modal('hide');
     ajax_post("download", {"id": id, "dir": dir, "setting": setting}, function (ret) {
       if (ret.retcode === 0) {
-        show_success_modal(`${name} 添加下载成功！`);
+        show_success_modal(`${name} 新增下載成功！`);
       } else {
-        show_fail_modal(`${name} 添加下载失败 ${ret.retmsg}！`);
+        show_fail_modal(`${name} 新增下載失敗 ${ret.retmsg}！`);
       }
     });
   }
 
 </script>
 
-<!-- 页面组件 -->
+<!-- 頁面元件 -->
 <script type="text/javascript">
 
-  //刷新tooltip
+  //重新整理tooltip
   function fresh_tooltip() {
     const tooltipTriggerList = Array.prototype.slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -2162,7 +2162,7 @@
     });
   }
 
-  //打开路径选择框
+  //開啟路徑選擇框
   function openFileBrowser(el, root, filter, on_folders, on_files, close_on_select) {
     if (on_folders === undefined) on_folders = true;
     if (on_files === undefined) on_files = true;
@@ -2224,7 +2224,7 @@
     ft.slideDown('fast');
   }
 
-  //初始化目录选择控件
+  //初始化目錄選擇控制元件
   function init_filetree_element() {
     $('.filetree-folders-only').each(function () {
       $(this).attr("onclick", "openFileBrowser(this,$(this).val(),'',true,false);");
@@ -2234,19 +2234,19 @@
     });
   }
 
-  //鼠标提示等待
+  //滑鼠提示等待
   function make_cursor_busy() {
     const body = document.querySelector("body");
     body.style.cursor = "wait";
   }
 
-  //鼠标取消等待
+  //滑鼠取消等待
   function cancel_cursor_busy() {
     const body = document.querySelector("body");
     body.style.cursor = "default";
   }
 
-  // 名称识别测试
+  // 名稱識別測試
   function media_name_test(name, result_div, func) {
     if (!name) {
       return;
@@ -2261,7 +2261,7 @@
     });
   }
 
-  // 处理识别结果UI
+  // 處理識別結果UI
   function media_name_test_ui(data, result_div) {
     let content = '';
     let ignored_words = [];
@@ -2279,44 +2279,44 @@
     const words = ignored_words + replaced_words + offset_words;
     if (words.length !== 0) {
       if (data.org_string) {
-        content = `${content}<div class="mb-3" ><label class="form-label">识别使用名称：<span class="badge badge-outline text-wrap text-cyan me-1 mb-1" style="vertical-align: middle;white-space: normal;text-align: left;word-break: break-all;" title="自定义识别词过滤后识别用名">${data.org_string}</span></label></div>`;
+        content = `${content}<div class="mb-3" ><label class="form-label">識別使用名稱：<span class="badge badge-outline text-wrap text-cyan me-1 mb-1" style="vertical-align: middle;white-space: normal;text-align: left;word-break: break-all;" title="自定義識別詞過濾後識別用名">${data.org_string}</span></label></div>`;
       }
       if (ignored_words.length !== 0) {
         let ignored_word_content = '';
         for (ignored_word of ignored_words) {
           ignored_word_content = `${ignored_word_content}<span class="badge badge-outline text-wrap text-cyan me-1 mb-1" style="vertical-align: middle;">${ignored_word}</span>`;
         }
-        content = `${content}<div class="mb-3"><label class="form-label">应用屏蔽词：${ignored_word_content}</label></div>`;
+        content = `${content}<div class="mb-3"><label class="form-label">應用遮蔽詞：${ignored_word_content}</label></div>`;
       }
       if (replaced_words.length !== 0) {
         let replaced_words_content = '';
         for (replaced_word of replaced_words) {
           replaced_words_content = replaced_words_content + `<span class="badge badge-outline text-wrap text-cyan me-1 mb-1" style="vertical-align: middle;">${replaced_word}</span>`;
         }
-        content = `${content}<div class="mb-3"><label class="form-label">应用替换词：${replaced_words_content}</label></div>`;
+        content = `${content}<div class="mb-3"><label class="form-label">應用替換詞：${replaced_words_content}</label></div>`;
       }
       if (offset_words.length !== 0) {
         let offset_words_content = '';
         for (offset_word of offset_words) {
           offset_words_content = offset_words_content + `<span class="badge badge-outline text-wrap text-cyan me-1 mb-1" style="vertical-align: middle;">${offset_word}</span>`;
         }
-        content = `${content}<div class="mb-3"><label class="form-label">应用集数偏移：${offset_words_content}</label></div>`;
+        content = `${content}<div class="mb-3"><label class="form-label">應用集數偏移：${offset_words_content}</label></div>`;
       }
     }
     if (data.type) {
-      content = `${content}<span class="badge bg-blue me-1 mb-1" title="类型">${data.type}</span>`;
+      content = `${content}<span class="badge bg-blue me-1 mb-1" title="型別">${data.type}</span>`;
     }
     if (data.category) {
-      content = `${content}<span class="badge bg-blue me-1 mb-1" title="类别">${data.category}</span>`;
+      content = `${content}<span class="badge bg-blue me-1 mb-1" title="類別">${data.category}</span>`;
     }
     if (data.name) {
       const name_query_link = `https://www.themoviedb.org/search?query=${encodeURI(data.name)}`;
-      content = `${content}<span title="识别名称"><a class="badge bg-yellow me-1 mb-1" href="${name_query_link}" target="_blank">${data.name}</a></span>`;
+      content = `${content}<span title="識別名稱"><a class="badge bg-yellow me-1 mb-1" href="${name_query_link}" target="_blank">${data.name}</a></span>`;
     }
     if (data.title) {
-      content = `${content}<span class="badge bg-green me-1 mb-1" title="标题">${data.title}</span>`;
+      content = `${content}<span class="badge bg-green me-1 mb-1" title="標題">${data.title}</span>`;
     } else {
-      content = `${content}<span class="badge bg-red me-1 mb-1" title="标题">未匹配TMDB</span>`;
+      content = `${content}<span class="badge bg-red me-1 mb-1" title="標題">未匹配TMDB</span>`;
     }
     if (data.tmdbid) {
       content = `${content}<span title="TMDB ID"><a class="badge bg-green me-1 mb-1" href="${data.tmdblink}" target="_blank">${data.tmdbid}</a></span>`;
@@ -2331,37 +2331,37 @@
       content = `${content}<span class="badge bg-orange me-1 mb-1" title="分集">${data.part}</span>`;
     }
     if (data.restype) {
-      content = `${content}<span class="badge me-1 mb-1" title="质量">${data.restype}</span>`;
+      content = `${content}<span class="badge me-1 mb-1" title="質量">${data.restype}</span>`;
     }
     if (data.effect) {
       content = `${content}<span class="badge me-1 mb-1" title="特性">${data.effect}</span>`;
     }
     if (data.pix) {
-      content = `${content}<span class="badge me-1 mb-1" title="分辨率">${data.pix}</span>`;
+      content = `${content}<span class="badge me-1 mb-1" title="解析度">${data.pix}</span>`;
     }
     if (data.video_codec) {
-      content = `${content}<span class="badge me-1 mb-1" title="视频编码">${data.video_codec}</span>`;
+      content = `${content}<span class="badge me-1 mb-1" title="影片編碼">${data.video_codec}</span>`;
     }
     if (data.audio_codec) {
-      content = `${content}<span class="badge me-1 mb-1" title="音频编码">${data.audio_codec}</span>`;
+      content = `${content}<span class="badge me-1 mb-1" title="音訊編碼">${data.audio_codec}</span>`;
     }
     if (data.team) {
-      content = `${content}<span class="badge bg-cyan me-1 mb-1" title="制作组/字幕组">${data.team}</span>`;
+      content = `${content}<span class="badge bg-cyan me-1 mb-1" title="製作組/字幕組">${data.team}</span>`;
     }
     $(`#${result_div}`).empty().append(content);
   }
 
-  // 显示手动识别转移框
-  // manual_type: 1-未识别手动识别，2-历史记录手动识别，3-自定义识别
-  // media_type: 电影，电视剧，动漫
+  // 顯示手動識別轉移框
+  // manual_type: 1-未識別手動識別，2-歷史記錄手動識別，3-自定義識別
+  // media_type: 電影，電視劇，動漫
   function show_manual_transfer_modal(manual_type, inpath, syncmod, media_type, unknown_id, transferlog_id) {
-    // 初始化类型
+    // 初始化型別
     if (!syncmod) {
       syncmod = '{{ SyncMod }}';
     }
     $("#rename_manual_type").val(manual_type);
     if (manual_type === 3) {
-      $('#rename_header').text("自定义识别");
+      $('#rename_header').text("自定義識別");
       $('#rename_path_div').hide();
       $('#rename_inpath_div').show();
       $('#rename_outpath_div').show();
@@ -2371,7 +2371,7 @@
       $("#unknown_id").val("");
       $("#transferlog_id").val("");
     } else {
-      $('#rename_header').text("手动识别");
+      $('#rename_header').text("手動識別");
       $('#rename_path_div').show();
       $('#rename_inpath_div').hide();
       $('#rename_outpath_div').hide();
@@ -2382,18 +2382,18 @@
     }
     // 初始化季列表
     $("#rename_season").empty()
-        .append('<option value="" selected>请选择</option>');
+        .append('<option value="" selected>請選擇</option>');
     for (let i = 0; i <= 50; i++) {
       $("#rename_season").append('<option value="' + i + '">第' + i + '季</option>');
     }
-    // 初始化媒体类型
-    if (media_type === "电视剧") {
+    // 初始化媒體型別
+    if (media_type === "電視劇") {
       $("#rename_type_tv").prop("checked", true);
       $("#rename_type_mov").removeProp("checked");
       $("#rename_type_anime").removeProp("checked");
       $("#rename_season_div").show();
       $("#rename_episode_div").show();
-    } else if (media_type === "动漫") {
+    } else if (media_type === "動漫") {
       $("#rename_type_anime").prop("checked", true);
       $("#rename_type_tv").removeProp("checked");
       $("#rename_type_mov").removeProp("checked");
@@ -2408,7 +2408,7 @@
       $("#rename_season").val("");
     }
 
-    // 清空输入框
+    // 清空輸入框
     $("#rename_min_filesize").val("");
     $("#rename_episode").val("");
     $("#rename_episode_details").val("");
@@ -2416,12 +2416,12 @@
     $("#rename_season").val("");
     $("#rename_tmdb").val("");
 
-    // 显示窗口
+    // 顯示視窗
     $("#modal-media-identification").modal("show");
 
   }
 
-  // 执行手动识别转移
+  // 執行手動識別轉移
   function manual_media_transfer() {
     let syncmod;
     const manual_type = $("#rename_manual_type").val();
@@ -2487,7 +2487,7 @@
       $("#rename_episode_offset").removeClass("is-invalid");
     }
 
-    // 开始处理
+    // 開始處理
     const data = {
       "inpath": inpath,
       "outpath": outpath,
@@ -2504,7 +2504,7 @@
       "logid": logid
     };
     $("#identification_action_btn").attr("disabled", true)
-        .text("处理中...");
+        .text("處理中...");
     $("#rename_udf_retmsg").hide()
     $("#rename_retmsg").hide()
     if (manual_type == '3') {
@@ -2514,10 +2514,10 @@
     }
     ajax_post(cmd, data, function (ret) {
       $("#identification_action_btn").attr("disabled", false)
-          .text("转移");
+          .text("轉移");
       if (ret.retcode == 0) {
         $('#modal-media-identification').modal('hide');
-        show_success_modal("处理成功！", function () {
+        show_success_modal("處理成功！", function () {
           if (manual_type == '2') {
             navmenu('history');
           } else {
@@ -2525,7 +2525,7 @@
           }
         });
       } else {
-        //处理失败
+        //處理失敗
         regmsg = ret.retmsg;
         if (manual_type == '3') {
           $("#rename_udf_retmsg").show()
@@ -2541,12 +2541,12 @@
 
 </script>
 
-<!-- 首页功能 -->
+<!-- 首頁功能 -->
 <script type="text/javascript">
-  //当前页面地址
+  //當前頁面地址
   let CURRENT_PAGE_URI = "";
 
-  //导航点击
+  //導航點選
   function navmenu(page) {
     $("#navbar-menu li").find("a").removeClass("active").each(function () {
       if ($(this).attr("onclick") && $(this).attr("onclick").includes("navmenu('" + page + "')")) {
@@ -2563,7 +2563,7 @@
     CURRENT_PAGE_URI = page;
     $("#page_content").load(page, {}, function (response, status, xhr) {
       hide_wait_process();
-      if ($("#page_content").find("title").first().text() == "登录 - NAStool") {
+      if ($("#page_content").find("title").first().text() == "登入 - NAStool") {
         window.location.reload();
       } else {
         fresh_tooltip();
@@ -2572,21 +2572,21 @@
     });
   }
 
-  //刷新LOG标志
+  //重新整理LOG標誌
   let refresh_logging_flag = false;
 
-  //开始刷新日志
+  //開始重新整理日誌
   function start_logging() {
     refresh_logging_flag = true;
     refresh_logging();
   }
 
-  //停止刷新日志
+  //停止重新整理日誌
   function stop_logging() {
     refresh_logging_flag = false;
   }
 
-  //刷新日志
+  //重新整理日誌
   function refresh_logging(flag) {
     let refresh_new = $("#logging_content").children().length;
     ajax_post("logging", {"refresh_new": refresh_new}, function (ret) {
@@ -2647,18 +2647,18 @@
     });
   }
 
-  //暂停实时日志
+  //暫停實時日誌
   function pause_logging() {
     if (refresh_logging_flag == true) {
       stop_logging();
-      $("#logging_stop_btn").text("开始")
+      $("#logging_stop_btn").text("開始")
     } else {
       start_logging();
-      $("#logging_stop_btn").text("暂停")
+      $("#logging_stop_btn").text("暫停")
     }
   }
 
-  //实时日志关闭
+  //實時日誌關閉
   $("#logging_close_btn").click(function () {
     stop_logging();
   });
@@ -2667,13 +2667,13 @@
     stop_logging();
   });
 
-  // 显示实时日志
+  // 顯示實時日誌
   function show_logging_modal() {
     start_logging();
     $('#modal-logging').modal('show');
   }
 
-  //刷新消息中心
+  //重新整理訊息中心
   function refresh_message(time_str) {
     ajax_post("refresh_message", {"lst_time": time_str}, function (ret) {
       if (ret.code === 0) {
@@ -2687,7 +2687,7 @@
     });
   }
 
-  // 检查新版本
+  // 檢查新版本
   const AppVersion = "{{ AppVersion }}".split(" ")[0];
   let NewVersion = '';
   $("#new_version_tip").hide();
@@ -2704,7 +2704,7 @@
     });
   }
 
-  //检查系统是否在线
+  //檢查系統是否線上
   function check_system_online() {
     ajax_post("refresh_process", {type: "restart"}, function (ret) {
         if (ret.code === -1) {
@@ -2715,16 +2715,16 @@
       });
   }
 
-  //注销
+  //登出
   function logout() {
     ajax_post("logout", {}, function (ret) {
       window.location.href = "/";
     });
   }
 
-  //重启
+  //重啟
   function restart() {
-    show_confirm_modal("立即重启系统？", function () {
+    show_confirm_modal("立即重啟系統？", function () {
       hide_confirm_modal();
       ajax_post("restart", {}, function (ret) {
       });
@@ -2737,9 +2737,9 @@
   function update(version) {
     let title;
     if (version) {
-      title = "是否确认更新到 " + version + " 版本？";
+      title = "是否確認更新到 " + version + " 版本？";
     } else {
-      title = "将从Github拉取最新程序代码并重启，是否确认？";
+      title = "將從Github拉取最新程式程式碼並重啟，是否確認？";
     }
     show_confirm_modal(title, function () {
       hide_confirm_modal();
@@ -2750,7 +2750,7 @@
     });
   }
 
-  //滚动到顶步
+  //滾動到頂步
   function ScrollToTop() {
     $("#page_wrapper").animate({
       scrollTop: 0
@@ -2760,14 +2760,14 @@
 
 <!-- 事件  -->
 <script type="text/javascript">
-  //浏览器兼容
+  //瀏覽器相容
   String.prototype.replaceAll = function (s1, s2) {
     return this.replace(new RegExp(s1, "gm"), s2)
   }
 
   //事件
   $(document).ready(function () {
-    // 搜索输入框
+    // 搜尋輸入框
     $('.home_search_word').bind('keypress', function (event) {
       if (event.keyCode == "13") {
         if (!$(this).val()) {
@@ -2778,26 +2778,26 @@
       }
     });
 
-    // tooltip点击事件处理，阻止冒泡到上级元素，避免比如`点击tooltip切换了switch`的问题
+    // tooltip點選事件處理，阻止冒泡到上級元素，避免比如`點選tooltip切換了switch`的問題
     $('body').on('click', 'span[data-bs-toggle="tooltip"]', function (e) {
       e.preventDefault();
       e.stopPropagation();
     });
 
     /**
-     * 计算菜单列表高度
+     * 計算選單列表高度
      * @return {number}
      */
     function computeMenuListHeight() {
-      // '#navbar-menu > .order-first' 要打开菜单后才会显示，所以这里取固定值36
+      // '#navbar-menu > .order-first' 要開啟選單後才會顯示，所以這裡取固定值36
       const menuFirstHeight = 36;
-      // 这个是经过测试得到的数值
+      // 這個是經過測試得到的數值
       const extra = 120;
       return $('.navbar-brand').outerHeight() + menuFirstHeight + extra
     }
 
     /**
-     * 更新菜单列表高度
+     * 更新選單列表高度
      */
     function updateMenuListHeight() {
       const height = computeMenuListHeight();
@@ -2808,7 +2808,7 @@
 
     updateMenuListHeight()
 
-    //单选框事件
+    //單選框事件
     $('input[type=radio][name=rename_type]').change(function () {
       if (this.value == 'MOV') {
         $("#rename_season_div").hide();
@@ -2820,25 +2820,25 @@
       }
     });
 
-    //加载页面
+    //載入頁面
     const go_page = "{{ GoPage }}";
     if (go_page) {
       navmenu(go_page);
     } else {
-      //打开第一个页面
+      //開啟第一個頁面
       $("#navbar-menu").find("a[onclick]").first().trigger('click');
     }
 
-    {% if "系统设置" in UserPris %}
-      //检查版本升级
+    {% if "系統設定" in UserPris %}
+      //檢查版本升級
       check_new_version();
-      //刷新消息
+      //重新整理訊息
       refresh_message("");
     {% endif %}
 
     {% if not TMDBFlag %}
-      //检查tmdb配置
-      show_fail_modal("请先配置TMDB API Key，并修改登录密码！", function () {
+      //檢查tmdb配置
+      show_fail_modal("請先配置TMDB API Key，並修改登入密碼！", function () {
         navmenu('basic');
       });
     {% endif %}

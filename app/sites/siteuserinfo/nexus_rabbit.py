@@ -16,10 +16,10 @@ class NexusRabbitSiteUserInfo(NexusPhpSiteUserInfo):
 
     def _parse_user_torrent_seeding_info(self, html_text, multi_page=False):
         """
-        做种相关信息
+        做種相關資訊
         :param html_text:
-        :param multi_page: 是否多页数据
-        :return: 下页地址
+        :param multi_page: 是否多頁資料
+        :return: 下頁地址
         """
 
         try:

@@ -19,23 +19,23 @@ class DoubanWeb(object):
     _timout = 5
 
     _weburls = {
-        # 详情
+        # 詳情
         "detail": f"{_movie_base}/subject/%s",
-        # 正在热映
+        # 正在熱映
         "nowplaying": f"{_movie_base}/cinema/nowplaying",
-        # 即将上映
+        # 即將上映
         "later": f"{_movie_base}/cinema/later",
-        # 看过
+        # 看過
         "collect": f"{_movie_base}/people/%s/collect?start=%s&sort=time&rating=all&filter=all&mode=grid",
         # 想看
         "wish": f"{_movie_base}/people/%s/wish?start=%s&sort=time&rating=all&filter=all&mode=grid",
         # 在看
         "do": f"{_movie_base}/people/%s/do?start=%s&sort=time&rating=all&filter=all&mode=grid",
-        # 搜索
+        # 搜尋
         "search": f"{_search_base}/movie/subject_search?search_text=%s",
         # TOP 250
         "top250": f"{_movie_base}/top250",
-        # 用户名称
+        # 使用者名稱稱
         "user": f"{_movie_base}/people/%s/",
     }
 
@@ -47,8 +47,8 @@ class DoubanWeb(object):
             "cover": "//div[@id='mainpic']//img/@src",
             "rate": "//strong[@property='v:average']/text()",
             "imdb": "//div[@id='info']/span[contains(text(), 'IMDb:')]/following-sibling::text()",
-            "season": "//div[@id='info']/span[contains(text(), '季数')]/following-sibling::text()",
-            "episode_num": "//div[@id='info']/span[contains(text(), '集数')]/following-sibling::text()"
+            "season": "//div[@id='info']/span[contains(text(), '季數')]/following-sibling::text()",
+            "episode_num": "//div[@id='info']/span[contains(text(), '集數')]/following-sibling::text()"
         },
         "nowplaying": {
             "list": "//div[@id='nowplaying']//ul[@class='lists']/li",
@@ -121,18 +121,18 @@ class DoubanWeb(object):
     }
 
     _jsonurls = {
-        # 最新电影
+        # 最新電影
         "movie_new": f"{_movie_base}/j/search_subjects?type=movie&tag=最新&page_limit={_page_limit}&page_start=%s",
-        # 热门电影
-        "movie_hot": f"{_movie_base}/j/search_subjects?type=movie&tag=热门&page_limit={_page_limit}&page_start=%s",
-        # 高分电影
+        # 熱門電影
+        "movie_hot": f"{_movie_base}/j/search_subjects?type=movie&tag=熱門&page_limit={_page_limit}&page_start=%s",
+        # 高分電影
         "movie_rate": f"{_movie_base}/j/search_subjects?type=movie&tag=豆瓣高分&page_limit={_page_limit}&page_start=%s",
-        # 热门电视剧
-        "tv_hot": f"{_movie_base}/j/search_subjects?type=tv&tag=热门&page_limit={_page_limit}&page_start=%s",
-        # 热门动漫
-        "anime_hot": f"{_movie_base}/j/search_subjects?type=tv&tag=日本动画&page_limit={_page_limit}&page_start=%s",
-        # 热门综艺
-        "variety_hot": f"{_movie_base}/j/search_subjects?type=tv&tag=综艺&page_limit={_page_limit}&page_start=%s",
+        # 熱門電視劇
+        "tv_hot": f"{_movie_base}/j/search_subjects?type=tv&tag=熱門&page_limit={_page_limit}&page_start=%s",
+        # 熱門動漫
+        "anime_hot": f"{_movie_base}/j/search_subjects?type=tv&tag=日本動畫&page_limit={_page_limit}&page_start=%s",
+        # 熱門綜藝
+        "variety_hot": f"{_movie_base}/j/search_subjects?type=tv&tag=綜藝&page_limit={_page_limit}&page_start=%s",
     }
 
     def __int__(self, cookie=None):
@@ -204,7 +204,7 @@ class DoubanWeb(object):
     @lru_cache(maxsize=256)
     def detail(cls, cookie, doubanid):
         """
-        查询详情
+        查詢詳情
         """
         return cls.__get_obj("detail", cls.__invoke_web("detail", cookie, doubanid))
 
@@ -212,25 +212,25 @@ class DoubanWeb(object):
     @lru_cache(maxsize=10)
     def user(cls, cookie, userid):
         """
-        查询用户信息
+        查詢使用者資訊
         """
         return cls.__get_obj("user", cls.__invoke_web("user", cookie, userid))
 
     def nowplaying(self, cookie):
         """
-        正在热映
+        正在熱映
         """
         return self.__get_list("nowplaying", self.__invoke_web("nowplaying", cookie))
 
     def later(self, cookie):
         """
-        即将上映
+        即將上映
         """
         return self.__get_list("later", self.__invoke_web("later", cookie))
 
     def collect(self, cookie, userid, start=0):
         """
-        看过
+        看過
         """
         return self.__get_list("collect", self.__invoke_web("collect", cookie, userid, start))
 
@@ -248,7 +248,7 @@ class DoubanWeb(object):
 
     def search(self, cookie, keyword):
         """
-        搜索
+        搜尋
         """
         return self.__get_list("search", self.__invoke_web("search", cookie, keyword))
 
@@ -260,36 +260,36 @@ class DoubanWeb(object):
 
     def movie_new(self, start=0):
         """
-        最新电影
+        最新電影
         """
         return self.__get_json(self.__invoke_json("movie_new", start))
 
     def movie_hot(self, start=0):
         """
-        热门电影
+        熱門電影
         """
         return self.__get_json(self.__invoke_json("movie_hot", start))
 
     def movie_rate(self, start=0):
         """
-        高分电影
+        高分電影
         """
         return self.__get_json(self.__invoke_json("movie_rate", start))
 
     def tv_hot(self, start=0):
         """
-        热门电视剧
+        熱門電視劇
         """
         return self.__get_json(self.__invoke_json("tv_hot", start))
 
     def anime_hot(self, start=0):
         """
-        热门动漫
+        熱門動漫
         """
         return self.__get_json(self.__invoke_json("anime_hot", start))
 
     def variety_hot(self, start=0):
         """
-        热门综艺
+        熱門綜藝
         """
         return self.__get_json(self.__invoke_json("variety_hot", start))

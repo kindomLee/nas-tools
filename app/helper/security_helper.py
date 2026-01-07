@@ -26,9 +26,9 @@ class SecurityHelper:
     @staticmethod
     def webhook_allow_access(allow_ips, ip):
         """
-        判断IP是否合法
-        :param allow_ips: 充许的IP范围 {"ipv4":, "ipv6":}
-        :param ip: 需要检查的ip
+        判斷IP是否合法
+        :param allow_ips: 充許的IP範圍 {"ipv4":, "ipv6":}
+        :param ip: 需要檢查的ip
         """
         if not allow_ips:
             return True

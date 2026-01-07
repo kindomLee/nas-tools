@@ -7,7 +7,7 @@ from config import Config
 
 class User(UserMixin):
     """
-    用户
+    使用者
     """
     dbhelper = None
     admin_users = []
@@ -23,12 +23,12 @@ class User(UserMixin):
             "id": 0,
             "name": Config().get_config('app').get('login_user'),
             "password": Config().get_config('app').get('login_password')[6:],
-            "pris": "我的媒体库,资源搜索,推荐,站点管理,订阅管理,下载管理,媒体整理,服务,系统设置"
+            "pris": "我的媒體庫,資源搜尋,推薦,站點管理,訂閱管理,下載管理,媒體整理,服務,系統設定"
         }]
 
     def verify_password(self, password):
         """
-        验证密码
+        驗證密碼
         """
         if self.password_hash is None:
             return False
@@ -36,13 +36,13 @@ class User(UserMixin):
 
     def get_id(self):
         """
-        获取用户ID
+        獲取使用者ID
         """
         return self.id
 
     def get(self, user_id):
         """
-        根据用户ID获取用户实体，为 login_user 方法提供支持
+        根據使用者ID獲取使用者實體，為 login_user 方法提供支援
         """
         if user_id is None:
             return None
@@ -58,7 +58,7 @@ class User(UserMixin):
 
     def get_user(self, user_name):
         """
-        根据用户名获取用户对像
+        根據使用者名稱獲取使用者對像
         """
         for user in self.admin_users:
             if user.get("name") == user_name:

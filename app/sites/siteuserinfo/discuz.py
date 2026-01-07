@@ -30,7 +30,7 @@ class DiscuzUserInfo(_ISiteUserInfo):
 
     def _parse_user_detail_info(self, html_text):
         """
-        解析用户额外信息，加入时间，等级
+        解析使用者額外資訊，加入時間，等級
         :param html_text:
         :return:
         """
@@ -38,13 +38,13 @@ class DiscuzUserInfo(_ISiteUserInfo):
         if not html:
             return None
 
-        # 用户等级
+        # 使用者等級
         user_levels_text = html.xpath('//a[contains(@href, "usergroup")]/text()')
         if user_levels_text:
             self.user_level = user_levels_text[-1].strip()
 
         # 加入日期
-        join_at_text = html.xpath('//li[em[text()="注册时间"]]/text()')
+        join_at_text = html.xpath('//li[em[text()="註冊時間"]]/text()')
         if join_at_text:
             self.join_at = StringUtils.unify_datetime_str(join_at_text[0].strip())
 
@@ -55,27 +55,27 @@ class DiscuzUserInfo(_ISiteUserInfo):
             if ratio_match and ratio_match.group(1).strip():
                 self.bonus = StringUtils.str_float(ratio_match.group(1))
 
-        # 积分
-        bouns_text = html.xpath('//li[em[text()="积分"]]/text()')
+        # 積分
+        bouns_text = html.xpath('//li[em[text()="積分"]]/text()')
         if bouns_text:
             self.bonus = StringUtils.str_float(bouns_text[0].strip())
 
-        # 上传
-        upload_text = html.xpath('//li[em[contains(text(),"上传量")]]/text()')
+        # 上傳
+        upload_text = html.xpath('//li[em[contains(text(),"上傳量")]]/text()')
         if upload_text:
             self.upload = StringUtils.num_filesize(upload_text[0].strip().split('/')[-1])
 
-        # 下载
-        download_text = html.xpath('//li[em[contains(text(),"下载量")]]/text()')
+        # 下載
+        download_text = html.xpath('//li[em[contains(text(),"下載量")]]/text()')
         if download_text:
             self.download = StringUtils.num_filesize(download_text[0].strip().split('/')[-1])
 
     def _parse_user_torrent_seeding_info(self, html_text, multi_page=False):
         """
-        做种相关信息
+        做種相關資訊
         :param html_text:
-        :param multi_page: 是否多页数据
-        :return: 下页地址
+        :param multi_page: 是否多頁資料
+        :return: 下頁地址
         """
         html = etree.HTML(html_text)
         if not html:
@@ -83,11 +83,11 @@ class DiscuzUserInfo(_ISiteUserInfo):
 
         size_col = 3
         seeders_col = 4
-        # 搜索size列
+        # 搜尋size列
         if html.xpath('//tr[position()=1]/td[.//img[@class="size"] and .//img[@alt="size"]]'):
             size_col = len(html.xpath('//tr[position()=1]/td[.//img[@class="size"] '
                                       'and .//img[@alt="size"]]/preceding-sibling::td')) + 1
-        # 搜索seeders列
+        # 搜尋seeders列
         if html.xpath('//tr[position()=1]/td[.//img[@class="seeders"] and .//img[@alt="seeders"]]'):
             seeders_col = len(html.xpath('//tr[position()=1]/td[.//img[@class="seeders"] '
                                          'and .//img[@alt="seeders"]]/preceding-sibling::td')) + 1
@@ -111,9 +111,9 @@ class DiscuzUserInfo(_ISiteUserInfo):
         self.seeding_size += page_seeding_size
         self.seeding_info.extend(page_seeding_info)
 
-        # 是否存在下页数据
+        # 是否存在下頁資料
         next_page = None
-        next_page_text = html.xpath('//a[contains(.//text(), "下一页") or contains(.//text(), "下一頁")]/@href')
+        next_page_text = html.xpath('//a[contains(.//text(), "下一頁") or contains(.//text(), "下一頁")]/@href')
         if next_page_text:
             next_page = next_page_text[-1].strip()
 

@@ -12,7 +12,7 @@ class Client115(IDownloadClient):
     client_type = DownloaderType.Client115.value
 
     def get_config(self):
-        # 读取配置文件
+        # 讀取配置檔案
         cloudconfig = Config().get_config('client115')
         if cloudconfig:
             self.downclient = Py115(cloudconfig.get("cookie"))
@@ -35,7 +35,7 @@ class Client115(IDownloadClient):
             return tlist
         ret, tasks = self.downclient.gettasklist(page=1)
         if not ret:
-            log.info(f"【{self.client_type}】获取任务列表错误：{self.downclient.err}")
+            log.info(f"【{self.client_type}】獲取任務列表錯誤：{self.downclient.err}")
             return tlist
         if tasks:
             for task in tasks:
@@ -72,11 +72,11 @@ class Client115(IDownloadClient):
         if isinstance(content, str):
             ret, self.lasthash = self.downclient.addtask(tdir=download_dir, content=content)
             if not ret:
-                log.error(f"【{self.client_type}】添加下载任务失败：{self.downclient.err}")
+                log.error(f"【{self.client_type}】新增下載任務失敗：{self.downclient.err}")
                 return None
             return self.lasthash
         else:
-            log.info(f"【{self.client_type}】暂时不支持非链接下载")
+            log.info(f"【{self.client_type}】暫時不支援非連結下載")
             return None
 
     def delete_torrents(self, delete_file, ids):

@@ -11,9 +11,9 @@ from app.media.meta.release_groups import ReleaseGroupsMatcher
 
 class MetaVideo(MetaBase):
     """
-    识别电影、电视剧
+    識別電影、電視劇
     """
-    # 控制标位区
+    # 控制標位區
     _stop_name_flag = False
     _stop_cnname_flag = False
     _last_token = ""
@@ -22,7 +22,7 @@ class MetaVideo(MetaBase):
     _unknown_name_str = ""
     _source = ""
     _effect = []
-    # 正则式区
+    # 正則式區
     _season_re = r"S(\d{2})|^S(\d{1,2})$|S(\d{1,2})E"
     _episode_re = r"EP?(\d{2,4})|^EP?(\d{1,4})$|S\d{1,2}EP?(\d{1,4})$"
     _part_re = r"(^PART[0-9ABI]{0,2}$|^CD[0-9]{0,2}$|^DVD[0-9]{0,2}$|^DISK[0-9]{0,2}$|^DISC[0-9]{0,2}$)"
@@ -32,14 +32,14 @@ class MetaVideo(MetaBase):
     _resources_type_re = r"%s|%s" % (_source_re, _effect_re)
     _name_no_begin_re = r"^\[.+?]"
     _name_no_chinese_re = r".*版|.*字幕"
-    _name_se_words = ['共', '第', '季', '集', '话', '話', '期']
+    _name_se_words = ['共', '第', '季', '集', '話', '話', '期']
     _name_nostring_re = r"^PTS|^JADE|^AOD|^CHC|^[A-Z]{1,4}TV[\-0-9UVHDK]*" \
                         r"|HBO$|\s+HBO|\d{1,2}th|\d{1,2}bit|NETFLIX|AMAZON|IMAX|^3D|\s+3D|^BBC\s+|\s+BBC|BBC$|DISNEY\+?|XXX|\s+DC$" \
                         r"|[第\s共]+[0-9一二三四五六七八九十\-\s]+季" \
-                        r"|[第\s共]+[0-9一二三四五六七八九十\-\s]+[集话話]" \
-                        r"|连载|日剧|美剧|电视剧|动画片|动漫|欧美|西德|日韩|超高清|高清|蓝光|翡翠台|梦幻天堂·龙网|★?\d*月?新番" \
-                        r"|最终季|合集|[多中国英葡法俄日韩德意西印泰台港粤双文语简繁体特效内封官译外挂]+字幕|版本|出品|台版|港版|\w+字幕组" \
-                        r"|未删减版|UNCUT$|UNRATE$|WITH EXTRAS$|RERIP$|SUBBED$|PROPER$|REPACK$|SEASON$|EPISODE$|Complete$|Extended$|Extended Version$" \
+                        r"|[第\s共]+[0-9一二三四五六七八九十\-\s]+[集話話]" \
+                        r"|連載|日劇|美劇|電視劇|動畫片|動漫|歐美|西德|日韓|超高畫質|高畫質|藍光|翡翠臺|夢幻天堂·龍網|★?\d*月?新番" \
+                        r"|最終季|合集|[多中國英葡法俄日韓德意西印泰臺港粵雙文語簡繁體特效內封官譯外掛]+字幕|版本|出品|臺版|港版|\w+字幕組" \
+                        r"|未刪減版|UNCUT$|UNRATE$|WITH EXTRAS$|RERIP$|SUBBED$|PROPER$|REPACK$|SEASON$|EPISODE$|Complete$|Extended$|Extended Version$" \
                         r"|S\d{2}\s*-\s*S\d{2}|S\d{2}|\s+S\d{1,2}|EP?\d{2,4}\s*-\s*EP?\d{2,4}|EP?\d{2,4}|\s+EP?\d{1,4}" \
                         r"|CD[\s.]*[1-9]|DVD[\s.]*[1-9]|DISK[\s.]*[1-9]|DISC[\s.]*[1-9]" \
                         r"|[248]K|\d{3,4}[PIX]+" \
@@ -56,16 +56,16 @@ class MetaVideo(MetaBase):
         original_title = title
         self._source = ""
         self._effect = []
-        # 判断是否纯数字命名
+        # 判斷是否純數字命名
         if os.path.splitext(title)[-1] in RMT_MEDIAEXT \
                 and os.path.splitext(title)[0].isdigit() \
                 and len(os.path.splitext(title)[0]) < 5:
             self.begin_episode = int(os.path.splitext(title)[0])
             self.type = MediaType.TV
             return
-        # 去掉名称中第1个[]的内容
+        # 去掉名稱中第1個[]的內容
         title = re.sub(r'%s' % self._name_no_begin_re, "", title, count=1)
-        # 把xxxx-xxxx年份换成前一个年份，常出现在季集上
+        # 把xxxx-xxxx年份換成前一個年份，常出現在季集上
         title = re.sub(r'([\s.]+)(\d{4})-(\d{4})', r'\1\2', title)
         # 把大小去掉
         title = re.sub(r'[0-9.]+\s*[MGT]i?B(?![A-Z]+)', "", title, flags=re.IGNORECASE)
@@ -74,18 +74,18 @@ class MetaVideo(MetaBase):
         # 拆分tokens
         tokens = Tokens(title)
         self.tokens = tokens
-        # 解析名称、年份、季、集、资源类型、分辨率等
+        # 解析名稱、年份、季、集、資源型別、解析度等
         token = tokens.get_next()
         while token:
             # Part
             self.__init_part(token)
-            # 标题
+            # 標題
             if self._continue_flag:
                 self.__init_name(token)
             # 年份
             if self._continue_flag:
                 self.__init_year(token)
-            # 分辨率
+            # 解析度
             if self._continue_flag:
                 self.__init_resource_pix(token)
             # 季
@@ -94,44 +94,44 @@ class MetaVideo(MetaBase):
             # 集
             if self._continue_flag:
                 self.__init_episode(token)
-            # 资源类型
+            # 資源型別
             if self._continue_flag:
                 self.__init_resource_type(token)
-            # 视频编码
+            # 影片編碼
             if self._continue_flag:
                 self.__init_video_encode(token)
-            # 音频编码
+            # 音訊編碼
             if self._continue_flag:
                 self.__init_audio_encode(token)
-            # 取下一个，直到没有为卡
+            # 取下一個，直到沒有為卡
             token = tokens.get_next()
             self._continue_flag = True
-        # 合成质量
+        # 合成質量
         if self._effect:
             self._effect.reverse()
             self.resource_effect = " ".join(self._effect)
         if self._source:
             self.resource_type = self._source.strip()
-        # 副标题提取原盘DIY
+        # 副標題提取原盤DIY
         if self.resource_type \
                 and "BluRay" in self.resource_type \
                 and self.subtitle:
             if re.findall(r'DIY', self.subtitle):
                 self.resource_type = f"{self.resource_type} DIY"
-        # 解析副标题，只要季和集
+        # 解析副標題，只要季和集
         self.init_subtitle(self.org_string)
         if not self._subtitle_flag and self.subtitle:
             self.init_subtitle(self.subtitle)
-        # 没有识别出类型时默认为电影
+        # 沒有識別出型別時預設為電影
         if not self.type:
             self.type = MediaType.MOVIE
-        # 去掉名字中不需要的干扰字符，过短的纯数字不要
+        # 去掉名字中不需要的干擾字元，過短的純數字不要
         self.cn_name = self.__fix_name(self.cn_name)
         self.en_name = StringUtils.str_title(self.__fix_name(self.en_name))
-        # 处理part
+        # 處理part
         if self.part and self.part.upper() == "PART":
             self.part = None
-        # 制作组/字幕组
+        # 製作組/字幕組
         self.resource_team = ReleaseGroupsMatcher().match(title=original_title) or None
 
     def __fix_name(self, name):
@@ -158,7 +158,7 @@ class MetaVideo(MetaBase):
     def __init_name(self, token):
         if not token:
             return
-        # 回收标题
+        # 回收標題
         if self._unknown_name_str:
             if not self.cn_name:
                 if not self.en_name:
@@ -173,7 +173,7 @@ class MetaVideo(MetaBase):
             self._last_token_type = 'name_se_words'
             return
         if StringUtils.is_chinese(token):
-            # 含有中文，直接做为标题（连着的数字或者英文会保留），且不再取用后面出现的中文
+            # 含有中文，直接做為標題（連著的數字或者英文會保留），且不再取用後面出現的中文
             self._last_token_type = "cnname"
             if not self.cn_name:
                 self.cn_name = token
@@ -184,39 +184,39 @@ class MetaVideo(MetaBase):
                 self._stop_cnname_flag = True
         else:
             is_roman_digit = re.search(self._roman_numerals, token)
-            # 阿拉伯数字或者罗马数字
+            # 阿拉伯數字或者羅馬數字
             if token.isdigit() or is_roman_digit:
-                # 第季集后面的不要
+                # 第季集後面的不要
                 if self._last_token_type == 'name_se_words':
                     return
                 if self.get_name():
-                    # 名字后面以 0 开头的不要，极有可能是集
+                    # 名字後面以 0 開頭的不要，極有可能是集
                     if token.startswith('0'):
                         return
-                    # 检查是否真正的数字
+                    # 檢查是否真正的數字
                     if token.isdigit():
                         try:
                             int(token)
                         except ValueError:
                             return
-                    # 中文名后面跟的数字不是年份的极有可能是集
+                    # 中文名後面跟的數字不是年份的極有可能是集
                     if not is_roman_digit \
                             and self._last_token_type == "cnname" \
                             and int(token) < 1900:
                         return
                     if (token.isdigit() and len(token) < 4) or is_roman_digit:
-                        # 4位以下的数字或者罗马数字，拼装到已有标题中
+                        # 4位以下的數字或者羅馬數字，拼裝到已有標題中
                         if self._last_token_type == "cnname":
                             self.cn_name = "%s %s" % (self.cn_name, token)
                         elif self._last_token_type == "enname":
                             self.en_name = "%s %s" % (self.en_name, token)
                         self._continue_flag = False
                     elif token.isdigit() and len(token) == 4:
-                        # 4位数字，可能是年份，也可能真的是标题的一部分，也有可能是集
+                        # 4位數字，可能是年份，也可能真的是標題的一部分，也有可能是集
                         if not self._unknown_name_str:
                             self._unknown_name_str = token
                 else:
-                    # 名字未出现前的第一个数字，记下来
+                    # 名字未出現前的第一個數字，記下來
                     if not self._unknown_name_str:
                         self._unknown_name_str = token
             elif re.search(r"%s" % self._season_re, token, re.IGNORECASE) \
@@ -227,10 +227,10 @@ class MetaVideo(MetaBase):
                 self._stop_name_flag = True
                 return
             else:
-                # 后缀名不要
+                # 字尾名不要
                 if ".%s".lower() % token in RMT_MEDIAEXT:
                     return
-                # 英文或者英文+数字，拼装起来
+                # 英文或者英文+數字，拼裝起來
                 if self.en_name:
                     self.en_name = "%s %s" % (self.en_name, token)
                 else:

@@ -9,7 +9,7 @@ class WebUtils:
     @staticmethod
     def get_location(ip):
         """
-        根据IP址查询真实地址
+        根據IP址查詢真實地址
         """
         url = 'https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?co=&resource_id=6006&t=1529895387942&ie=utf8' \
               '&oe=gbk&cb=op_aladdin_callback&format=json&tn=baidu&' \
@@ -28,7 +28,7 @@ class WebUtils:
     @staticmethod
     def get_current_version():
         """
-        获取当前版本号
+        獲取當前版本號
         """
         commit_id = SystemUtils.execute('git rev-parse --short HEAD')
         return "%s %s" % (APP_VERSION, commit_id)

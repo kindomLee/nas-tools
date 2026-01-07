@@ -52,7 +52,7 @@ class GazelleSiteUserInfo(_ISiteUserInfo):
 
     def _parse_user_detail_info(self, html_text):
         """
-        解析用户额外信息，加入时间，等级
+        解析使用者額外資訊，加入時間，等級
         :param html_text:
         :return:
         """
@@ -60,7 +60,7 @@ class GazelleSiteUserInfo(_ISiteUserInfo):
         if not html:
             return None
 
-        # 用户等级
+        # 使用者等級
         user_levels_text = html.xpath('//*[@id="class-value"]/@data-value')
         if user_levels_text:
             self.user_level = user_levels_text[0].strip()
@@ -72,20 +72,20 @@ class GazelleSiteUserInfo(_ISiteUserInfo):
 
     def _parse_user_torrent_seeding_info(self, html_text, multi_page=False):
         """
-        做种相关信息
+        做種相關資訊
         :param html_text:
-        :param multi_page: 是否多页数据
-        :return: 下页地址
+        :param multi_page: 是否多頁資料
+        :return: 下頁地址
         """
         html = etree.HTML(html_text)
         if not html:
             return None
 
         size_col = 3
-        # 搜索size列
+        # 搜尋size列
         if html.xpath('//table[contains(@id, "torrent")]//tr[1]/td'):
             size_col = len(html.xpath('//table[contains(@id, "torrent")]//tr[1]/td')) - 3
-        # 搜索seeders列
+        # 搜尋seeders列
         seeders_col = size_col + 2
 
         page_seeding = 0
@@ -115,9 +115,9 @@ class GazelleSiteUserInfo(_ISiteUserInfo):
             if not self.seeding_info:
                 self.seeding_info = page_seeding_info
 
-        # 是否存在下页数据
+        # 是否存在下頁資料
         next_page = None
-        next_page_text = html.xpath('//a[contains(.//text(), "Next") or contains(.//text(), "下一页")]/@href')
+        next_page_text = html.xpath('//a[contains(.//text(), "Next") or contains(.//text(), "下一頁")]/@href')
         if next_page_text:
             next_page = next_page_text[-1].strip()
 

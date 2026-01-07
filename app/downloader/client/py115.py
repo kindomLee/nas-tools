@@ -20,7 +20,7 @@ class Py115:
         self.cookie = cookie
         self.req = RequestUtils(cookies=self.cookie, session=requests.Session())
 
-    # 登录
+    # 登入
     def login(self):
         if not self.getuid():
             return False
@@ -28,7 +28,7 @@ class Py115:
             return False
         return True
 
-    # 获取目录ID
+    # 獲取目錄ID
     def getdirid(self, tdir):
         try:
             url = "https://webapi.115.com/files/getid?path=" + parse.quote(tdir or '/')
@@ -36,15 +36,15 @@ class Py115:
             if p:
                 rootobject = p.json()
                 if not rootobject.get("state"):
-                    self.err = "获取目录 [{}]ID 错误：{}".format(tdir, rootobject["error"])
+                    self.err = "獲取目錄 [{}]ID 錯誤：{}".format(tdir, rootobject["error"])
                     return False, ''
                 return True, rootobject.get("id")
         except Exception as result:
             ExceptionUtils.exception_traceback(result)
-            self.err = "异常错误：{}".format(result)
+            self.err = "異常錯誤：{}".format(result)
         return False, ''
 
-    # 获取sign
+    # 獲取sign
     def getsign(self):
         try:
             self.sign = ''
@@ -53,16 +53,16 @@ class Py115:
             if p:
                 rootobject = p.json()
                 if not rootobject.get("state"):
-                    self.err = "获取 SIGN 错误：{}".format(rootobject.get("error_msg"))
+                    self.err = "獲取 SIGN 錯誤：{}".format(rootobject.get("error_msg"))
                     return False
                 self.sign = rootobject.get("sign")
                 return True
         except Exception as result:
             ExceptionUtils.exception_traceback(result)
-            self.err = "异常错误：{}".format(result)
+            self.err = "異常錯誤：{}".format(result)
         return False
 
-    # 获取UID
+    # 獲取UID
     def getuid(self):
         try:
             self.uid = ''
@@ -71,16 +71,16 @@ class Py115:
             if p:
                 rootobject = p.json()
                 if not rootobject.get("state"):
-                    self.err = "获取 UID 错误：{}".format(rootobject.get("error_msg"))
+                    self.err = "獲取 UID 錯誤：{}".format(rootobject.get("error_msg"))
                     return False
                 self.uid = rootobject.get("uid")
                 return True
         except Exception as result:
             ExceptionUtils.exception_traceback(result)
-            self.err = "异常错误：{}".format(result)
+            self.err = "異常錯誤：{}".format(result)
         return False
 
-    # 获取任务列表
+    # 獲取任務列表
     def gettasklist(self, page=1):
         try:
             tasks = []
@@ -92,7 +92,7 @@ class Py115:
                 if p:
                     rootobject = p.json()
                     if not rootobject.get("state"):
-                        self.err = "获取任务列表错误：{}".format(rootobject["error"])
+                        self.err = "獲取任務列表錯誤：{}".format(rootobject["error"])
                         return False, tasks
                     if rootobject.get("count") == 0:
                         break
@@ -102,17 +102,17 @@ class Py115:
             return True, tasks
         except Exception as result:
             ExceptionUtils.exception_traceback(result)
-            self.err = "异常错误：{}".format(result)
+            self.err = "異常錯誤：{}".format(result)
         return False, []
 
-    # 添加任务
+    # 新增任務
     def addtask(self, tdir, content):
         try:
             ret, dirid = self.getdirid(tdir)
             if not ret:
                 return False, ''
 
-            # 转换为磁力
+            # 轉換為磁力
             if re.match("^https*://", content):
                 try:
                     p = self.req.get_res(url=content)
@@ -135,10 +135,10 @@ class Py115:
                 return True, rootobject.get("info_hash")
         except Exception as result:
             ExceptionUtils.exception_traceback(result)
-            self.err = "异常错误：{}".format(result)
+            self.err = "異常錯誤：{}".format(result)
         return False, ''
 
-    # 删除任务
+    # 刪除任務
     def deltask(self, thash):
         try:
             url = "https://115.com/web/lixian/?ct=lixian&ac=task_del"
@@ -153,10 +153,10 @@ class Py115:
                 return True
         except Exception as result:
             ExceptionUtils.exception_traceback(result)
-            self.err = "异常错误：{}".format(result)
+            self.err = "異常錯誤：{}".format(result)
         return False
 
-    # 根据ID获取文件夹路径
+    # 根據ID獲取資料夾路徑
     def getiddir(self, tid):
         try:
             path = '/'
@@ -166,7 +166,7 @@ class Py115:
             if p:
                 rootobject = p.json()
                 if not rootobject.get("state"):
-                    self.err = "获取 ID[{}]路径 错误：{}".format(id, rootobject["error"])
+                    self.err = "獲取 ID[{}]路徑 錯誤：{}".format(id, rootobject["error"])
                     return False, path
                 patharray = rootobject["path"]
                 for pathobject in patharray:
@@ -174,10 +174,10 @@ class Py115:
                         continue
                     path += pathobject.get("name") + '/'
                 if path == "/":
-                    self.err = "文件路径不存在"
+                    self.err = "檔案路徑不存在"
                     return False, path
                 return True, path
         except Exception as result:
             ExceptionUtils.exception_traceback(result)
-            self.err = "异常错误：{}".format(result)
+            self.err = "異常錯誤：{}".format(result)
         return False, '/'
