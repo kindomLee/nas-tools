@@ -866,7 +866,7 @@ class WebAction:
         """
         try:
             response = RequestUtils(proxies=Config().get_proxies()).get_res(
-                "https://api.github.com/repos/jxxghp/nas-tools/releases/latest")
+                "https://api.github.com/repos/kindomLee/nas-tools/releases/latest")
             if response:
                 ver_json = response.json()
                 version = ver_json["tag_name"]
