@@ -1,16 +1,16 @@
 ![logo-blue](https://user-images.githubusercontent.com/51039935/197520391-f35db354-6071-4c12-86ea-fc450f04bc85.png)
 # NAS媒体库资源归集、整理自动化工具
 
-[![GitHub stars](https://img.shields.io/github/stars/jxxghp/nas-tools?style=plastic)](https://github.com/jxxghp/nas-tools/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/jxxghp/nas-tools?style=plastic)](https://github.com/jxxghp/nas-tools/network/members)
-[![GitHub issues](https://img.shields.io/github/issues/jxxghp/nas-tools?style=plastic)](https://github.com/jxxghp/nas-tools/issues)
-[![GitHub license](https://img.shields.io/github/license/jxxghp/nas-tools?style=plastic)](https://github.com/jxxghp/nas-tools/blob/master/LICENSE.md)
+[![GitHub stars](https://img.shields.io/github/stars/kindomLee/nas-tools?style=plastic)](https://github.com/kindomLee/nas-tools/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/kindomLee/nas-tools?style=plastic)](https://github.com/kindomLee/nas-tools/network/members)
+[![GitHub issues](https://img.shields.io/github/issues/kindomLee/nas-tools?style=plastic)](https://github.com/kindomLee/nas-tools/issues)
+[![GitHub license](https://img.shields.io/github/license/kindomLee/nas-tools?style=plastic)](https://github.com/kindomLee/nas-tools/blob/master/LICENSE.md)
 
 Docker：https://hub.docker.com/repository/docker/jxxghp/nas-tools
 
 TG频道：https://t.me/nastool
 
-WIKI：https://github.com/jxxghp/nas-tools/wiki
+WIKI：https://github.com/kindomLee/nas-tools/wiki
 
 API: http://localhost:3000/api/v1/
 
@@ -50,7 +50,7 @@ docker pull jxxghp/nas-tools:latest
 ### 2、本地运行
 python3版本，如发现缺少依赖包需额外安装
 ```
-git clone -b master https://github.com/jxxghp/nas-tools --recurse-submodule 
+git clone -b master https://github.com/kindomLee/nas-tools --recurse-submodule 
 python3 -m pip install -r requirements.txt
 export NASTOOL_CONFIG="/xxx/config/config.yaml"
 nohup python3 run.py & 
@@ -59,7 +59,7 @@ nohup python3 run.py &
 ### 3、Windows
 下载exe文件，双击运行即可，会自动生成配置文件目录
 
-https://github.com/jxxghp/nas-tools/releases
+https://github.com/kindomLee/nas-tools/releases
 
 ### 4、群晖套件
 添加矿神群晖SPK套件源直接安装：

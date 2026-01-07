@@ -547,7 +547,7 @@ class Message:
                                              conf=config,
                                              interactive=False).send_msg(title="测试",
                                                                          text="这是一条测试消息",
-                                                                         url="https://github.com/jxxghp/nas-tools")
+                                                                         url="https://github.com/kindomLee/nas-tools")
         if not state:
             log.error(f"【Message】{ctype} 发送测试消息失败：%s" % ret_msg)
         return state
