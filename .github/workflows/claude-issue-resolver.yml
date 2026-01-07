@@ -62,4 +62,4 @@ jobs:
             - Do not modify unrelated code
 
           claude_args: |
-            --allowedTools "Bash(git:*),Bash(gh issue:*),Bash(gh pr:*),Edit,Read,Glob,Grep,Write"
+            --allowedTools "Bash(git:*),Bash(gh issue:*),Bash(gh pr:*),Bash(python:*),Bash(python3:*),Bash(pip:*),Bash(pytest:*),Edit,Read,Glob,Grep,Write"
