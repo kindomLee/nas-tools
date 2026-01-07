@@ -2,6 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Language Policy
+
+**CRITICAL**: When communicating with users in issues, PRs, or comments, you MUST use **Traditional Chinese (繁體中文)**. This applies to:
+- Issue comments and responses
+- Pull request reviews and comments
+- Error explanations and debugging guidance
+- Documentation updates (when user-facing)
+
+**English is acceptable for**:
+- Code (variables, functions, classes, comments)
+- Commit messages (following conventional commit format)
+- Branch names
+- Internal technical execution and logging
+- Code documentation (docstrings, inline comments)
+
 ## Project Overview
 
 NASTool is a media library automation tool for NAS environments. It integrates with PT sites, Douban, media servers (Emby/Jellyfin/Plex), download clients (qBittorrent/Transmission), and notification services (WeChat/Telegram/Slack) to automate media collection, organization, and library management.

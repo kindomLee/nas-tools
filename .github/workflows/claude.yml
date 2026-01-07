@@ -40,13 +40,8 @@ jobs:
           additional_permissions: |
             actions: read
 
-          # Language requirement for all responses
-          prompt: |
-            IMPORTANT - Language Requirement:
-            When responding to issues, PRs, or comments, you MUST communicate in Traditional Chinese (繁體中文).
-            Code, commit messages, and technical execution remain in English.
-
-            Now proceed with the user's request from their comment.
+          # Note: Language requirement is specified in CLAUDE.md instead of prompt
+          # to avoid overriding user's request from comments
 
           # Optional: Add claude_args to customize behavior and configuration
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
