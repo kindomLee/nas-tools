@@ -31,18 +31,18 @@ class Category:
                 if not os.path.exists(self._category_path):
                     shutil.copy(os.path.join(Config().get_inner_config_path(), "default-category.yaml"),
                                 self._category_path)
-                    log.console("【Config】分类配置文件 %s.yaml 不存在，已将配置文件模板复制到配置目录..." % category)
+                    log.console("【Config】分類配置檔案 %s.yaml 不存在，已將配置檔案模板複製到配置目錄..." % category)
                 with open(self._category_path, mode='r', encoding='utf-8') as f:
                     try:
                         yaml = ruamel.yaml.YAML()
                         self._categorys = yaml.load(f)
                     except Exception as e:
                         ExceptionUtils.exception_traceback(e)
-                        log.console("【Config】%s.yaml 分类配置文件格式出现严重错误！请检查：%s" % (category, str(e)))
+                        log.console("【Config】%s.yaml 分類配置檔案格式出現嚴重錯誤！請檢查：%s" % (category, str(e)))
                         self._categorys = {}
             except Exception as err:
                 ExceptionUtils.exception_traceback(err)
-                log.console("【Config】加载 %s.yaml 配置出错：%s" % (category, str(err)))
+                log.console("【Config】載入 %s.yaml 配置出錯：%s" % (category, str(err)))
                 return False
 
             if self._categorys:
@@ -52,7 +52,7 @@ class Category:
 
     def get_movie_category_flag(self):
         """
-        获取电影分类标志
+        獲取電影分類標誌
         """
         if self._movie_categorys:
             return True
@@ -60,7 +60,7 @@ class Category:
 
     def get_tv_category_flag(self):
         """
-        获取电视剧分类标志
+        獲取電視劇分類標誌
         """
         if self._tv_categorys:
             return True
@@ -68,7 +68,7 @@ class Category:
 
     def get_anime_category_flag(self):
         """
-        获取动漫分类标志
+        獲取動漫分類標誌
         """
         if self._anime_categorys:
             return True
@@ -76,7 +76,7 @@ class Category:
 
     def get_movie_categorys(self):
         """
-        获取电影分类清单
+        獲取電影分類清單
         """
         if not self._movie_categorys:
             return []
@@ -84,7 +84,7 @@ class Category:
 
     def get_tv_categorys(self):
         """
-        获取电视剧分类清单
+        獲取電視劇分類清單
         """
         if not self._tv_categorys:
             return []
@@ -92,7 +92,7 @@ class Category:
 
     def get_anime_categorys(self):
         """
-        获取动漫分类清单
+        獲取動漫分類清單
         """
         if not self._anime_categorys:
             return []
@@ -100,35 +100,35 @@ class Category:
 
     def get_movie_category(self, tmdb_info):
         """
-        判断电影的分类
-        :param tmdb_info: 识别的TMDB中的信息
-        :return: 二级分类的名称
+        判斷電影的分類
+        :param tmdb_info: 識別的TMDB中的資訊
+        :return: 二級分類的名稱
         """
         return self.get_category(self._movie_categorys, tmdb_info)
 
     def get_tv_category(self, tmdb_info):
         """
-        判断电视剧的分类
-        :param tmdb_info: 识别的TMDB中的信息
-        :return: 二级分类的名称
+        判斷電視劇的分類
+        :param tmdb_info: 識別的TMDB中的資訊
+        :return: 二級分類的名稱
         """
         return self.get_category(self._tv_categorys, tmdb_info)
 
     def get_anime_category(self, tmdb_info):
         """
-        判断动漫的分类
-        :param tmdb_info: 识别的TMDB中的信息
-        :return: 二级分类的名称
+        判斷動漫的分類
+        :param tmdb_info: 識別的TMDB中的資訊
+        :return: 二級分類的名稱
         """
         return self.get_category(self._anime_categorys, tmdb_info)
 
     @staticmethod
     def get_category(categorys, tmdb_info):
         """
-        根据 TMDB信息与分类配置文件进行比较，确定所属分类
-        :param categorys: 分类配置
-        :param tmdb_info: TMDB信息
-        :return: 分类的名称
+        根據 TMDB資訊與分類配置檔案進行比較，確定所屬分類
+        :param categorys: 分類配置
+        :param tmdb_info: TMDB資訊
+        :return: 分類的名稱
         """
         if not tmdb_info:
             return ""

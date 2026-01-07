@@ -26,7 +26,7 @@ class Jackett(IIndexClient):
 
     def get_status(self):
         """
-        检查连通性
+        檢查連通性
         :return: True、False
         """
         if not self.api_key or not self.host:
@@ -35,10 +35,10 @@ class Jackett(IIndexClient):
 
     def get_indexers(self):
         """
-        获取配置的jackett indexer
-        :return: indexer 信息 [(indexerId, indexerName, url)]
+        獲取配置的jackett indexer
+        :return: indexer 資訊 [(indexerId, indexerName, url)]
         """
-        # 获取Cookie
+        # 獲取Cookie
         cookie = None
         session = requests.session()
         res = RequestUtils(session=session).post_res(url=f"{self.host}UI/Dashboard",

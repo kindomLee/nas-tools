@@ -4,7 +4,7 @@
     <div class="row align-items-center">
       <div class="col">
         <h2 class="page-title">
-          消息通知
+          訊息通知
         </h2>
       </div>
       <div class="col-auto ms-auto d-print-none">
@@ -16,7 +16,7 @@
               <line x1="12" y1="5" x2="12" y2="19"/>
               <line x1="5" y1="12" x2="19" y2="12"/>
             </svg>
-            新增消息通知
+            新增訊息通知
           </a>
           <a href="javascript:show_add_message_client_modal()" class="btn btn-primary d-sm-none btn-icon">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
@@ -31,7 +31,7 @@
     </div>
   </div>
 </div>
-<!-- 业务页面代码 -->
+<!-- 業務頁面程式碼 -->
 <div class="page-body">
   <div class="container-xl">
     <div class="col-12">
@@ -39,7 +39,7 @@
         <div class="card-body border-bottom py-3">
           <div class="d-flex">
             <div class="text-muted">
-              共 {{ ClientCount }} 条记录
+              共 {{ ClientCount }} 條記錄
             </div>
           </div>
         </div>
@@ -47,11 +47,11 @@
           <table class="table table-vcenter card-table">
             <thead>
             <tr>
-              <th class="w-7 text-nowrap">类型</th>
-              <th>名称</th>
-              <th>推送内容</th>
-              <th class="w-5 text-nowrap">交互</th>
-              <th class="w-5 text-nowrap">启用</th>
+              <th class="w-7 text-nowrap">型別</th>
+              <th>名稱</th>
+              <th>推送內容</th>
+              <th class="w-5 text-nowrap">互動</th>
+              <th class="w-5 text-nowrap">啟用</th>
               <th class="w-3"></th>
             </tr>
             </thead>
@@ -102,7 +102,7 @@
                   </td>
                   <td>
                     <div class="d-flex">
-                      <a href="javascript:show_edit_message_client_modal('{{ Id }}')" title="编辑">
+                      <a href="javascript:show_edit_message_client_modal('{{ Id }}')" title="編輯">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24" height="24"
                              viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                              stroke-linecap="round"
@@ -113,7 +113,7 @@
                           <line x1="16" y1="5" x2="19" y2="8"/>
                         </svg>
                       </a>
-                      <a href="javascript:delete_message_client('{{ Id }}', '{{ Attr.name }}')" title="删除"
+                      <a href="javascript:delete_message_client('{{ Id }}', '{{ Attr.name }}')" title="刪除"
                          class="ms-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24"
                              height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
@@ -152,22 +152,22 @@
         <div class="row">
           <div class="col-lg-9" id="div_client_name">
             <div class="mb-3">
-              <label class="form-label required">名称</label>
-              <input type="text" id="client_name" class="form-control" placeholder="别名">
+              <label class="form-label required">名稱</label>
+              <input type="text" id="client_name" class="form-control" placeholder="別名">
             </div>
           </div>
           <div class="col-lg-3">
             <div class="mb-3">
-              <label class="form-label required">状态</label>
+              <label class="form-label required">狀態</label>
               <select class="form-select" id="client_enabled">
-                <option value="1" selected>启用</option>
+                <option value="1" selected>啟用</option>
                 <option value="0">停用</option>
               </select>
             </div>
           </div>
           <div class="col-lg-3" id="div_client_interactive">
             <div class="mb-3">
-              <label class="form-label required">交互</label>
+              <label class="form-label required">互動</label>
               <select class="form-select" id="client_interactive">
                 <option value="1" selected>是</option>
                 <option value="0">否</option>
@@ -176,7 +176,7 @@
           </div>
         </div>
         <div class="form-selectgroup-boxes row mb-3">
-          <label class="form-label required">类型</label>
+          <label class="form-label required">型別</label>
           {% for Id, Attr in Channels.items() %}
             <div class="col-lg-4">
               <div class="mb-1">
@@ -203,14 +203,14 @@
             <div class="col-lg-6">
               <div class="mb-3">
                 <label class="form-label required">Bot Token <span class="form-help"
-                                                                   title="telegram机器人的Token，关注BotFather创建机器人"
+                                                                   title="telegram機器人的Token，關注BotFather建立機器人"
                                                                    data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="telegram_token" class="form-control">
               </div>
             </div>
             <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label required">Chat Id <span class="form-help" title="telegram中关注getuserID获取"
+                <label class="form-label required">Chat Id <span class="form-help" title="telegram中關注getuserID獲取"
                                                                  data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="telegram_chat_id" class="form-control">
               </div>
@@ -220,10 +220,10 @@
             <div class="col-lg-8">
               <div class="mb-3">
                 <label class="form-label required">User Ids <span class="form-help"
-                                                                  title="允许使用telegram机器人的用户Id，留空则只允许管理员使用，使用,分隔多个Id"
+                                                                  title="允許使用telegram機器人的使用者Id，留空則只允許管理員使用，使用,分隔多個Id"
                                                                   data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="telegram_user_ids" class="form-control"
-                       placeholder="允许使用机器人的用户ID，使用,分隔">
+                       placeholder="允許使用機器人的使用者ID，使用,分隔">
               </div>
             </div>
             <div class="col-lg-4">
@@ -232,7 +232,7 @@
                 <label class="form-check form-switch">
                   <input class="form-check-input" type="checkbox" id="telegram_webhook">
                   <span class="form-check-label">WebHook <span class="form-help"
-                                                               title="Telegram机器人消息有两种模式：WebHook或消息轮循；开启后将使用WebHook方式，需要在基础设置中正确配置好外网访问地址，同时受Telegram官方限制，外网访问地址需要设置为以下端口之一：443, 80, 88, 8443，且需要有公网认证的可信SSL证书；关闭后将使用消息轮循方式，使用该方式时，需要在基础设置->安全处将Telegram ipv4源地址设置为127.0.0.1，推荐关闭WebHook"
+                                                               title="Telegram機器人訊息有兩種模式：WebHook或訊息輪循；開啟後將使用WebHook方式，需要在基礎設定中正確配置好外網訪問地址，同時受Telegram官方限制，外網訪問地址需要設定為以下埠之一：443, 80, 88, 8443，且需要有公網認證的可信SSL證書；關閉後將使用訊息輪循方式，使用該方式時，需要在基礎設定->安全處將Telegram ipv4源地址設定為127.0.0.1，推薦關閉WebHook"
                                                                data-bs-toggle="tooltip">?</span></span>
                 </label>
               </div>
@@ -243,8 +243,8 @@
           <div class="row">
             <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label required">企业ID <span class="form-help"
-                                                                title="每个企业都拥有唯一的corpid，获取此信息可在管理后台“我的企业”－“企业信息”下查看“企业ID”（需要有管理员权限）"
+                <label class="form-label required">企業ID <span class="form-help"
+                                                                title="每個企業都擁有唯一的corpid，獲取此資訊可在管理後臺“我的企業”－“企業資訊”下檢視“企業ID”（需要有管理員許可權）"
                                                                 data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="wechat_corpid" class="form-control">
               </div>
@@ -252,7 +252,7 @@
             <div class="col-lg-6">
               <div class="mb-3">
                 <label class="form-label required">Secret <span class="form-help"
-                                                                title="自建应用secret。在管理后台->“应用与小程序”->“应用”->“自建”，点进某个应用，即可看到"
+                                                                title="自建應用secret。在管理後臺->“應用與小程式”->“應用”->“自建”，點進某個應用，即可看到"
                                                                 data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="wechat_corpsecret" class="form-control">
               </div>
@@ -262,15 +262,15 @@
             <div class="col-lg-6">
               <div class="mb-3">
                 <label class="form-label required">AgentId <span class="form-help"
-                                                                 title="每个应用都有唯一的agentid。在管理后台->“应用与小程序”->“应用”，点进某个应用，即可看到agentid"
+                                                                 title="每個應用都有唯一的agentid。在管理後臺->“應用與小程式”->“應用”，點進某個應用，即可看到agentid"
                                                                  data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="wechat_agentid" class="form-control">
               </div>
             </div>
             <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label">消息推送代理 <span class="form-help"
-                                                             title="由于微信官方限制，2022年6月20日后创建的企业微信应用需要有固定的公网IP地址并加入IP白名单后才能发送消息，使用有固定公网IP的代理服务器转发可解决该问题；代理服务器需自行搭建，搭建方法可参考项目主页说明"
+                <label class="form-label">訊息推送代理 <span class="form-help"
+                                                             title="由於微信官方限制，2022年6月20日後建立的企業微信應用需要有固定的公網IP地址並加入IP白名單後才能傳送訊息，使用有固定公網IP的代理伺服器轉發可解決該問題；代理伺服器需自行搭建，搭建方法可參考專案主頁說明"
                                                              data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="wechat_default_proxy" class="form-control"
                        placeholder="https://wechat.nastool.cn">
@@ -282,7 +282,7 @@
             <div class="col-lg-6">
               <div class="mb-3">
                 <label class="form-label">Token <span class="form-help"
-                                                      title="在微信企业应用接收消息设置页面生成并填入，填入完成后重启本应用，然后再在微信页面输入地址确定"
+                                                      title="在微信企業應用接收訊息設定頁面生成並填入，填入完成後重啟本應用，然後再在微信頁面輸入地址確定"
                                                       data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="wechat_token" class="form-control">
               </div>
@@ -290,7 +290,7 @@
             <div class="col-lg-6">
               <div class="mb-3">
                 <label class="form-label">EncodingAESKey <span class="form-help"
-                                                               title="在微信企业应用接收消息设置页面生成并填入，填入完成后重启本应用，然后再在微信页面输入地址确定"
+                                                               title="在微信企業應用接收訊息設定頁面生成並填入，填入完成後重啟本應用，然後再在微信頁面輸入地址確定"
                                                                data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="wechat_encodingAESKey" class="form-control">
               </div>
@@ -302,10 +302,10 @@
             <div class="col-lg-12">
               <div class="mb-3">
                 <label class="form-label required">SCKEY <span class="form-help"
-                                                               title="填写ServerChan的API Key，SCT类型，在https://sct.ftqq.com/中申请"
+                                                               title="填寫ServerChan的API Key，SCT型別，在https://sct.ftqq.com/中申請"
                                                                data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="serverchan_sckey" class="form-control"
-                       placeholder="登录https://sct.ftqq.com获取">
+                       placeholder="登入https://sct.ftqq.com獲取">
               </div>
             </div>
           </div>
@@ -314,15 +314,15 @@
           <div class="row">
             <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label required">服务器地址 <span class="form-help"
-                                                                    title="自己搭建Bark服务端请实际配置，否则可使用：https://api.day.app"
+                <label class="form-label required">伺服器地址 <span class="form-help"
+                                                                    title="自己搭建Bark服務端請實際配置，否則可使用：https://api.day.app"
                                                                     data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="bark_server" class="form-control" placeholder="https://api.day.app">
               </div>
             </div>
             <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label required">API Key <span class="form-help" title="Bark客户端生成的KEY"
+                <label class="form-label required">API Key <span class="form-help" title="Bark客戶端生成的KEY"
                                                                  data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="bark_apikey" class="form-control">
               </div>
@@ -333,15 +333,15 @@
           <div class="row">
             <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label required">服务器地址 <span class="form-help"
-                                                                    title="自己搭建pushdeer服务端请实际配置，否则可使用：https://api2.pushdeer.com"
+                <label class="form-label required">伺服器地址 <span class="form-help"
+                                                                    title="自己搭建pushdeer服務端請實際配置，否則可使用：https://api2.pushdeer.com"
                                                                     data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="pushdeer_server" class="form-control" placeholder="https://api2.pushdeer.com">
               </div>
             </div>
             <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label required">API Key <span class="form-help" title="pushdeer客户端生成的KEY"
+                <label class="form-label required">API Key <span class="form-help" title="pushdeer客戶端生成的KEY"
                                                                  data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="pushdeer_apikey" class="form-control">
               </div>
@@ -352,35 +352,35 @@
           <div class="row">
             <div class="col-lg-3">
               <div class="mb-3">
-                <label class="form-label required">用户令牌 <span class="form-help"
-                                                                  title="登录http://pushplus.plus/申请token"
+                <label class="form-label required">使用者令牌 <span class="form-help"
+                                                                  title="登入http://pushplus.plus/申請token"
                                                                   data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="pushplus_token" class="form-control">
               </div>
             </div>
             <div class="col-lg-3">
               <div class="mb-3">
-                <label class="form-label required">发送渠道 <span class="form-help"
-                                                                  title="使用PushPlus中配置的发送渠道，具体参考pushplus.plus官网文档说明，支持第三方webhook、钉钉、飞书、邮箱等"
+                <label class="form-label required">傳送渠道 <span class="form-help"
+                                                                  title="使用PushPlus中配置的傳送渠道，具體參考pushplus.plus官網文件說明，支援第三方webhook、釘釘、飛書、郵箱等"
                                                                   data-bs-toggle="tooltip">?</span></label>
                 <select class="form-select" id="pushplus_channel">
-                  <option value="wechat">微信公众号</option>
-                  <option value="mail">邮箱</option>
+                  <option value="wechat">微信公眾號</option>
+                  <option value="mail">郵箱</option>
                   <option value="webhook">第三方webhook</option>
                 </select>
               </div>
             </div>
             <div class="col-lg-3">
               <div class="mb-3">
-                <label class="form-label">群组编码 <span class="form-help" title="PushPlus中创建的群组，如未设置可为空"
+                <label class="form-label">群組編碼 <span class="form-help" title="PushPlus中建立的群組，如未設定可為空"
                                                          data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="pushplus_topic" class="form-control">
               </div>
             </div>
             <div class="col-lg-3">
               <div class="mb-3">
-                <label class="form-label">webhook编码 <span class="form-help"
-                                                            title="PushPlus中创建的webhook编码，发送渠道为第三方webhook时需要填入"
+                <label class="form-label">webhook編碼 <span class="form-help"
+                                                            title="PushPlus中建立的webhook編碼，傳送渠道為第三方webhook時需要填入"
                                                             data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="pushplus_webhook" class="form-control">
               </div>
@@ -392,9 +392,9 @@
             <div class="col-lg-12">
               <div class="mb-3">
                 <label class="form-label required">令牌Token <span class="form-help"
-                                                                   title="登录https://iyuu.cn/获取爱语飞飞令牌Token"
+                                                                   title="登入https://iyuu.cn/獲取愛語飛飛令牌Token"
                                                                    data-bs-toggle="tooltip">?</span></label>
-                <input type="text" id="iyuumsg_token" class="form-control" placeholder="登录https://iyuu.cn获取">
+                <input type="text" id="iyuumsg_token" class="form-control" placeholder="登入https://iyuu.cn獲取">
               </div>
             </div>
           </div>
@@ -419,22 +419,22 @@
           <div class="row">
             <div class="col-lg-5">
               <div class="mb-3">
-                <label class="form-label required">服务器地址 <span class="form-help"
-                                                                    title="自己搭建gotify服务端, 可百度搜索搭建教程"
+                <label class="form-label required">伺服器地址 <span class="form-help"
+                                                                    title="自己搭建gotify服務端, 可百度搜尋搭建教程"
                                                                     data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="gotify_server" class="form-control" placeholder="http://localhost:8800">
               </div>
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label required">令牌Token <span class="form-help" title="Gotify服务端APPS下创建的token"
+                <label class="form-label required">令牌Token <span class="form-help" title="Gotify服務端APPS下建立的token"
                                                                  data-bs-toggle="tooltip">?</span></label>
-                <input type="text" id="gotify_token" class="form-control" placeholder="APPS下创建的token">
+                <input type="text" id="gotify_token" class="form-control" placeholder="APPS下建立的token">
               </div>
             </div>
             <div class="col-lg-3">
               <div class="mb-3">
-                <label class="form-label">消息Priority <span class="form-help" title="消息通知优先级, 请填写数字(1-8), 默认: 8"
+                <label class="form-label">訊息Priority <span class="form-help" title="訊息通知優先順序, 請填寫數字(1-8), 預設: 8"
                                                                  data-bs-toggle="tooltip">?</span></label>
                 <input type="text" id="gotify_priority" class="form-control" placeholder="8">
               </div>
@@ -442,7 +442,7 @@
           </div>
         </div>
         <details>
-          <summary class="summary">推送设置</summary>
+          <summary class="summary">推送設定</summary>
           <div class="row mt-2">
             <div class="form-selectgroup" id="div_message_switchs">
               {% for SwitchID in Switchs %}
@@ -458,19 +458,19 @@
       <div class="modal-footer">
         <a href="javascript:add_or_edit_or_test_message_client('test')" id="test_message_client_btn"
            class="btn me-auto">
-          测试
+          測試
         </a>
         <a href="javascript:add_or_edit_or_test_message_client('save')" id="add_or_edit_message_client_btn"
-           class="btn btn-primary">确定</a>
+           class="btn btn-primary">確定</a>
       </div>
     </div>
   </div>
 </div>
 <script type="text/javascript">
-  // 显示新增消息服务
+  // 顯示新增訊息服務
   function show_add_message_client_modal() {
     $("#client_id").val('');
-    $("#client_modal_title").text("新增消息服务");
+    $("#client_modal_title").text("新增訊息服務");
     $("#client_name").val('');
     $("#client_enabled").val('1');
     $("#client_interactive").val('0');
@@ -500,17 +500,17 @@
     $("#gotify_token").val('');
     $("#gotify_priority").val('');
     show_client_type('telegram');
-    $("#test_message_client_btn").text("测试").attr("disabled", false);
+    $("#test_message_client_btn").text("測試").attr("disabled", false);
     $("#div_message_switchs").find("input[type=checkbox]").each(function () {
       $(this).prop("checked", true);
     });
     $("#modal-message-client").modal("show");
   }
 
-  // 显示编辑消息服务
+  // 顯示編輯訊息服務
   function show_edit_message_client_modal(cid) {
     $("#client_id").val(cid);
-    $("#client_modal_title").text("编辑消息服务");
+    $("#client_modal_title").text("編輯訊息服務");
     show_wait_process();
     ajax_post("get_message_client", {cid: cid}, function (ret) {
       hide_wait_process();
@@ -518,7 +518,7 @@
         $("#client_name").val(ret.detail.name);
         $("#client_enabled").val(ret.detail.enabled);
         $("#client_interactive").val(ret.detail.interactive);
-        // 清空输入项
+        // 清空輸入項
         $("#telegram_token").val('');
         $("#telegram_chat_id").val('');
         $("#telegram_user_ids").val('');
@@ -583,7 +583,7 @@
           $("#gotify_priority").val(ret.detail.config.priority);
         }
         show_client_type(type);
-        $("#test_message_client_btn").text("测试").attr("disabled", false);
+        $("#test_message_client_btn").text("測試").attr("disabled", false);
         $("#div_message_switchs").find("input[type=checkbox]").each(function () {
           if (ret.detail.switchs && (ret.detail.switchs.length === 0 || ret.detail.switchs.includes($(this).val()))) {
             $(this).prop("checked", true);
@@ -596,7 +596,7 @@
     });
   }
 
-  // 新增/编辑消息
+  // 新增/編輯訊息
   function add_or_edit_or_test_message_client(action) {
     let type = $('input:radio[name=client_type]:checked').val();
     let interactive = $("#client_interactive").val();
@@ -787,7 +787,7 @@
     let cid = $("#client_id").val();
     let name = $("#client_name").val();
     let enabled = $("#client_enabled").val();
-    // 推送设置
+    // 推送設定
     let switchs = [];
     $("input[name=message_switchs]").each(function () {
       if ($(this).prop("checked")) {
@@ -804,26 +804,26 @@
       interactive: interactive
     };
     if (action === "save") {
-      $("#add_or_edit_message_client_btn").text("保存中").attr("disabled", true);
+      $("#add_or_edit_message_client_btn").text("儲存中").attr("disabled", true);
       ajax_post("update_message_client", params, function (ret) {
         $("#modal-message-client").modal('hide');
         $("#add_or_edit_message_client_btn").attr("disabled", false);
         navmenu('notification');
       });
     } else if (action === "test") {
-      $("#test_message_client_btn").text("测试中").attr("disabled", true);
+      $("#test_message_client_btn").text("測試中").attr("disabled", true);
       ajax_post("test_message_client", params, function (ret) {
         if (ret.code === 0) {
-          $("#test_message_client_btn").text("测试成功").attr("disabled", false);
+          $("#test_message_client_btn").text("測試成功").attr("disabled", false);
         } else {
-          $("#test_message_client_btn").text("测试失败").attr("disabled", false);
+          $("#test_message_client_btn").text("測試失敗").attr("disabled", false);
         }
       });
     }
   }
 
 
-  // 打开推送设置框
+  // 開啟推送設定框
   function check_message_client(flag, cid, checked, type) {
     show_wait_process();
     ajax_post("check_message_client", {flag: flag, cid: cid, checked: checked, type: type}, function (ret) {
@@ -834,9 +834,9 @@
     });
   }
 
-  // 打开推送设置框
+  // 開啟推送設定框
   function delete_message_client(cid, name) {
-    show_confirm_modal("删除消息服务 " + name + " ？", function () {
+    show_confirm_modal("刪除訊息服務 " + name + " ？", function () {
       hide_confirm_modal();
       ajax_post("delete_message_client", {"cid": cid}, function (ret) {
         navmenu('notification');
@@ -844,13 +844,13 @@
     });
   }
 
-  // 单选框事件
+  // 單選框事件
   $('input[type=radio][name=client_type]').change(function () {
     let type = this.value;
     show_client_type(type);
   });
 
-  // 消息服务端类型
+  // 訊息服務端型別
   function show_client_type(type) {
     if (type === 'telegram') {
       $("div[id^='div_client_config']").each(function () {

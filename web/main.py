@@ -43,7 +43,7 @@ from web.backend.user import User
 from web.backend.wallpaper import get_login_wallpaper
 from web.security import require_auth
 
-# 配置文件锁
+# 配置檔案鎖
 ConfigLock = Lock()
 
 # Flask App
@@ -52,22 +52,22 @@ App.config['JSON_AS_ASCII'] = False
 App.secret_key = os.urandom(24)
 App.permanent_session_lifetime = datetime.timedelta(days=30)
 
-# 启用压缩
+# 啟用壓縮
 Compress(App)
 
-# 登录管理模块
+# 登入管理模組
 LoginManager = LoginManager()
 LoginManager.login_view = "login"
 LoginManager.init_app(App)
 
-# API注册
+# API註冊
 App.register_blueprint(apiv1_bp, url_prefix="/api/v1")
 
 
 @App.after_request
 def add_header(r):
     """
-    统一添加Http头，标用缓存，避免Flask多线程+Chrome内核会发生的静态资源加载出错的问题
+    統一新增Http頭，標用快取，避免Flask多執行緒+Chrome核心會發生的靜態資源載入出錯的問題
     """
     r.headers["Cache-Control"] = "no-cache, no-store, max-age=0"
     r.headers["Pragma"] = "no-cache"
@@ -75,19 +75,19 @@ def add_header(r):
     return r
 
 
-# 定义获取登录用户的方法
+# 定義獲取登入使用者的方法
 @LoginManager.user_loader
 def load_user(user_id):
     return User().get(user_id)
 
 
-# 页面不存在
+# 頁面不存在
 @App.errorhandler(404)
 def page_not_found(error):
     return render_template("404.html", error=error), 404
 
 
-# 服务错误
+# 服務錯誤
 @App.errorhandler(500)
 def page_server_error(error):
     return render_template("500.html", error=error), 500
@@ -95,26 +95,26 @@ def page_server_error(error):
 
 def action_login_check(func):
     """
-    Action安全认证
+    Action安全認證
     """
 
     @wraps(func)
     def login_check(*args, **kwargs):
         if not current_user.is_authenticated:
-            return {"code": -1, "msg": "用户未登录"}
+            return {"code": -1, "msg": "使用者未登入"}
         return func(*args, **kwargs)
 
     return login_check
 
 
-# 主页面
+# 主頁面
 @App.route('/', methods=['GET', 'POST'])
 def login():
     def redirect_to_navigation(userinfo):
         """
-        跳转到导航页面
+        跳轉到導航頁面
         """
-        # 判断当前的运营环境
+        # 判斷當前的運營環境
         SystemFlag = 0 if SystemUtils.is_windows() else 1
         SyncMod = Config().get_config('pt').get('rmt_mode')
         TMDBFlag = 1 if Config().get_config('app').get('rmt_tmdbkey') else 0
@@ -137,14 +137,14 @@ def login():
 
     def redirect_to_login(errmsg=''):
         """
-        跳转到登录页面
+        跳轉到登入頁面
         """
         return render_template('login.html',
                                GoPage=GoPage,
                                LoginWallpaper=get_login_wallpaper(),
                                err_msg=errmsg)
 
-    # 登录认证
+    # 登入認證
     if request.method == 'GET':
         GoPage = request.args.get("next") or ""
         if GoPage.startswith('/'):
@@ -155,7 +155,7 @@ def login():
             if userid is None or username is None:
                 return redirect_to_login()
             else:
-                # 登录成功
+                # 登入成功
                 return redirect_to_navigation(User().get_user(username))
         else:
             return redirect_to_login()
@@ -168,41 +168,41 @@ def login():
         password = request.form.get('password')
         remember = request.form.get('remember')
         if not username:
-            return redirect_to_login('请输入用户名')
+            return redirect_to_login('請輸入使用者名稱')
         user_info = User().get_user(username)
         if not user_info:
-            return redirect_to_login('用户名或密码错误')
-        # 校验密码
+            return redirect_to_login('使用者名稱或密碼錯誤')
+        # 校驗密碼
         if user_info.verify_password(password):
-            # 创建用户 Session
+            # 建立使用者 Session
             login_user(user_info)
             session.permanent = True if remember else False
-            # 登录成功
+            # 登入成功
             return redirect_to_navigation(user_info)
         else:
-            return redirect_to_login('用户名或密码错误')
+            return redirect_to_login('使用者名稱或密碼錯誤')
 
 
-# 开始
+# 開始
 @App.route('/index', methods=['POST', 'GET'])
 @login_required
 def index():
-    # 媒体服务器类型
+    # 媒體伺服器型別
     MSType = Config().get_config('media').get('media_server')
-    # 获取媒体数量
+    # 獲取媒體數量
     MediaCounts = WebAction().get_library_mediacount()
     if MediaCounts.get("code") == 0:
         ServerSucess = True
     else:
         ServerSucess = False
 
-    # 获得活动日志
+    # 獲得活動日誌
     Activity = WebAction().get_library_playhistory().get("result")
 
-    # 磁盘空间
+    # 磁碟空間
     LibrarySpaces = WebAction().get_library_spacesize()
 
-    # 转移历史统计
+    # 轉移歷史統計
     TransferStatistics = WebAction().get_transfer_statistics()
 
     return render_template("index.html",
@@ -226,24 +226,24 @@ def index():
                            )
 
 
-# 资源搜索页面
+# 資源搜尋頁面
 @App.route('/search', methods=['POST', 'GET'])
 @login_required
 def search():
-    # 权限
+    # 許可權
     if current_user.is_authenticated:
         username = current_user.username
         pris = User().get_user(username).get("pris")
     else:
         pris = ""
-    # 查询结果
+    # 查詢結果
     SearchWord = request.args.get("s")
     NeedSearch = request.args.get("f")
-    # 结果
+    # 結果
     res = WebAction().get_search_result()
     SearchResults = res.get("result")
     Count = res.get("total")
-    # 站点列表
+    # 站點列表
     SiteDict = {}
     for item in Indexer().get_indexers() or []:
         SiteDict[item.name] = {
@@ -264,11 +264,11 @@ def search():
                            UPCHAR=chr(8593))
 
 
-# 媒体列表页面
+# 媒體列表頁面
 @App.route('/medialist', methods=['POST', 'GET'])
 @login_required
 def medialist():
-    # 查询结果
+    # 查詢結果
     SearchWord = request.args.get("s")
     NeedSearch = request.args.get("f")
     OperType = request.args.get("t")
@@ -281,7 +281,7 @@ def medialist():
                            Medias=medias)
 
 
-# 电影订阅页面
+# 電影訂閱頁面
 @App.route('/movie_rss', methods=['POST', 'GET'])
 @login_required
 def movie_rss():
@@ -296,7 +296,7 @@ def movie_rss():
                            )
 
 
-# 电视剧订阅页面
+# 電視劇訂閱頁面
 @App.route('/tv_rss', methods=['POST', 'GET'])
 @login_required
 def tv_rss():
@@ -311,7 +311,7 @@ def tv_rss():
                            )
 
 
-# 订阅历史页面
+# 訂閱歷史頁面
 @App.route('/rss_history', methods=['POST', 'GET'])
 @login_required
 def rss_history():
@@ -324,7 +324,7 @@ def rss_history():
                            )
 
 
-# 订阅日历页面
+# 訂閱日曆頁面
 @App.route('/rss_calendar', methods=['POST', 'GET'])
 @login_required
 def rss_calendar():
@@ -343,7 +343,7 @@ def rss_calendar():
                            RssTvItems=RssTvItems)
 
 
-# 站点维护页面
+# 站點維護頁面
 @App.route('/site', methods=['POST', 'GET'])
 @login_required
 def sites():
@@ -354,7 +354,7 @@ def sites():
                            RuleGroups=RuleGroups)
 
 
-# 站点列表页面
+# 站點列表頁面
 @App.route('/sitelist', methods=['POST', 'GET'])
 @login_required
 def sitelist():
@@ -364,7 +364,7 @@ def sitelist():
                            Count=len(IndexerSites))
 
 
-# 站点资源页面
+# 站點資源頁面
 @App.route('/resources', methods=['POST', 'GET'])
 @login_required
 def resources():
@@ -385,7 +385,7 @@ def resources():
                            TotalPage=10)
 
 
-# 推荐页面
+# 推薦頁面
 @App.route('/recommend', methods=['POST', 'GET'])
 @login_required
 def recommend():
@@ -398,7 +398,7 @@ def recommend():
                            CurrentPage=CurrentPage)
 
 
-# 正在下载页面
+# 正在下載頁面
 @App.route('/downloading', methods=['POST', 'GET'])
 @login_required
 def downloading():
@@ -409,7 +409,7 @@ def downloading():
                            Client=Config().get_config("pt").get("pt_client"))
 
 
-# 近期下载页面
+# 近期下載頁面
 @App.route('/downloaded', methods=['POST', 'GET'])
 @login_required
 def downloaded():
@@ -430,26 +430,26 @@ def torrent_remove():
                            TorrentRemoveTasks=TorrentRemoveTasks)
 
 
-# 数据统计页面
+# 資料統計頁面
 @App.route('/statistics', methods=['POST', 'GET'])
 @login_required
 def statistics():
-    # 刷新单个site
+    # 重新整理單個site
     refresh_site = request.args.getlist("refresh_site")
-    # 总上传下载
+    # 總上傳下載
     TotalUpload = 0
     TotalDownload = 0
     TotalSeedingSize = 0
     TotalSeeding = 0
-    # 站点标签及上传下载
+    # 站點標籤及上傳下載
     SiteNames = []
     SiteUploads = []
     SiteDownloads = []
     SiteRatios = []
     SiteErrs = {}
-    # 刷新指定站点
+    # 重新整理指定站點
     Sites().refresh_pt(specify_sites=refresh_site)
-    # 站点上传下载
+    # 站點上傳下載
     SiteData = Sites().get_pt_date()
     if isinstance(SiteData, dict):
         for name, data in SiteData.items():
@@ -478,11 +478,11 @@ def statistics():
                 SiteDownloads.append(int(dl))
                 SiteRatios.append(round(float(ratio), 1))
 
-    # 近期上传下载各站点汇总
+    # 近期上傳下載各站點彙總
     CurrentUpload, CurrentDownload, _, _, _ = Sites().get_pt_site_statistics_history(
         days=2)
 
-    # 站点用户数据
+    # 站點使用者資料
     SiteUserStatistics = Sites().get_site_user_statistics(encoding="DICT")
 
     return render_template("site/statistics.html",
@@ -500,15 +500,15 @@ def statistics():
                            SiteUserStatistics=SiteUserStatistics)
 
 
-# 刷流任务页面
+# 刷流任務頁面
 @App.route('/brushtask', methods=['POST', 'GET'])
 @login_required
 def brushtask():
-    # 站点列表
+    # 站點列表
     CfgSites = Sites().get_sites(brush=True)
-    # 下载器列表
+    # 下載器列表
     Downloaders = BrushTask().get_downloader_info()
-    # 任务列表
+    # 任務列表
     Tasks = BrushTask().get_brushtask_info()
     return render_template("site/brushtask.html",
                            Count=len(Tasks),
@@ -517,7 +517,7 @@ def brushtask():
                            Downloaders=Downloaders)
 
 
-# 自定义下载器页面
+# 自定義下載器頁面
 @App.route('/userdownloader', methods=['POST', 'GET'])
 @login_required
 def userdownloader():
@@ -527,7 +527,7 @@ def userdownloader():
                            Downloaders=downloaders)
 
 
-# 服务页面
+# 服務頁面
 @App.route('/service', methods=['POST', 'GET'])
 @login_required
 def service():
@@ -535,10 +535,10 @@ def service():
     RuleGroups = Filter().get_rule_groups()
     pt = Config().get_config('pt')
     if pt:
-        # RSS订阅
+        # RSS訂閱
         pt_check_interval = pt.get('pt_check_interval')
         if str(pt_check_interval).isdigit():
-            tim_rssdownload = str(round(int(pt_check_interval) / 60)) + " 分钟"
+            tim_rssdownload = str(round(int(pt_check_interval) / 60)) + " 分鐘"
             rss_state = 'ON'
         else:
             tim_rssdownload = ""
@@ -553,7 +553,7 @@ def service():
         '''
 
         scheduler_cfg_list.append(
-            {'name': 'RSS订阅', 'time': tim_rssdownload, 'state': rss_state, 'id': 'rssdownload', 'svg': svg,
+            {'name': 'RSS訂閱', 'time': tim_rssdownload, 'state': rss_state, 'id': 'rssdownload', 'svg': svg,
              'color': "blue"})
 
         search_rss_interval = pt.get('search_rss_interval')
@@ -573,14 +573,14 @@ def service():
         '''
 
         scheduler_cfg_list.append(
-            {'name': '订阅搜索', 'time': tim_rsssearch, 'state': rss_search_state, 'id': 'subscribe_search_all',
+            {'name': '訂閱搜尋', 'time': tim_rsssearch, 'state': rss_search_state, 'id': 'subscribe_search_all',
              'svg': svg,
              'color': "blue"})
 
-        # 下载文件转移
+        # 下載檔案轉移
         pt_monitor = pt.get('pt_monitor')
         if pt_monitor:
-            tim_pttransfer = str(round(PT_TRANSFER_INTERVAL / 60)) + " 分钟"
+            tim_pttransfer = str(round(PT_TRANSFER_INTERVAL / 60)) + " 分鐘"
             sta_pttransfer = 'ON'
         else:
             tim_pttransfer = ""
@@ -595,10 +595,10 @@ def service():
         </svg>
         '''
         scheduler_cfg_list.append(
-            {'name': '下载文件转移', 'time': tim_pttransfer, 'state': sta_pttransfer, 'id': 'pttransfer', 'svg': svg,
+            {'name': '下載檔案轉移', 'time': tim_pttransfer, 'state': sta_pttransfer, 'id': 'pttransfer', 'svg': svg,
              'color': "green"})
 
-        # 删种
+        # 刪種
         torrent_remove_tasks = TorrentRemover().get_torrent_remove_tasks()
         if torrent_remove_tasks:
             sta_autoremovetorrents = 'ON'
@@ -613,14 +613,14 @@ def service():
             </svg>
             '''
             scheduler_cfg_list.append(
-                {'name': '自动删种', 'state': sta_autoremovetorrents,
+                {'name': '自動刪種', 'state': sta_autoremovetorrents,
                  'id': 'autoremovetorrents', 'svg': svg, 'color': "twitter"})
 
-        # 自动签到
+        # 自動簽到
         tim_ptsignin = pt.get('ptsignin_cron')
         if tim_ptsignin:
             if str(tim_ptsignin).find(':') == -1:
-                tim_ptsignin = "%s 小时" % tim_ptsignin
+                tim_ptsignin = "%s 小時" % tim_ptsignin
             sta_ptsignin = 'ON'
             svg = '''
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -631,10 +631,10 @@ def service():
             </svg>
             '''
             scheduler_cfg_list.append(
-                {'name': '站点签到', 'time': tim_ptsignin, 'state': sta_ptsignin, 'id': 'ptsignin', 'svg': svg,
+                {'name': '站點簽到', 'time': tim_ptsignin, 'state': sta_ptsignin, 'id': 'ptsignin', 'svg': svg,
                  'color': "facebook"})
 
-    # 目录同步
+    # 目錄同步
     sync_paths = Sync().get_sync_dirs()
     if sync_paths:
         sta_sync = 'ON'
@@ -646,14 +646,14 @@ def service():
         </svg>
         '''
         scheduler_cfg_list.append(
-            {'name': '目录同步', 'time': '实时监控', 'state': sta_sync, 'id': 'sync', 'svg': svg,
+            {'name': '目錄同步', 'time': '實時監控', 'state': sta_sync, 'id': 'sync', 'svg': svg,
              'color': "orange"})
     # 豆瓣同步
     douban_cfg = Config().get_config('douban')
     if douban_cfg:
         interval = douban_cfg.get('interval')
         if interval:
-            interval = "%s 小时" % interval
+            interval = "%s 小時" % interval
             sta_douban = "ON"
             svg = '''
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-bookmarks" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -666,7 +666,7 @@ def service():
                 {'name': '豆瓣想看', 'time': interval, 'state': sta_douban, 'id': 'douban', 'svg': svg,
                  'color': "pink"})
 
-    # 清理文件整理缓存
+    # 清理檔案整理快取
     svg = '''
     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-eraser" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -675,9 +675,9 @@ def service():
     </svg>
     '''
     scheduler_cfg_list.append(
-        {'name': '清理转移缓存', 'time': '手动', 'state': 'OFF', 'id': 'blacklist', 'svg': svg, 'color': 'red'})
+        {'name': '清理轉移快取', 'time': '手動', 'state': 'OFF', 'id': 'blacklist', 'svg': svg, 'color': 'red'})
 
-    # 清理RSS缓存
+    # 清理RSS快取
     svg = '''
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-eraser" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -686,9 +686,9 @@ def service():
             </svg>
             '''
     scheduler_cfg_list.append(
-        {'name': '清理RSS缓存', 'time': '手动', 'state': 'OFF', 'id': 'rsshistory', 'svg': svg, 'color': 'purple'})
+        {'name': '清理RSS快取', 'time': '手動', 'state': 'OFF', 'id': 'rsshistory', 'svg': svg, 'color': 'purple'})
 
-    # 名称识别测试
+    # 名稱識別測試
     svg = '''
     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alphabet-greek" width="40" height="40" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -698,9 +698,9 @@ def service():
     </svg>
     '''
     scheduler_cfg_list.append(
-        {'name': '名称识别测试', 'time': '', 'state': 'OFF', 'id': 'nametest', 'svg': svg, 'color': 'lime'})
+        {'name': '名稱識別測試', 'time': '', 'state': 'OFF', 'id': 'nametest', 'svg': svg, 'color': 'lime'})
 
-    # 过滤规则测试
+    # 過濾規則測試
     svg = '''
     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-adjustments-horizontal" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -716,9 +716,9 @@ def service():
     </svg>
     '''
     scheduler_cfg_list.append(
-        {'name': '过滤规则测试', 'time': '', 'state': 'OFF', 'id': 'ruletest', 'svg': svg, 'color': 'yellow'})
+        {'name': '過濾規則測試', 'time': '', 'state': 'OFF', 'id': 'ruletest', 'svg': svg, 'color': 'yellow'})
 
-    # 网络连通性测试
+    # 網路連通性測試
     svg = '''
     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-network" width="40" height="40" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -734,10 +734,10 @@ def service():
     '''
     targets = NETTEST_TARGETS
     scheduler_cfg_list.append(
-        {'name': '网络连通性测试', 'time': '', 'state': 'OFF', 'id': 'nettest', 'svg': svg, 'color': 'cyan',
+        {'name': '網路連通性測試', 'time': '', 'state': 'OFF', 'id': 'nettest', 'svg': svg, 'color': 'cyan',
          "targets": targets})
 
-    # 备份
+    # 備份
     svg = '''
     <svg t="1660720525544" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1559" width="16" height="16">
     <path d="M646 1024H100A100 100 0 0 1 0 924V258a100 100 0 0 1 100-100h546a100 100 0 0 1 100 100v31a40 40 0 1 1-80 0v-31a20 20 0 0 0-20-20H100a20 20 0 0 0-20 20v666a20 20 0 0 0 20 20h546a20 20 0 0 0 20-20V713a40 40 0 0 1 80 0v211a100 100 0 0 1-100 100z" fill="#ffffff" p-id="1560"></path>
@@ -746,14 +746,14 @@ def service():
     </svg>
     '''
     scheduler_cfg_list.append(
-        {'name': '备份&恢复', 'time': '', 'state': 'OFF', 'id': 'backup', 'svg': svg, 'color': 'green'})
+        {'name': '備份&恢復', 'time': '', 'state': 'OFF', 'id': 'backup', 'svg': svg, 'color': 'green'})
     return render_template("service.html",
                            Count=len(scheduler_cfg_list),
                            RuleGroups=RuleGroups,
                            SchedulerTasks=scheduler_cfg_list)
 
 
-# 历史记录页面
+# 歷史記錄頁面
 @App.route('/history', methods=['POST', 'GET'])
 @login_required
 def history():
@@ -790,7 +790,7 @@ def history():
                            PageNum=Result.get("currentPage"))
 
 
-# TMDB缓存页面
+# TMDB快取頁面
 @App.route('/tmdbcache', methods=['POST', 'GET'])
 @login_required
 def tmdbcache():
@@ -836,7 +836,7 @@ def tmdbcache():
                            PageNum=page_num)
 
 
-# 手工识别页面
+# 手工識別頁面
 @App.route('/unidentification', methods=['POST', 'GET'])
 @login_required
 def unidentification():
@@ -846,7 +846,7 @@ def unidentification():
                            Items=Items)
 
 
-# 文件管理页面
+# 檔案管理頁面
 @App.route('/mediafile', methods=['POST', 'GET'])
 @login_required
 def mediafile():
@@ -864,7 +864,7 @@ def mediafile():
                            Dir=DirR or DirD)
 
 
-# 基础设置页面
+# 基礎設定頁面
 @App.route('/basic', methods=['POST', 'GET'])
 @login_required
 def basic():
@@ -876,7 +876,7 @@ def basic():
                            Proxy=proxy)
 
 
-# 自定义识别词设置页面
+# 自定義識別詞設定頁面
 @App.route('/customwords', methods=['POST', 'GET'])
 @login_required
 def customwords():
@@ -886,7 +886,7 @@ def customwords():
                            GroupsCount=len(groups))
 
 
-# 目录同步页面
+# 目錄同步頁面
 @App.route('/directorysync', methods=['POST', 'GET'])
 @login_required
 def directorysync():
@@ -896,7 +896,7 @@ def directorysync():
                            SyncCount=len(SyncPaths))
 
 
-# 豆瓣页面
+# 豆瓣頁面
 @App.route('/douban', methods=['POST', 'GET'])
 @login_required
 def douban():
@@ -907,7 +907,7 @@ def douban():
                            DoubanHistory=DoubanHistory)
 
 
-# 下载器页面
+# 下載器頁面
 @App.route('/downloader', methods=['POST', 'GET'])
 @login_required
 def downloader():
@@ -915,7 +915,7 @@ def downloader():
                            Config=Config().get_config())
 
 
-# 下载设置页面
+# 下載設定頁面
 @App.route('/download_setting', methods=['POST', 'GET'])
 @login_required
 def download_setting():
@@ -927,7 +927,7 @@ def download_setting():
                            Count=Count)
 
 
-# 索引器页面
+# 索引器頁面
 @App.route('/indexer', methods=['POST', 'GET'])
 @login_required
 def indexer():
@@ -941,21 +941,21 @@ def indexer():
                            Indexers=indexers)
 
 
-# 媒体库页面
+# 媒體庫頁面
 @App.route('/library', methods=['POST', 'GET'])
 @login_required
 def library():
     return render_template("setting/library.html", Config=Config().get_config())
 
 
-# 媒体服务器页面
+# 媒體伺服器頁面
 @App.route('/mediaserver', methods=['POST', 'GET'])
 @login_required
 def mediaserver():
     return render_template("setting/mediaserver.html", Config=Config().get_config())
 
 
-# 通知消息页面
+# 通知訊息頁面
 @App.route('/notification', methods=['POST', 'GET'])
 @login_required
 def notification():
@@ -970,14 +970,14 @@ def notification():
                            MessageClients=MessageClients)
 
 
-# 字幕设置页面
+# 字幕設定頁面
 @App.route('/subtitle', methods=['POST', 'GET'])
 @login_required
 def subtitle():
     return render_template("setting/subtitle.html", Config=Config().get_config())
 
 
-# 用户管理页面
+# 使用者管理頁面
 @App.route('/users', methods=['POST', 'GET'])
 @login_required
 def users():
@@ -985,7 +985,7 @@ def users():
     return render_template("setting/users.html", Users=Users, UserCount=len(Users))
 
 
-# 过滤规则设置页面
+# 過濾規則設定頁面
 @App.route('/filterrule', methods=['POST', 'GET'])
 @login_required
 def filterrule():
@@ -996,7 +996,7 @@ def filterrule():
                            Init_RuleGroups=result.get("initRules"))
 
 
-# 自定义订阅页面
+# 自定義訂閱頁面
 @App.route('/user_rss', methods=['POST', 'GET'])
 @login_required
 def user_rss():
@@ -1012,7 +1012,7 @@ def user_rss():
                            DownloadSettings=DownloadSettings)
 
 
-# RSS解析器页面
+# RSS解析器頁面
 @App.route('/rss_parser', methods=['POST', 'GET'])
 @login_required
 def rss_parser():
@@ -1022,7 +1022,7 @@ def rss_parser():
                            Count=len(RssParsers))
 
 
-# 事件响应
+# 事件響應
 @App.route('/do', methods=['POST'])
 @action_login_check
 def do():
@@ -1037,7 +1037,7 @@ def do():
     return WebAction().action(cmd, data)
 
 
-# 目录事件响应
+# 目錄事件響應
 @App.route('/dirlist', methods=['POST'])
 @login_required
 def dirlist():
@@ -1075,24 +1075,24 @@ def dirlist():
         r.append('</ul>')
     except Exception as e:
         ExceptionUtils.exception_traceback(e)
-        r.append('加载路径失败: %s' % str(e))
+        r.append('載入路徑失敗: %s' % str(e))
     r.append('</ul>')
     return make_response(''.join(r), 200)
 
 
-# 禁止搜索引擎
+# 禁止搜尋引擎
 @App.route('/robots.txt', methods=['GET', 'POST'])
 def robots():
     return send_from_directory("", "robots.txt")
 
 
-# 响应企业微信消息
+# 響應企業微信訊息
 @App.route('/wechat', methods=['GET', 'POST'])
 def wechat():
-    # 当前在用的交互渠道
+    # 當前在用的互動渠道
     interactive_client = Message().get_interactive_client(SearchType.WX)
     if not interactive_client:
-        return make_response("NAStool没有启用微信交互", 200)
+        return make_response("NAStool沒有啟用微信互動", 200)
     conf = interactive_client.get("config")
     sToken = conf.get('token')
     sEncodingAESKey = conf.get('encodingAESKey')
@@ -1106,25 +1106,25 @@ def wechat():
 
     if request.method == 'GET':
         if not sVerifyMsgSig and not sVerifyTimeStamp and not sVerifyNonce:
-            return "NAStool微信交互服务正常！<br>微信回调配置步聚：<br>1、在微信企业应用接收消息设置页面生成Token和EncodingAESKey并填入设置->消息通知->微信对应项，打开微信交互开关。<br>2、保存并重启本工具，保存并重启本工具，保存并重启本工具。<br>3、在微信企业应用接收消息设置页面输入此地址：http(s)://IP:PORT/wechat（IP、PORT替换为本工具的外网访问地址及端口，需要有公网IP并做好端口转发，最好有域名）。"
+            return "NAStool微信互動服務正常！<br>微信回撥配置步聚：<br>1、在微信企業應用接收訊息設定頁面生成Token和EncodingAESKey並填入設定->訊息通知->微信對應項，開啟微信互動開關。<br>2、儲存並重啟本工具，儲存並重啟本工具，儲存並重啟本工具。<br>3、在微信企業應用接收訊息設定頁面輸入此地址：http(s)://IP:PORT/wechat（IP、PORT替換為本工具的外網訪問地址及埠，需要有公網IP並做好埠轉發，最好有域名）。"
         sVerifyEchoStr = request.args.get("echostr")
-        log.debug("收到微信验证请求: echostr= %s" % sVerifyEchoStr)
+        log.debug("收到微信驗證請求: echostr= %s" % sVerifyEchoStr)
         ret, sEchoStr = wxcpt.VerifyURL(sVerifyMsgSig, sVerifyTimeStamp, sVerifyNonce, sVerifyEchoStr)
         if ret != 0:
-            log.error("微信请求验证失败 VerifyURL ret: %s" % str(ret))
-        # 验证URL成功，将sEchoStr返回给企业号
+            log.error("微信請求驗證失敗 VerifyURL ret: %s" % str(ret))
+        # 驗證URL成功，將sEchoStr返回給企業號
         return sEchoStr
     else:
         try:
             sReqData = request.data
-            log.debug("收到微信消息：%s" % str(sReqData))
+            log.debug("收到微信訊息：%s" % str(sReqData))
             ret, sMsg = wxcpt.DecryptMsg(sReqData, sVerifyMsgSig, sVerifyTimeStamp, sVerifyNonce)
             if ret != 0:
-                log.error("解密微信消息失败 DecryptMsg ret = %s" % str(ret))
+                log.error("解密微信訊息失敗 DecryptMsg ret = %s" % str(ret))
                 return make_response("ok", 200)
-            # 解析XML报文
+            # 解析XML報文
             """
-            1、消息格式：
+            1、訊息格式：
             <xml>
                <ToUserName><![CDATA[toUser]]></ToUserName>
                <FromUserName><![CDATA[fromUser]]></FromUserName> 
@@ -1146,29 +1146,29 @@ def wechat():
             """
             dom_tree = xml.dom.minidom.parseString(sMsg.decode('UTF-8'))
             root_node = dom_tree.documentElement
-            # 消息类型
+            # 訊息型別
             msg_type = DomUtils.tag_value(root_node, "MsgType")
-            # 用户ID
+            # 使用者ID
             user_id = DomUtils.tag_value(root_node, "FromUserName")
-            # 没的消息类型和用户ID的消息不要
+            # 沒的訊息型別和使用者ID的訊息不要
             if not msg_type or not user_id:
-                log.info("收到微信心跳报文...")
+                log.info("收到微信心跳報文...")
                 return make_response("ok", 200)
-            # 解析消息内容
+            # 解析訊息內容
             content = ""
             if msg_type == "event":
-                # 事件消息
+                # 事件訊息
                 event_key = DomUtils.tag_value(root_node, "EventKey")
                 if event_key:
-                    log.info("点击菜单：%s" % event_key)
+                    log.info("點選選單：%s" % event_key)
                     keys = event_key.split('#')
                     if len(keys) > 2:
                         content = WECHAT_MENU.get(keys[2])
             elif msg_type == "text":
-                # 文本消息
+                # 文字訊息
                 content = DomUtils.tag_value(root_node, "Content", default="")
             if content:
-                # 处理消息内容
+                # 處理訊息內容
                 WebAction().handle_message_job(msg=content,
                                                client=interactive_client,
                                                in_from=SearchType.WX,
@@ -1177,7 +1177,7 @@ def wechat():
             return make_response(content, 200)
         except Exception as err:
             ExceptionUtils.exception_traceback(err)
-            log.error("微信消息处理发生错误：%s - %s" % (str(err), traceback.format_exc()))
+            log.error("微信訊息處理發生錯誤：%s - %s" % (str(err), traceback.format_exc()))
             return make_response("ok", 200)
 
 
@@ -1185,10 +1185,10 @@ def wechat():
 @App.route('/plex', methods=['POST'])
 def plex_webhook():
     if not SecurityHelper().check_mediaserver_ip(request.remote_addr):
-        log.warn(f"非法IP地址的媒体服务器消息通知：{request.remote_addr}")
-        return '不允许的IP地址请求'
+        log.warn(f"非法IP地址的媒體伺服器訊息通知：{request.remote_addr}")
+        return '不允許的IP地址請求'
     request_json = json.loads(request.form.get('payload', {}))
-    log.debug("收到Plex Webhook报文：%s" % str(request_json))
+    log.debug("收到Plex Webhook報文：%s" % str(request_json))
     WebhookEvent().plex_action(request_json)
     return 'Ok'
 
@@ -1197,10 +1197,10 @@ def plex_webhook():
 @App.route('/jellyfin', methods=['POST'])
 def jellyfin_webhook():
     if not SecurityHelper().check_mediaserver_ip(request.remote_addr):
-        log.warn(f"非法IP地址的媒体服务器消息通知：{request.remote_addr}")
-        return '不允许的IP地址请求'
+        log.warn(f"非法IP地址的媒體伺服器訊息通知：{request.remote_addr}")
+        return '不允許的IP地址請求'
     request_json = request.get_json()
-    log.debug("收到Jellyfin Webhook报文：%s" % str(request_json))
+    log.debug("收到Jellyfin Webhook報文：%s" % str(request_json))
     WebhookEvent().jellyfin_action(request_json)
     return 'Ok'
 
@@ -1209,15 +1209,15 @@ def jellyfin_webhook():
 # Emby Webhook
 def emby_webhook():
     if not SecurityHelper().check_mediaserver_ip(request.remote_addr):
-        log.warn(f"非法IP地址的媒体服务器消息通知：{request.remote_addr}")
-        return '不允许的IP地址请求'
+        log.warn(f"非法IP地址的媒體伺服器訊息通知：{request.remote_addr}")
+        return '不允許的IP地址請求'
     request_json = json.loads(request.form.get('data', {}))
-    log.debug("收到Emby Webhook报文：%s" % str(request_json))
+    log.debug("收到Emby Webhook報文：%s" % str(request_json))
     WebhookEvent().emby_action(request_json)
     return 'Ok'
 
 
-# Telegram消息响应
+# Telegram訊息響應
 @App.route('/telegram', methods=['POST', 'GET'])
 def telegram():
     """
@@ -1243,20 +1243,20 @@ def telegram():
         }
     }
     """
-    # 当前在用的交互渠道
+    # 當前在用的互動渠道
     interactive_client = Message().get_interactive_client(SearchType.TG)
     if not interactive_client:
-        return 'NAStool未启用Telegram交互'
+        return 'NAStool未啟用Telegram互動'
     msg_json = request.get_json()
     if not SecurityHelper().check_telegram_ip(request.remote_addr):
-        log.error("收到来自 %s 的非法Telegram消息：%s" % (request.remote_addr, msg_json))
-        return '不允许的IP地址请求'
+        log.error("收到來自 %s 的非法Telegram訊息：%s" % (request.remote_addr, msg_json))
+        return '不允許的IP地址請求'
     if msg_json:
         message = msg_json.get("message", {})
         text = message.get("text")
         user_id = message.get("from", {}).get("id")
-        log.info("收到Telegram消息：from=%s, text=%s" % (user_id, text))
-        # 获取用户名
+        log.info("收到Telegram訊息：from=%s, text=%s" % (user_id, text))
+        # 獲取使用者名稱
         user_name = message.get("from", {}).get("username")
         if text:
             WebAction().handle_message_job(msg=text,
@@ -1267,11 +1267,11 @@ def telegram():
     return 'Ok'
 
 
-# Slack消息响应
+# Slack訊息響應
 @App.route('/slack', methods=['POST'])
 def slack():
     """
-    # 消息
+    # 訊息
     {
         'client_msg_id': '',
         'type': 'message',
@@ -1311,7 +1311,7 @@ def slack():
       "callback_id": "shortcut_create_task",
       "trigger_id": "944799105734.773906753841.38b5894552bdd4a780554ee59d1f3638"
     }
-    # 按钮点击
+    # 按鈕點選
     {
       "type": "block_actions",
       "team": {
@@ -1363,15 +1363,15 @@ def slack():
       ]
     }
     """
-    # 只有本地转发请求能访问
+    # 只有本地轉發請求能訪問
     if not SecurityHelper().check_slack_ip(request.remote_addr):
-        log.warn(f"非法IP地址的Slack消息通知：{request.remote_addr}")
-        return '不允许的IP地址请求'
+        log.warn(f"非法IP地址的Slack訊息通知：{request.remote_addr}")
+        return '不允許的IP地址請求'
 
-    # 当前在用的交互渠道
+    # 當前在用的互動渠道
     interactive_client = Message().get_interactive_client(SearchType.SLACK)
     if not interactive_client:
-        return 'NAStool未启用Slack交互'
+        return 'NAStool未啟用Slack互動'
     msg_json = request.get_json()
     if msg_json:
         if msg_json.get("type") == "message":
@@ -1400,7 +1400,7 @@ def slack():
     return "Ok"
 
 
-# Jellyseerr Overseerr订阅接口
+# Jellyseerr Overseerr訂閱介面
 @App.route('/subscribe', methods=['POST', 'GET'])
 @require_auth
 def subscribe():
@@ -1443,7 +1443,7 @@ def subscribe():
     """
     req_json = request.get_json()
     if not req_json:
-        return make_response("非法请求！", 400)
+        return make_response("非法請求！", 400)
     notification_type = req_json.get("notification_type")
     if notification_type not in ["MEDIA_APPROVED", "MEDIA_AUTO_APPROVED"]:
         return make_response("ok", 200)
@@ -1451,8 +1451,8 @@ def subscribe():
     media_type = MediaType.MOVIE if req_json.get("media", {}).get("media_type") == "movie" else MediaType.TV
     tmdbId = req_json.get("media", {}).get("tmdbId")
     if not media_type or not tmdbId or not subject:
-        return make_response("请求参数不正确！", 500)
-    # 添加订阅
+        return make_response("請求引數不正確！", 500)
+    # 新增訂閱
     code = 0
     msg = "ok"
     meta_info = MetaInfo(title=subject, mtype=media_type)
@@ -1488,22 +1488,22 @@ def subscribe():
 @login_required
 def backup():
     """
-    备份用户设置文件
-    :return: 备份文件.zip_file
+    備份使用者設定檔案
+    :return: 備份檔案.zip_file
     """
     try:
-        # 创建备份文件夹
+        # 建立備份資料夾
         config_path = Path(Config().get_config_path())
         backup_file = f"bk_{time.strftime('%Y%m%d%H%M%S')}"
         backup_path = config_path / "backup_file" / backup_file
         backup_path.mkdir(parents=True)
-        # 把现有的相关文件进行copy备份
+        # 把現有的相關檔案進行copy備份
         shutil.copy(f'{config_path}/config.yaml', backup_path)
         shutil.copy(f'{config_path}/default-category.yaml', backup_path)
         shutil.copy(f'{config_path}/user.db', backup_path)
         conn = sqlite3.connect(f'{backup_path}/user.db')
         cursor = conn.cursor()
-        # 执行操作删除不需要备份的表
+        # 執行操作刪除不需要備份的表
         table_list = [
             'SEARCH_RESULT_INFO',
             'RSS_TORRENTS',
@@ -1526,7 +1526,7 @@ def backup():
         shutil.rmtree(str(backup_path))
     except Exception as e:
         ExceptionUtils.exception_traceback(e)
-        return make_response("创建备份失败", 400)
+        return make_response("建立備份失敗", 400)
     return send_file(zip_file)
 
 
@@ -1543,31 +1543,31 @@ def upload():
         return {"code": 1, "msg": str(e), "filepath": ""}
 
 
-# base64模板过滤器
+# base64模板過濾器
 @App.template_filter('b64encode')
 def b64encode(s):
     return base64.b64encode(s.encode()).decode()
 
 
-# split模板过滤器
+# split模板過濾器
 @App.template_filter('split')
 def split(string, char, pos):
     return string.split(char)[pos]
 
 
-# 刷流规则过滤器
+# 刷流規則過濾器
 @App.template_filter('brush_rule_string')
 def brush_rule_string(rules):
     return WebAction.parse_brush_rule_string(rules)
 
 
-# 大小格式化过滤器
+# 大小格式化過濾器
 @App.template_filter('str_filesize')
 def str_filesize(size):
     return WebAction.str_filesize(size)
 
 
-# MD5 HASH过滤器
+# MD5 HASH過濾器
 @App.template_filter('hash')
 def md5_hash(size):
     return WebAction.md5_hash(size)

@@ -9,11 +9,11 @@ class DictHelper:
     @DbPersist(_db)
     def set(self, dtype, key, value, note=""):
         """
-        设置字典值
-        :param dtype: 字典类型
+        設定字典值
+        :param dtype: 字典型別
         :param key: 字典Key
         :param value: 字典值
-        :param note: 备注
+        :param note: 備註
         :return: True False
         """
         if not dtype or not key or not value:
@@ -35,8 +35,8 @@ class DictHelper:
 
     def get(self, dtype, key):
         """
-        查询字典值
-        :param dtype: 字典类型
+        查詢字典值
+        :param dtype: 字典型別
         :param key: 字典Key
         :return: 返回字典值
         """
@@ -52,8 +52,8 @@ class DictHelper:
     @DbPersist(_db)
     def delete(self, dtype, key):
         """
-        删除字典值
-        :param dtype: 字典类型
+        刪除字典值
+        :param dtype: 字典型別
         :param key: 字典Key
         :return: True False
         """
@@ -64,8 +64,8 @@ class DictHelper:
 
     def exists(self, dtype, key):
         """
-        查询字典是否存在
-        :param dtype: 字典类型
+        查詢字典是否存在
+        :param dtype: 字典型別
         :param key: 字典Key
         :return: True False
         """

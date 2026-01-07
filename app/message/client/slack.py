@@ -37,7 +37,7 @@ class Slack(IMessageClient):
                 return
             self._client = slack_app.client
 
-            # 注册消息响应
+            # 註冊訊息響應
             @slack_app.event("message")
             def slack_message(message):
                 local_res = requests.post(self._ds_url, json=message, timeout=10)
@@ -51,7 +51,7 @@ class Slack(IMessageClient):
 
             @slack_app.event("app_mention")
             def slack_mention(say, body):
-                say(f"收到，请稍等... <@{body.get('event', {}).get('user')}>")
+                say(f"收到，請稍等... <@{body.get('event', {}).get('user')}>")
                 local_res = requests.post(self._ds_url, json=body, timeout=10)
                 log.debug("【Slack】message: %s processed, response is: %s" % (body, local_res.text))
 
@@ -61,7 +61,7 @@ class Slack(IMessageClient):
                 local_res = requests.post(self._ds_url, json=body, timeout=10)
                 log.debug("【Slack】message: %s processed, response is: %s" % (body, local_res.text))
 
-            # 启动服务
+            # 啟動服務
             if self._interactive:
                 try:
                     self._service = SocketModeHandler(
@@ -69,37 +69,37 @@ class Slack(IMessageClient):
                         self._client_config.get("app_token")
                     )
                     self._service.connect()
-                    log.info("Slack消息接收服务启动")
+                    log.info("Slack訊息接收服務啟動")
                 except Exception as err:
                     ExceptionUtils.exception_traceback(err)
-                    log.error("Slack消息接收服务启动失败: %s" % str(err))
+                    log.error("Slack訊息接收服務啟動失敗: %s" % str(err))
 
     def stop_service(self):
         if self._service:
             self._service.close()
-            log.info("Slack消息接收服务已停止")
+            log.info("Slack訊息接收服務已停止")
 
     def send_msg(self, title, text="", image="", url="", user_id=""):
         """
-        发送Telegram消息
-        :param title: 消息标题
-        :param text: 消息内容
-        :param image: 消息图片地址
-        :param url: 点击消息转转的URL
-        :param user_id: 用户ID，如有则只发消息给该用户
-        :user_id: 发送消息的目标用户ID，为空则发给管理员
+        傳送Telegram訊息
+        :param title: 訊息標題
+        :param text: 訊息內容
+        :param image: 訊息圖片地址
+        :param url: 點選訊息轉轉的URL
+        :param user_id: 使用者ID，如有則只發訊息給該使用者
+        :user_id: 傳送訊息的目標使用者ID，為空則發給管理員
         """
         if not title and not text:
-            return False, "标题和内容不能同时为空"
+            return False, "標題和內容不能同時為空"
         if not self._client:
-            return False, "消息客户端未就绪"
+            return False, "訊息客戶端未就緒"
         try:
             if user_id:
                 channel = user_id
             else:
-                # 消息广播
+                # 訊息廣播
                 channel = self.__find_public_channel()
-            # 拼装消息内容
+            # 拼裝訊息內容
             titles = str(title).split('\n')
             if len(titles) > 1:
                 title = titles[0]
@@ -114,7 +114,7 @@ class Slack(IMessageClient):
                     "text": f"*{title}*\n{text}"
                 }
             }
-            # 消息图片
+            # 訊息圖片
             if image:
                 block['accessory'] = {
                     "type": "image",
@@ -122,7 +122,7 @@ class Slack(IMessageClient):
                     "alt_text": f"{title}"
                 }
             blocks = [block]
-            # 链接
+            # 連結
             if image and url:
                 blocks.append({
                     "type": "actions",
@@ -131,7 +131,7 @@ class Slack(IMessageClient):
                             "type": "button",
                             "text": {
                                 "type": "plain_text",
-                                "text": "查看详情",
+                                "text": "檢視詳情",
                                 "emoji": True
                             },
                             "value": "click_me_url",
@@ -140,7 +140,7 @@ class Slack(IMessageClient):
                         }
                     ]
                 })
-            # 发送
+            # 傳送
             result = self._client.chat_postMessage(
                 channel=channel,
                 blocks=blocks
@@ -152,20 +152,20 @@ class Slack(IMessageClient):
 
     def send_list_msg(self, medias: list, user_id="", **kwargs):
         """
-        发送列表类消息
+        傳送列表類訊息
         """
         if not medias:
-            return False, "参数有误"
+            return False, "引數有誤"
         if not self._client:
-            return False, "消息客户端未就绪"
+            return False, "訊息客戶端未就緒"
         try:
             if user_id:
                 channel = user_id
             else:
-                # 消息广播
+                # 訊息廣播
                 channel = self.__find_public_channel()
-            title = f"共找到{len(medias)}条相关信息，请选择"
-            # 消息主体
+            title = f"共找到{len(medias)}條相關資訊，請選擇"
+            # 訊息主體
             title_section = {
                 "type": "section",
                 "text": {
@@ -213,7 +213,7 @@ class Slack(IMessageClient):
                                         "type": "button",
                                         "text": {
                                             "type": "plain_text",
-                                            "text": "选择",
+                                            "text": "選擇",
                                             "emoji": True
                                         },
                                         "value": f"{index}",
@@ -223,7 +223,7 @@ class Slack(IMessageClient):
                             }
                         )
                         index += 1
-            # 发送
+            # 傳送
             result = self._client.chat_postMessage(
                 channel=channel,
                 blocks=blocks
@@ -235,7 +235,7 @@ class Slack(IMessageClient):
 
     def __find_public_channel(self):
         """
-        查找公共频道
+        查詢公共頻道
         """
         if not self._client:
             return ""
@@ -245,7 +245,7 @@ class Slack(IMessageClient):
                 if conversation_id:
                     break
                 for channel in result["channels"]:
-                    if channel.get("name") == "全体":
+                    if channel.get("name") == "全體":
                         conversation_id = channel.get("id")
                         break
         except SlackApiError as e:

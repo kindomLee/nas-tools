@@ -16,13 +16,13 @@ from app.utils.commons import singleton
 @singleton
 class DoubanApi(object):
     _urls = {
-        # 搜索类 sort=U:近期热门 T:标记最多 S:评分最高 R:最新上映
+        # 搜尋類 sort=U:近期熱門 T:標記最多 S:評分最高 R:最新上映
         # q=search_word&start=0&count=20&sort=U
-        # 聚合搜索
+        # 聚合搜尋
         "search": "/search/weixin",
         "search_agg": "/search",
 
-        # tags='日本,动画,2022'&start=0&count=20&sort=U
+        # tags='日本,動畫,2022'&start=0&count=20&sort=U
         "movie_recommend": "/movie/recommend",
         "movie_tag": "/movie/tag",
         "tv_tag": "/tv/tag",
@@ -33,19 +33,19 @@ class DoubanApi(object):
         "book_search": "/search/book",
         "group_search": "/search/group",
 
-        # 各类主题合集
+        # 各類主題合集
         # start=0&count=20
         "movie_showing": "/subject_collection/movie_showing/items",
         "movie_hot_gaia": "/subject_collection/movie_hot_gaia/items",
         "movie_soon": "/subject_collection/movie_soon/items",
         "movie_top250": "/subject_collection/movie_top250/items",
-        # 高分经典科幻片榜
+        # 高分經典科幻片榜
         "movie_scifi": "/subject_collection/movie_scifi/items",
-        # 高分经典喜剧片榜
+        # 高分經典喜劇片榜
         "movie_comedy": "/subject_collection/movie_comedy/items",
-        # 高分经典动作片榜
+        # 高分經典動作片榜
         "movie_action": "/subject_collection/movie_action/items",
-        # 高分经典爱情片榜
+        # 高分經典愛情片榜
         "movie_love": "/subject_collection/movie_love/items",
 
         "tv_hot": "/subject_collection/tv_hot/items",
@@ -58,16 +58,16 @@ class DoubanApi(object):
         "tv_chinese_best_weekly": "/subject_collection/tv_chinese_best_weekly/items",
         "tv_global_best_weekly": "/subject_collection/tv_global_best_weekly/items",
 
-        # 综艺
+        # 綜藝
         "show_hot": "/subject_collection/show_hot/items",
         "show_domestic": "/subject_collection/show_domestic/items",
         "show_foreign": "/subject_collection/show_foreign/items",
 
         "book_bestseller": "/subject_collection/book_bestseller/items",
         "book_top250": "/subject_collection/book_top250/items",
-        # 虚构类热门榜
+        # 虛構類熱門榜
         "book_fiction_hot_weekly": "/subject_collection/book_fiction_hot_weekly/items",
-        # 非虚构类热门
+        # 非虛構類熱門
         "book_nonfiction_hot_weekly": "/subject_collection/book_nonfiction_hot_weekly/items",
 
         "music_single": "/subject_collection/music_single/items",

@@ -15,10 +15,10 @@ class MessageCenter:
 
     def insert_system_message(self, level, title, content=None):
         """
-        新增系统消息
-        :param level: 级别
-        :param title: 标题
-        :param content: 内容
+        新增系統訊息
+        :param level: 級別
+        :param title: 標題
+        :param content: 內容
         """
         if not level or not title:
             return
@@ -33,7 +33,7 @@ class MessageCenter:
 
     def __append_message_queue(self, level, title, content):
         """
-        将消息增加到队列
+        將訊息增加到佇列
         """
         self._message_queue.appendleft({"level": level,
                                         "title": title,
@@ -42,9 +42,9 @@ class MessageCenter:
 
     def get_system_messages(self, num=20, lst_time=None):
         """
-        查询系统消息
-        :param num:条数
-        :param lst_time: 最后时间
+        查詢系統訊息
+        :param num:條數
+        :param lst_time: 最後時間
         """
         if not lst_time:
             return list(self._message_queue)[-num:]

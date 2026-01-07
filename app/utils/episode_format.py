@@ -53,7 +53,7 @@ class EpisodeFormat(object):
         return False
 
     def split_episode(self, file_name):
-        # 指定的具体集数，直接返回
+        # 指定的具體集數，直接返回
         if self._start_ep is not None and self._start_ep == self._end_ep:
             if isinstance(self._start_ep, str):
                 s, e = self._start_ep.split("-")

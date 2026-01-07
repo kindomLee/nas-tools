@@ -3,7 +3,7 @@
     <div class="row align-items-center">
       <div class="col">
         <h2 class="page-title">
-          站点资源 - {{ Title }}
+          站點資源 - {{ Title }}
         </h2>
       </div>
       <div class="col-auto ms-auto d-print-none">
@@ -18,7 +18,7 @@
                       d="M15 4v8h3.586a1 1 0 0 1 .707 1.707l-6.586 6.586a1 1 0 0 1 -1.414 0l-6.586 -6.586a1 1 0 0 1 .707 -1.707h3.586v-8a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1z">
               </path>
             </svg>
-            一键下载
+            一鍵下載
           </a>
           <a href="javascript:batch_download()" class="btn btn-primary d-sm-none btn-icon">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-big-down" width="24"
@@ -63,13 +63,13 @@
           <div class="card-body border-bottom py-3">
             <div class="d-flex">
               <div class="text-muted">
-                共 {{ TotalCount }} 条记录
+                共 {{ TotalCount }} 條記錄
               </div>
               <div class="ms-auto text-muted">
-                搜索:
+                搜尋:
                 <div class="ms-2 d-inline-block">
                   <input id="search_word" value="{{ KeyWord or '' }}" type="text" class="form-control form-control-sm"
-                         aria-label="搜索">
+                         aria-label="搜尋">
                 </div>
               </div>
             </div>
@@ -79,22 +79,22 @@
               <thead>
               <tr>
                 <th class="w-1"><input class="form-check-input m-0 align-middle" id="resources_check_all_btn"
-                                       type="checkbox" aria-label="全选"></th>
-                <th>标题</th>
+                                       type="checkbox" aria-label="全選"></th>
+                <th>標題</th>
                 <th>
-                  <button class="table-sort" data-sort="sort-pubdate">发布时间</button>
+                  <button class="table-sort" data-sort="sort-pubdate">釋出時間</button>
                 </th>
                 <th>
                   <button class="table-sort" data-sort="sort-size">大小</button>
                 </th>
                 <th>
-                  <button class="table-sort" data-sort="sort-seeders">种子数</button>
+                  <button class="table-sort" data-sort="sort-seeders">種子數</button>
                 </th>
                 <th>
-                  <button class="table-sort" data-sort="sort-peers">下载数</button>
+                  <button class="table-sort" data-sort="sort-peers">下載數</button>
                 </th>
                 <th>
-                  <button class="table-sort" data-sort="sort-grabs">完成数</button>
+                  <button class="table-sort" data-sort="sort-grabs">完成數</button>
                 </th>
                 <th></th>
               </tr>
@@ -129,7 +129,7 @@
                             <span class="badge text-white bg-blue mb-1">{{ (Result.downloadvolumefactor * 100) | int }}%DL</span>
                           {% endif %}
                         {% endif %}
-                        <a class="ms-2" title="名称测试"
+                        <a class="ms-2" title="名稱測試"
                            href='javascript:nametest("{{ loop.index0 }}", "{{ Result.title }}")'
                            data-bs-toggle="tooltip">
                           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-text-recognition mb-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -161,7 +161,7 @@
                     <td class="sort-grabs" data-grabs="{{ Result.grabs }}">{{ Result.grabs }}</td>
                     <td>
                       <a href='javascript:download_site_resource({{ loop.index0 }}, "{{ Result.title }}")'
-                         title="下载">
+                         title="下載">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-download" width="24"
                              height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                              stroke-linecap="round" stroke-linejoin="round">
@@ -176,7 +176,7 @@
                 {% endfor %}
               {% else %}
                 <tr>
-                  <td colspan="8" align="center">没有数据</td>
+                  <td colspan="8" align="center">沒有資料</td>
                 </tr>
               {% endif %}
               </tbody>
@@ -222,29 +222,29 @@
   </div>
 </div>
 <script type="text/javascript">
-  //排序表单
+  //排序表單
   tableDataList = new List('site-resources-table', {
     sortClass: 'table-sort',
     listClass: 'table-tbody',
     valueNames: ['sort-pubdate', 'sort-size', 'sort-seeders', 'sort-peers', 'sort-grabs']
   });
 
-  //跳转页
+  //跳轉頁
   function go_page(page) {
     navmenu("resources?site={{ SiteId }}" + "&title={{ Title }}" + "&page=" + page + "&keyword=" + $("#search_word").val())
   }
 
-  // 上一页
+  // 上一頁
   function go_pre_page(page) {
     navmenu("resources?site={{ SiteId }}" + "&title={{ Title }}" + "&page=" + (page - 1) + "&keyword=" + $("#search_word").val())
   }
 
-  // 下一页
+  // 下一頁
   function go_next_page(page) {
     navmenu("resources?site={{ SiteId }}" + "&title={{ Title }}" + "&page=" + (page + 1) + "&keyword=" + $("#search_word").val())
   }
 
-  //下载按钮
+  //下載按鈕
   function download_site_resource(id, name) {
     show_download_modal(id, name, function(){
       $("#modal-search-download").modal('hide');
@@ -252,7 +252,7 @@
     })
   }
 
-  //下载种子
+  //下載種子
   var total_downloads = [];
   var current_download = 0;
 
@@ -286,15 +286,15 @@
       if (!batch) {
         hide_wait_process();
         if (ret.code === 0) {
-          show_success_modal(`${title} 添加下载成功！`);
+          show_success_modal(`${title} 新增下載成功！`);
         } else {
-          show_fail_modal(`${title} 添加下载失败 ${ret.msg}`);
+          show_fail_modal(`${title} 新增下載失敗 ${ret.msg}`);
         }
       } else {
         current_download = current_download + 1;
         if (current_download < total_downloads.length) {
           if (ret.code !== 0) {
-            show_fail_modal(`${title} 添加下载失败 ${ret.msg}`, function () {
+            show_fail_modal(`${title} 新增下載失敗 ${ret.msg}`, function () {
               download_resource(total_downloads[current_download], true);
             });
           } else {
@@ -302,14 +302,14 @@
           }
         } else {
           hide_wait_process();
-          show_success_modal("添加下载完成！");
+          show_success_modal("新增下載完成！");
         }
       }
     });
 
   }
 
-  //批量下载
+  //批次下載
   function batch_download() {
     total_downloads = [];
     let i = 0;
@@ -333,12 +333,12 @@
     download_resource(total_downloads[current_download], true);
   }
 
-  //全选事件
+  //全選事件
   $("#resources_check_all_btn").change(function () {
     $(".table-responsive input[type=checkbox]").prop("checked", $(this).prop("checked"));
   });
 
-  //名称测试
+  //名稱測試
   function nametest(id, title) {
     show_wait_process();
     media_name_test(title, `testresults_${id}`, function () {
@@ -346,7 +346,7 @@
     });
   }
 
-  // 搜索按钮
+  // 搜尋按鈕
   $('#search_word').bind('keypress', function (event) {
     if (event.keyCode == "13") {
       navmenu("resources?site={{ SiteId }}" + "&title={{ Title }}" + "&page={{ CurrentPage }}" + "&keyword=" + $("#search_word").val());

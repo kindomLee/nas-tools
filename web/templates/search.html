@@ -4,18 +4,18 @@
     <div class="row align-items-center">
       <div class="col d-none d-md-block">
         <h2 class="page-title text-nowrap">
-          资源搜索
+          資源搜尋
         </h2>
         {% if Results|length > 0 %}
-        <div class="text-muted mt-1 d-none d-md-block">共搜索到 {{ Count }} 条记录</div>
+        <div class="text-muted mt-1 d-none d-md-block">共搜尋到 {{ Count }} 條記錄</div>
         {% endif %}
       </div>
       <div class="col ms-auto d-print-none">
         <div class="d-flex btn-list">
           <div class="input-group">
-            <input id="search_word" class="form-control" type="text" value="" placeholder="电影/电视剧名称">
+            <input id="search_word" class="form-control" type="text" value="" placeholder="電影/電視劇名稱">
             <button id="search_btn" class="btn btn-primary d-none d-sm-inline-block"
-                    onclick="search_media_list()">搜索
+                    onclick="search_media_list()">搜尋
             </button>
             <button id="search_icon" onclick="search_media_list()"
                     class="btn btn-primary d-sm-none btn-icon">
@@ -34,10 +34,10 @@
                     style="border-top-right-radius:4px;border-bottom-right-radius:4px;"></button>
             <div class="dropdown-menu dropdown-menu-end">
               <a class="dropdown-item" href="javascript:search_media(true)">
-                快速搜索
+                快速搜尋
               </a>
               <a class="dropdown-item" href="javascript:show_search_advanced_modal()">
-                高级搜索
+                高階搜尋
               </a>
             </div>
             {% if SearchWord %}
@@ -58,7 +58,7 @@
     </div>
   </div>
 </div>
-<!-- 业务页面代码 -->
+<!-- 業務頁面程式碼 -->
 {% if Count > 0 and Results|length > 0 %}
   <div class="page-body">
     <div class="container-xl">
@@ -69,7 +69,7 @@
               <div class="card">
                 <div class="ribbon g-cyan d-md-none">
                   <a class="text-white" href="javascript:show_search_filter_modal('{{ Item.key }}')">
-                    筛选
+                    篩選
                   </a>
                 </div>
                 <!-- 是否存在 -->
@@ -88,11 +88,11 @@
                 <div class="card-body ps-1 pe-1">
                   <div class="row">
                     <div class="col-2 d-none d-md-block" id="search_results_filter_{{ Item.key }}">
-                      <!-- 图片 -->
+                      <!-- 圖片 -->
                       {% if Item.poster %}
                       <img class="rounded object-cover shadow" src="{{ Item.poster }}" alt="">
                       {% endif %}
-                      <!-- 过滤条件 -->
+                      <!-- 過濾條件 -->
                       {% if Item.filter.season %}
                       <div class="subheader mb-2 mt-2">季</div>
                       <div class="form-selectgroup form-selectgroup-pills">
@@ -105,7 +105,7 @@
                         {% endfor %}
                       </div>
                       {% endif %}
-                      <div class="subheader mb-2 mt-3">站点</div>
+                      <div class="subheader mb-2 mt-3">站點</div>
                       <div class="form-selectgroup form-selectgroup-pills">
                         {% for filter_site in Item.filter.site %}
                         <label class="form-selectgroup-item">
@@ -115,7 +115,7 @@
                         </label>
                         {% endfor %}
                       </div>
-                      <div class="subheader mb-2 mt-2">促销</div>
+                      <div class="subheader mb-2 mt-2">促銷</div>
                       <div class="form-selectgroup form-selectgroup-pills">
                         {% for filter_free in Item.filter.free %}
                         <label class="form-selectgroup-item">
@@ -126,7 +126,7 @@
                         {% endfor %}
                       </div>
                       {% if Item.filter.video %}
-                      <div class="subheader mb-2 mt-2">视频编码</div>
+                      <div class="subheader mb-2 mt-2">影片編碼</div>
                       <div class="form-selectgroup form-selectgroup-pills">
                         {% for filter_video in Item.filter.video %}
                         <label class="form-selectgroup-item">
@@ -144,7 +144,7 @@
                       </div>
                     </div>
                     <div class="col">
-                      <!-- 标题 -->
+                      <!-- 標題 -->
                       <div class="row">
                         <div class="col">
                           <h3 class="mb-0">
@@ -156,7 +156,7 @@
                           </h3>
                         </div>
                       </div>
-                      <!-- 媒体属性 -->
+                      <!-- 媒體屬性 -->
                       <div class="row mt-2">
                         <div class="col-md">
                           {% if Item.tmdbid and Item.tmdbid!= '0' %}
@@ -174,7 +174,7 @@
                                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                  <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                               </svg>
-                              {{ Item.vote or '暂无评分' }}
+                              {{ Item.vote or '暫無評分' }}
                             </div>
                             <div class="list-inline-item">
                               <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -183,19 +183,19 @@
                                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
                                  <polyline points="11 12 12 12 12 16 13 16"></polyline>
                               </svg>
-                              <a href="{% if Item.type == '电影' %}https://www.themoviedb.org/movie/{{ Item.tmdbid }}{% else %}https://www.themoviedb.org/tv/{{ Item.tmdbid }}{% endif %}" target="_blank">{{ Item.tmdbid }}</a>
+                              <a href="{% if Item.type == '電影' %}https://www.themoviedb.org/movie/{{ Item.tmdbid }}{% else %}https://www.themoviedb.org/tv/{{ Item.tmdbid }}{% endif %}" target="_blank">{{ Item.tmdbid }}</a>
                             </div>
                           </div>
                           {% endif %}
                         </div>
                       </div>
-                      <!-- 简介 -->
+                      <!-- 簡介 -->
                       {% if Item.overview %}
                       <div class="text-muted mt-2 d-none d-md-block">
                         {{ Item.overview}}
                       </div>
                       {% endif %}
-                      <!-- 资源分组 -->
+                      <!-- 資源分組 -->
                       {% for SE_key, SE_dict in Item.torrent_dict %}
                       {% if SE_key != 'MOV' %}
                         <a href="javascript:$('#search_se_accordion_{{ SE_key.replace(' ', '') }}_{{ Item.key }}').slideToggle()"
@@ -221,11 +221,11 @@
                                   aria-expanded="true">
                                   <span class="text-red">{{ group.group_info.restype or "未知媒介" }}</span>
                                     &nbsp;/&nbsp;
-                                  <span class="text-orange">{{ group.group_info.respix or "未知分辨率" }}</span>
+                                  <span class="text-orange">{{ group.group_info.respix or "未知解析度" }}</span>
                                     &nbsp;/&nbsp;
                                   <span class="text">共 <span id="search_results_group_total_{{ group_key }}_{{ Item.key }}_{{ SE_key.replace(' ', '') }}"
                                                            class="search_results_group_total"
-                                                           data-total="{{ group.group_total }}">{{ group.group_total }}</span> 个种子 </span>
+                                                           data-total="{{ group.group_total }}">{{ group.group_total }}</span> 個種子 </span>
                               </button>
                             </h2>
                             <div id="search_results_group_{{ group_key }}_{{ Item.key }}_{{ SE_key.replace(' ', '') }}"
@@ -234,7 +234,7 @@
                               <div class="accordion-body pt-0">
                                 <div class="list-group">
                                   <div class="list-group card-list-group mt-2">
-                                    <!-- 种子列表 -->
+                                    <!-- 種子列表 -->
                                   {% for unique_key, unique in group.group_torrents.items() %}
                                     {% for torrent in unique.torrent_list %}
                                       <div class="list-group-item p-2 ps-1 search_results_torrent"
@@ -288,7 +288,7 @@
                                             </div>
                                           </div>
                                           <div class="col-auto ms-2 d-none d-md-inline-block">
-                                            <a href='javascript:show_download_modal("{{ torrent.id }}","【{{ torrent.site }}】{{ torrent.torrent_name }}")' class="link-secondary" title="下载">
+                                            <a href='javascript:show_download_modal("{{ torrent.id }}","【{{ torrent.site }}】{{ torrent.torrent_name }}")' class="link-secondary" title="下載">
                                               <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-download" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                                  <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
@@ -304,10 +304,10 @@
                                               </a>
                                               <div class="dropdown-menu dropdown-menu-end" style="">
                                                 <a class="dropdown-item" href="{{ torrent.enclosure }}" target="_blank">
-                                                  下载种子文件
+                                                  下載種子檔案
                                                 </a>
                                                 <a class="dropdown-item" href="{{ torrent.pageurl }}" target="_blank">
-                                                  查看种子详情
+                                                  檢視種子詳情
                                                 </a>
                                               </div>
                                             </div>
@@ -341,9 +341,9 @@
       <div class="empty">
         <div class="empty-img"><img src="./static/img/posting_photo.svg" height="128" alt="">
         </div>
-        <p class="empty-title" id="search_tip_title">没有记录</p>
+        <p class="empty-title" id="search_tip_title">沒有記錄</p>
         <p class="empty-subtitle text-muted" id="search_tip_text">
-          输入想看的电影、电视剧名称，点击搜索试试看吧。
+          輸入想看的電影、電視劇名稱，點選搜尋試試看吧。
         </p>
       </div>
     </div>
@@ -354,26 +354,26 @@
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">高级搜索</h5>
+        <h5 class="modal-title">高階搜尋</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="row">
           <div class="col-12 col-lg-4">
             <div class="mb-3">
-              <label class="form-label">类型</label>
+              <label class="form-label">型別</label>
               <select class="form-select" id="search_type">
                 <option value="" selected>全部</option>
-                <option value="电影">电影</option>
-                <option value="电视剧">电视剧</option>
+                <option value="電影">電影</option>
+                <option value="電視劇">電視劇</option>
               </select>
             </div>
           </div>
           <div class="col-12 col-lg-4">
             <div class="mb-3">
-              <label class="form-label required">名称</label>
+              <label class="form-label required">名稱</label>
               <input type="text" value="" id="search_name" class="form-control"
-                     placeholder="电影/电视剧名称">
+                     placeholder="電影/電視劇名稱">
             </div>
           </div>
           <div class="col-12 col-lg-2">
@@ -394,7 +394,7 @@
         <div class="row">
           <div class="col-12 col-lg-4">
             <div class="mb-3">
-              <label class="form-label">站点</label>
+              <label class="form-label">站點</label>
               <select class="form-select" id="search_site">
                 <option value="" selected>全部</option>
                 {% for site in SiteDict.keys() %}
@@ -405,7 +405,7 @@
           </div>
           <div class="col-12 col-lg-4">
             <div class="mb-3">
-              <label class="form-label">质量</label>
+              <label class="form-label">質量</label>
               <select class="form-select" id="search_restype">
                 <option value="" selected>全部</option>
                 {% for Restype in RestypeDict %}
@@ -416,7 +416,7 @@
           </div>
           <div class="col-12 col-lg-4">
             <div class="mb-3">
-              <label class="form-label">分辨率</label>
+              <label class="form-label">解析度</label>
               <select class="form-select" id="search_pix">
                 <option value="" selected>全部</option>
                 {% for Pix in PixDict %}
@@ -427,13 +427,13 @@
           </div>
           <div class="col-12 col-lg-4">
             <div class="mb-3">
-              <label class="form-label">促销</label>
+              <label class="form-label">促銷</label>
               <select class="form-select" id="sp_state">
                 <option value="* *" selected>全部</option>
                 <option value="1.0 1.0">普通</option>
-                <option value="1.0 0.0">免费</option>
+                <option value="1.0 0.0">免費</option>
                 <option value="2.0 1.0">2X</option>
-                <option value="2.0 0.0">2X免费</option>
+                <option value="2.0 0.0">2X免費</option>
                 <option value="1.0 0.5">50%</option>
                 <option value="2.0 0.5">2X 50%</option>
                 <option value="1.0 0.7">70%</option>
@@ -443,35 +443,35 @@
           </div>
           <div class="col-12 col-lg-8">
             <div class="mb-3">
-              <label class="form-label">自定义</label>
+              <label class="form-label">自定義</label>
               <input type="text" value="" id="search_key" class="form-control"
-                     placeholder="自定义过滤规则">
+                     placeholder="自定義過濾規則">
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button onclick="search_media_advanced()" id="search_advanced_btn"
-                class="btn btn-primary">开始搜索
+                class="btn btn-primary">開始搜尋
         </button>
       </div>
     </div>
   </div>
 </div>
-<!-- 搜索结果过滤弹窗 -->
+<!-- 搜尋結果過濾彈窗 -->
 {% for Title, Item in Results.items() %}
 <div class="modal modal-blur fade" id="search-filter-modal-{{ Item.key }}" tabindex="-1" role="dialog" aria-hidden="true"
      data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">过滤: {{ Title }}</h5>
+        <h5 class="modal-title">過濾: {{ Title }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="row">
           <div class="col" id="search_results_filter_{{ Item.key }}_modal">
-            <!-- 过滤条件 -->
+            <!-- 過濾條件 -->
             {% if Item.filter.season %}
             <div class="subheader mb-2 mt-2">季</div>
             <div class="form-selectgroup form-selectgroup-pills">
@@ -484,7 +484,7 @@
               {% endfor %}
             </div>
             {% endif %}
-            <div class="subheader mb-2 mt-3">站点</div>
+            <div class="subheader mb-2 mt-3">站點</div>
             <div class="form-selectgroup form-selectgroup-pills">
               {% for filter_site in Item.filter.site %}
               <label class="form-selectgroup-item">
@@ -494,7 +494,7 @@
               </label>
               {% endfor %}
             </div>
-            <div class="subheader mb-2 mt-2">促销</div>
+            <div class="subheader mb-2 mt-2">促銷</div>
             <div class="form-selectgroup form-selectgroup-pills">
               {% for filter_free in Item.filter.free %}
               <label class="form-selectgroup-item">
@@ -505,7 +505,7 @@
               {% endfor %}
             </div>
             {% if Item.filter.video %}
-            <div class="subheader mb-2 mt-2">视频编码</div>
+            <div class="subheader mb-2 mt-2">影片編碼</div>
             <div class="form-selectgroup form-selectgroup-pills">
               {% for filter_video in Item.filter.video %}
               <label class="form-selectgroup-item">
@@ -521,7 +521,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn me-auto" onclick="reset_filter(this, '{{ Item.key }}', true)">重置</button>
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">确定</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">確定</button>
       </div>
     </div>
   </div>
@@ -529,7 +529,7 @@
 {% endfor %}
 
 <script type="text/javascript">
-  // 关键字
+  // 關鍵字
   var search_word = "{{ SearchWord }}";
   var need_search = "{{ NeedSearch }}";
   var result_count = {{ Count }};
@@ -538,12 +538,12 @@
     if (need_search) {
       search_media(true);
     } else if (!result_count) {
-      $("#search_tip_title").text(`${search_word} 未找到任何资源`)
+      $("#search_tip_title").text(`${search_word} 未找到任何資源`)
       $("#search_tip_text").text("")
     }
   }
 
-  // 搜索按钮
+  // 搜尋按鈕
   function search_media(unident) {
     if (!unident) {
       unident = "";
@@ -554,29 +554,29 @@
     if (keyword === "") {
       return;
     }
-    $("#search_btn").text("搜索中...").attr("disabled", "true");
+    $("#search_btn").text("搜尋中...").attr("disabled", "true");
     $("#quick_search_btn").attr("disabled", "true");
     $("#search_icon").attr("disabled", "true");
-    $("#search_tip_title").text(`正在搜索 ${keyword}，请稍后...`);
-    $("#search_tip_text").text(`正在搜索 ${keyword} ...`);
+    $("#search_tip_title").text(`正在搜尋 ${keyword}，請稍後...`);
+    $("#search_tip_text").text(`正在搜尋 ${keyword} ...`);
     const param = {"search_word": keyword, "unident": unident};
-    show_refresh_process(`正在搜索 ${keyword} ...`);
+    show_refresh_process(`正在搜尋 ${keyword} ...`);
     ajax_post("search", param, function (ret) {
       hide_refresh_process();
       if (ret.code === 0) {
         navmenu(`search?s=${keyword}`);
       } else {
-        $("#search_btn").text("搜索").removeAttr("disabled");
+        $("#search_btn").text("搜尋").removeAttr("disabled");
         $("#quick_search_btn").removeAttr("disabled");
         $("#search_icon").removeAttr("disabled");
-        $("#search_tip_title").text("搜索失败");
-        $("#search_tip_text").text("请确认名称是否正确，网络连接是否正常");
+        $("#search_tip_title").text("搜尋失敗");
+        $("#search_tip_text").text("請確認名稱是否正確，網路連線是否正常");
         show_fail_modal(ret.msg);
       }
     });
   }
 
-  //搜索联想
+  //搜尋聯想
   function search_media_list() {
     const keyword = $("#search_word").val();
     if (keyword === "") {
@@ -585,14 +585,14 @@
     navmenu(`medialist?s=${keyword}&f=1&t=search`);
   }
 
-  // 搜索输入框
+  // 搜尋輸入框
   $('#search_word').bind('keypress', function (event) {
     if (event.keyCode === 13) {
       search_media_list();
     }
   });
 
-  // 计算各分组的种子数量
+  // 計算各分組的種子數量
   function sub_group_total(group, key, se) {
     let total_obj = $(`#search_results_group_total_${group}_${key}_${se}`)
     let current_num = parseInt(total_obj.text());
@@ -605,7 +605,7 @@
     }
   }
 
-  // 执行过滤
+  // 執行過濾
   function filter_do(key, modal) {
     let filter_obj;
     if (modal) {
@@ -615,7 +615,7 @@
     }
     let torrent_obj = `#search_results_accordion_${key}`;
     let season_obj = `.search_results_season_${key}`;
-    // 全部显示
+    // 全部顯示
     $(`${torrent_obj} .accordion-item`).each(function () {
       $(this).show();
     });
@@ -625,39 +625,39 @@
     $(season_obj).each(function () {
       $(this).show();
     });
-    // 恢复总条数
+    // 恢復總條數
     $(`${torrent_obj} .search_results_group_total`).each(function () {
       $(this).text($(this).attr("data-total"));
     });
-    // 过滤站点
+    // 過濾站點
     let filter_site;
     $(`${filter_obj} input[name=filter_site]`).each(function () {
       if($(this).prop('checked')){
         filter_site = $(this).val();
       }
     });
-    // 过滤促销
+    // 過濾促銷
     let filter_free;
     $(`${filter_obj} input[name=filter_free]`).each(function () {
       if($(this).prop('checked')){
         filter_free = $(this).val();
       }
     });
-    // 过滤编码
+    // 過濾編碼
     let filter_video;
     $(`${filter_obj} input[name=filter_video]`).each(function () {
       if($(this).prop('checked')){
         filter_video = $(this).val();
       }
     });
-    //过滤剧集
+    //過濾劇集
     let filter_season;
     $(`${filter_obj} input[name=filter_season]`).each(function () {
       if($(this).prop('checked')){
         filter_season = $(this).val();
       }
     });
-    // 有过滤则展开，无过滤则收起
+    // 有過濾則展開，無過濾則收起
     if (filter_site || filter_free || filter_video) {
       $(`${torrent_obj} .accordion-button`).each(function () {
         $(this).removeClass("collapsed");
@@ -673,7 +673,7 @@
         $(this).removeClass("show");
       });
     }
-    // 执行过滤
+    // 執行過濾
     if (filter_site) {
       $(`${torrent_obj} .search_results_torrent`).each(function () {
         if ($(this).attr("data-site") !== filter_site) {
@@ -719,42 +719,42 @@
     }
   }
 
-  // 过滤媒体展示
+  // 過濾媒體展示
   function filter_medias(obj, key, modal) {
-    // 处理UI
+    // 處理UI
     $(obj).parent().parent().find("input[type=checkbox]").each(function(){
       $(this).prop("checked", false);
     });
     $(obj).prop("checked", true);
-    // 开始过滤
+    // 開始過濾
     filter_do(key, modal);
   }
 
-  // 重置过滤条件
+  // 重置過濾條件
   function reset_filter(obj, key, modal) {
-    // 处理UI
+    // 處理UI
     $(obj).parent().parent().find("input[type=checkbox]").each(function(){
       $(this).prop("checked", false);
     });
-    // 开始过滤
+    // 開始過濾
     filter_do(key, modal);
   }
 
-  // 显示过滤器弹窗
+  // 顯示過濾器彈窗
   function show_search_filter_modal(key) {
     $(`#search-filter-modal-${key}`).modal("show");
   }
 
-  // 显示高级搜索框
+  // 顯示高階搜尋框
   function show_search_advanced_modal() {
     $("#modal-search-advanced").modal("show");
   }
 
-  // 开始高级搜索
+  // 開始高階搜尋
   function search_media_advanced() {
     let keyword;
     $("#search_icon").attr("disabled", "true");
-    // 读取数据
+    // 讀取資料
     const search_name = $("#search_name").val();
     if (!search_name) {
       $("#search_name").addClass("is-invalid");
@@ -770,7 +770,7 @@
     const search_pix = $("#search_pix").val();
     const sp_state = $("#sp_state").val();
     const search_key = $("#search_key").val();
-    // 拼装请求
+    // 拼裝請求
     if (search_type) {
       keyword = search_type + " " + search_name;
     } else {
@@ -791,7 +791,7 @@
     };
     const param = {"search_word": keyword, "filters": filters, "unident": true};
     $("#modal-search-advanced").modal("hide");
-    show_refresh_process(`正在搜索 ${keyword} ...`);
+    show_refresh_process(`正在搜尋 ${keyword} ...`);
     ajax_post("search", param, function (ret) {
       hide_refresh_process();
       if (ret.code === 0) {

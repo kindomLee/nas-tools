@@ -44,17 +44,17 @@ class DouBan:
                         self.cookie = StringUtils.str_from_cookiejar(res.cookies)
                 except Exception as err:
                     ExceptionUtils.exception_traceback(err)
-                    log.warn(f"【Douban】获取cookie失败：{format(err)}")
+                    log.warn(f"【Douban】獲取cookie失敗：{format(err)}")
 
     def get_douban_detail(self, doubanid, mtype=None, wait=False):
         """
-        根据豆瓣ID返回豆瓣详情，带休眠
+        根據豆瓣ID返回豆瓣詳情，帶休眠
         """
-        log.info("【Douban】正在通过API查询豆瓣详情：%s" % doubanid)
-        # 随机休眠
+        log.info("【Douban】正在透過API查詢豆瓣詳情：%s" % doubanid)
+        # 隨機休眠
         if wait:
             time = round(random.uniform(1, 5), 1)
-            log.info("【Douban】随机休眠：%s 秒" % time)
+            log.info("【Douban】隨機休眠：%s 秒" % time)
             sleep(time)
         if mtype == MediaType.MOVIE:
             douban_info = self.doubanapi.movie_detail(doubanid)
@@ -65,22 +65,22 @@ class DouBan:
             if not douban_info:
                 douban_info = self.doubanapi.tv_detail(doubanid)
         if not douban_info:
-            log.warn("【Douban】%s 未找到豆瓣详细信息" % doubanid)
+            log.warn("【Douban】%s 未找到豆瓣詳細資訊" % doubanid)
             return None
         if douban_info.get("localized_message"):
-            log.warn("【Douban】查询豆瓣详情错误：%s" % douban_info.get("localized_message"))
+            log.warn("【Douban】查詢豆瓣詳情錯誤：%s" % douban_info.get("localized_message"))
             return None
         if not douban_info.get("title"):
             return None
-        if douban_info.get("title") == "未知电影" or douban_info.get("title") == "未知电视剧":
+        if douban_info.get("title") == "未知電影" or douban_info.get("title") == "未知電視劇":
             return None
-        log.info("【Douban】查询到数据：%s" % douban_info.get("title"))
+        log.info("【Douban】查詢到資料：%s" % douban_info.get("title"))
         return douban_info
 
     def __search_douban_id(self, metainfo):
         """
-        给定名称和年份，查询一条豆瓣信息返回对应ID
-        :param metainfo: 已进行识别过的媒体信息
+        給定名稱和年份，查詢一條豆瓣資訊返回對應ID
+        :param metainfo: 已進行識別過的媒體資訊
         """
         if metainfo.year:
             year_range = [int(metainfo.year), int(metainfo.year) + 1, int(metainfo.year) - 1]
@@ -112,8 +112,8 @@ class DouBan:
 
     def get_douban_info(self, metainfo):
         """
-        查询附带演职人员的豆瓣信息
-        :param metainfo: 已进行识别过的媒体信息
+        查詢附帶演職人員的豆瓣資訊
+        :param metainfo: 已進行識別過的媒體資訊
         """
         doubanid = self.__search_douban_id(metainfo)
         if not doubanid:
@@ -135,11 +135,11 @@ class DouBan:
 
     def get_douban_wish(self, dtype, userid, page, wait=False):
         """
-        获取豆瓣想看列表数据
+        獲取豆瓣想看列表資料
         """
         if wait:
             time = round(random.uniform(1, 5), 1)
-            log.info("【Douban】随机休眠：%s 秒" % time)
+            log.info("【Douban】隨機休眠：%s 秒" % time)
             sleep(time)
         if dtype == "do":
             web_infos = self.doubanweb.do(cookie=self.cookie, userid=userid, start=page)
@@ -156,13 +156,13 @@ class DouBan:
     def get_user_info(self, userid, wait=False):
         if wait:
             time = round(random.uniform(1, 5), 1)
-            log.info("【Douban】随机休眠：%s 秒" % time)
+            log.info("【Douban】隨機休眠：%s 秒" % time)
             sleep(time)
         return self.doubanweb.user(cookie=self.cookie, userid=userid)
 
     def search_douban_medias(self, keyword, mtype: MediaType = None, num=20, season=None, episode=None):
         """
-        根据关键字搜索豆瓣，返回可能的标题和年份信息
+        根據關鍵字搜尋豆瓣，返回可能的標題和年份資訊
         """
         if not keyword:
             return []
@@ -206,32 +206,32 @@ class DouBan:
 
     def get_media_detail_from_web(self, doubanid):
         """
-        从豆瓣详情页抓紧媒体信息
+        從豆瓣詳情頁抓緊媒體資訊
         :param doubanid: 豆瓣ID
         :return: {title, year, intro, cover_url, rating{value}, episodes_count}
         """
-        log.info("【Douban】正在通过网页查询豆瓣详情：%s" % doubanid)
+        log.info("【Douban】正在透過網頁查詢豆瓣詳情：%s" % doubanid)
         web_info = self.doubanweb.detail(cookie=self.cookie, doubanid=doubanid)
         if not web_info:
             return {}
         ret_media = {}
         try:
-            # 标题
+            # 標題
             title = web_info.get("title")
             if title:
                 title = title
                 metainfo = MetaInfo(title=title)
                 if metainfo.cn_name:
                     title = metainfo.cn_name
-                    # 有中文的去掉日文和韩文
+                    # 有中文的去掉日文和韓文
                     if title and StringUtils.is_chinese(title) and " " in title:
                         titles = title.split()
                         title = titles[0]
                         for _title in titles[1:]:
-                            # 忽略繁体
+                            # 忽略繁體
                             if zhconv.convert(_title, 'zh-hans') == title:
                                 break
-                            # 忽略日韩文
+                            # 忽略日韓文
                             if not StringUtils.is_japanese(_title) \
                                     and not StringUtils.is_korean(_title):
                                 title = f"{title} {_title}"
@@ -250,22 +250,22 @@ class DouBan:
             year = web_info.get("year")
             if year:
                 ret_media['year'] = year[1:-1]
-            # 简介
+            # 簡介
             ret_media['intro'] = "".join(
                 [str(x).strip() for x in web_info.get("intro") or []])
-            # 封面图
+            # 封面圖
             cover_url = web_info.get("cover")
             if cover_url:
                 ret_media['cover_url'] = cover_url.replace("s_ratio_poster", "m_ratio_poster")
-            # 评分
+            # 評分
             rating = web_info.get("rate")
             if rating:
                 ret_media['rating'] = {"value": float(rating)}
-            # 季数
+            # 季數
             season_num = web_info.get("season_num")
             if season_num:
                 ret_media['season'] = int(season_num)
-            # 集数
+            # 集數
             episode_num = web_info.get("episode_num")
             if episode_num:
                 ret_media['episodes_count'] = int(episode_num)
@@ -276,9 +276,9 @@ class DouBan:
         except Exception as err:
             ExceptionUtils.exception_traceback(err)
         if ret_media:
-            log.info("【Douban】查询到数据：%s" % ret_media.get("title"))
+            log.info("【Douban】查詢到資料：%s" % ret_media.get("title"))
         else:
-            log.warn("【Douban】%s 未查询到豆瓣数据：%s" % doubanid)
+            log.warn("【Douban】%s 未查詢到豆瓣資料：%s" % doubanid)
         return ret_media
 
     def get_douban_online_movie(self, page=1):
@@ -348,7 +348,7 @@ class DouBan:
                     continue
                 # ID
                 rid = info.get("id")
-                # 评分
+                # 評分
                 rating = info.get('rating')
                 if rating:
                     vote_average = float(rating.get("value"))
@@ -356,15 +356,15 @@ class DouBan:
                     vote_average = 0
                 # 年份
                 year = info.get('year')
-                # 海报
+                # 海報
                 poster_path = info.get('cover', {}).get("url")
                 if not poster_path:
                     poster_path = info.get('cover_url')
-                # 标题
+                # 標題
                 title = info.get('title')
                 if not title or not poster_path:
                     continue
-                # 简介
+                # 簡介
                 overview = info.get("card_subtitle") or ""
                 if not year and overview:
                     if overview.split("/")[0].strip().isdigit():
@@ -386,7 +386,7 @@ class DouBan:
                     continue
                 # ID
                 rid = info.get("id")
-                # 评分
+                # 評分
                 rating = info.get('rating')
                 if rating:
                     vote_average = float(rating.get("value"))
@@ -394,13 +394,13 @@ class DouBan:
                     vote_average = 0
                 # 年份
                 year = info.get('year')
-                # 海报
+                # 海報
                 poster_path = info.get('pic', {}).get("normal")
-                # 标题
+                # 標題
                 title = info.get('title')
                 if not title or not poster_path:
                     continue
-                # 简介
+                # 簡介
                 overview = info.get("comment") or ""
                 ret_list.append({'id': rid, 'name': title, 'first_air_date': year, 'vote_average': vote_average,
                                  'poster_path': poster_path, 'overview': overview})

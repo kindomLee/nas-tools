@@ -4,7 +4,7 @@
     <div class="row align-items-center">
       <div class="col">
         <h2 class="page-title">
-          用户管理
+          使用者管理
         </h2>
       </div>
       <div class="col-auto ms-auto d-print-none">
@@ -16,7 +16,7 @@
               <line x1="12" y1="5" x2="12" y2="19"/>
               <line x1="5" y1="12" x2="19" y2="12"/>
             </svg>
-            新增用户
+            新增使用者
           </a>
           <a href="javascript:show_user_modal()" class="btn btn-primary d-sm-none btn-icon">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
@@ -31,7 +31,7 @@
     </div>
   </div>
 </div>
-<!-- 业务页面代码 -->
+<!-- 業務頁面程式碼 -->
 <div class="page-body">
   <div class="container-xl">
     <div class="row row-cards">
@@ -40,7 +40,7 @@
           <div class="card-body border-bottom py-3">
             <div class="d-flex">
               <div class="text-muted">
-                共 {{ UserCount }} 条记录
+                共 {{ UserCount }} 條記錄
               </div>
             </div>
           </div>
@@ -48,8 +48,8 @@
             <table class="table table-vcenter card-table">
               <thead>
               <tr>
-                <th>用户名</th>
-                <th>权限</th>
+                <th>使用者名稱</th>
+                <th>許可權</th>
                 <th class="w-3"></th>
               </tr>
               </thead>
@@ -66,7 +66,7 @@
                       </div>
                     </td>
                     <td>
-                      <a href="javascript:delete_user('{{ User.name }}')" title="删除用户">
+                      <a href="javascript:delete_user('{{ User.name }}')" title="刪除使用者">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24"
                              height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                              stroke-linecap="round" stroke-linejoin="round">
@@ -80,7 +80,7 @@
                 {% endfor %}
               {% else %}
                 <tr>
-                  <td colspan="3" align="center">没有数据</td>
+                  <td colspan="3" align="center">沒有資料</td>
                 </tr>
               {% endif %}
               </tbody>
@@ -96,63 +96,63 @@
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">新增用户</h5>
+        <h5 class="modal-title">新增使用者</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="row">
           <div class="col-lg-6">
             <div class="mb-3">
-              <label class="form-label required">用户名</label>
+              <label class="form-label required">使用者名稱</label>
               <input type="text" value="" id="user_name" class="form-control">
             </div>
           </div>
           <div class="col-lg-6">
             <div class="mb-3">
-              <label class="form-label required">密码</label>
+              <label class="form-label required">密碼</label>
               <input type="password" value="" id="user_password" class="form-control">
             </div>
           </div>
         </div>
         <div class="row">
           <div class="mb-3">
-            <label class="form-label required">权限</label>
+            <label class="form-label required">許可權</label>
             <div class="form-selectgroup">
               <label class="form-selectgroup-item">
-                <input type="checkbox" name="user_pris" value="我的媒体库" class="form-selectgroup-input">
-                <span class="form-selectgroup-label">我的媒体库</span>
+                <input type="checkbox" name="user_pris" value="我的媒體庫" class="form-selectgroup-input">
+                <span class="form-selectgroup-label">我的媒體庫</span>
               </label>
               <label class="form-selectgroup-item">
-                <input type="checkbox" name="user_pris" value="资源搜索" class="form-selectgroup-input" checked>
-                <span class="form-selectgroup-label">资源搜索</span>
+                <input type="checkbox" name="user_pris" value="資源搜尋" class="form-selectgroup-input" checked>
+                <span class="form-selectgroup-label">資源搜尋</span>
               </label>
               <label class="form-selectgroup-item">
-                <input type="checkbox" name="user_pris" value="推荐" class="form-selectgroup-input" checked>
-                <span class="form-selectgroup-label">推荐</span>
+                <input type="checkbox" name="user_pris" value="推薦" class="form-selectgroup-input" checked>
+                <span class="form-selectgroup-label">推薦</span>
               </label>
               <label class="form-selectgroup-item">
-                <input type="checkbox" name="user_pris" value="站点管理" class="form-selectgroup-input">
-                <span class="form-selectgroup-label">站点管理</span>
+                <input type="checkbox" name="user_pris" value="站點管理" class="form-selectgroup-input">
+                <span class="form-selectgroup-label">站點管理</span>
               </label>
               <label class="form-selectgroup-item">
-                <input type="checkbox" name="user_pris" value="订阅管理" class="form-selectgroup-input">
-                <span class="form-selectgroup-label">订阅管理</span>
+                <input type="checkbox" name="user_pris" value="訂閱管理" class="form-selectgroup-input">
+                <span class="form-selectgroup-label">訂閱管理</span>
               </label>
               <label class="form-selectgroup-item">
-                <input type="checkbox" name="user_pris" value="下载管理" class="form-selectgroup-input">
-                <span class="form-selectgroup-label">下载管理</span>
+                <input type="checkbox" name="user_pris" value="下載管理" class="form-selectgroup-input">
+                <span class="form-selectgroup-label">下載管理</span>
               </label>
               <label class="form-selectgroup-item">
-                <input type="checkbox" name="user_pris" value="媒体整理" class="form-selectgroup-input">
-                <span class="form-selectgroup-label">媒体整理</span>
+                <input type="checkbox" name="user_pris" value="媒體整理" class="form-selectgroup-input">
+                <span class="form-selectgroup-label">媒體整理</span>
               </label>
               <label class="form-selectgroup-item">
-                <input type="checkbox" name="user_pris" value="服务" class="form-selectgroup-input">
-                <span class="form-selectgroup-label">服务</span>
+                <input type="checkbox" name="user_pris" value="服務" class="form-selectgroup-input">
+                <span class="form-selectgroup-label">服務</span>
               </label>
               <label class="form-selectgroup-item">
-                <input type="checkbox" name="user_pris" value="系统设置" class="form-selectgroup-input">
-                <span class="form-selectgroup-label">系统设置</span>
+                <input type="checkbox" name="user_pris" value="系統設定" class="form-selectgroup-input">
+                <span class="form-selectgroup-label">系統設定</span>
               </label>
             </div>
           </div>
@@ -160,18 +160,18 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-link me-auto" data-bs-dismiss="modal">取消</button>
-        <a href="javascript:add_user()" id="add_user_btn" class="btn btn-primary">确定</a>
+        <a href="javascript:add_user()" id="add_user_btn" class="btn btn-primary">確定</a>
       </div>
     </div>
   </div>
 </div>
 <script type="text/javascript">
-  // 打开新增窗口
+  // 開啟新增視窗
   function show_user_modal() {
     $("#modal-user").modal('show');
   }
 
-  // 新增用户
+  // 新增使用者
   function add_user() {
     const name = $("#user_name").val();
     const password = $("#user_password").val();
@@ -205,7 +205,7 @@
     });
   }
 
-  // 删除用户
+  // 刪除使用者
   function delete_user(name) {
     const params = {"oper": "del", "name": name};
     ajax_post("user_manager", params, function (ret) {

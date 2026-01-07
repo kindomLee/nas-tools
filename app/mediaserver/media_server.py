@@ -48,14 +48,14 @@ class MediaServer:
 
     def get_type(self):
         """
-        当前使用的媒体库服务器
+        當前使用的媒體庫伺服器
         """
         return self._server_type
 
     def get_activity_log(self, limit):
         """
-        获取媒体服务器的活动日志
-        :param limit: 条数限制
+        獲取媒體伺服器的活動日誌
+        :param limit: 條數限制
         """
         if not self.server:
             return []
@@ -63,7 +63,7 @@ class MediaServer:
 
     def get_user_count(self):
         """
-        获取媒体服务器的总用户数
+        獲取媒體伺服器的總使用者數
         """
         if not self.server:
             return 0
@@ -71,7 +71,7 @@ class MediaServer:
 
     def get_medias_count(self):
         """
-        获取媒体服务器各类型的媒体库
+        獲取媒體伺服器各型別的媒體庫
         :return: MovieCount SeriesCount SongCount
         """
         if not self.server:
@@ -80,7 +80,7 @@ class MediaServer:
 
     def refresh_root_library(self):
         """
-        刷新媒体服务器整个媒体库
+        重新整理媒體伺服器整個媒體庫
         """
         if not self.server:
             return
@@ -88,10 +88,10 @@ class MediaServer:
 
     def get_image_by_id(self, item_id, image_type):
         """
-        根据ItemId从媒体服务器查询图片地址
+        根據ItemId從媒體伺服器查詢圖片地址
         :param item_id: 在Emby中的ID
-        :param image_type: 图片的类弄地，poster或者backdrop等
-        :return: 图片对应在TMDB中的URL
+        :param image_type: 圖片的類弄地，poster或者backdrop等
+        :return: 圖片對應在TMDB中的URL
         """
         if not self.server:
             return None
@@ -101,11 +101,11 @@ class MediaServer:
                                season_number,
                                episode_count):
         """
-        根据标题、年份、季、总集数，查询媒体服务器中缺少哪几集
-        :param meta_info: 已识别的需要查询的媒体信息
-        :param season_number: 季号，数字
-        :param episode_count: 该季的总集数
-        :return: 该季不存在的集号列表
+        根據標題、年份、季、總集數，查詢媒體伺服器中缺少哪幾集
+        :param meta_info: 已識別的需要查詢的媒體資訊
+        :param season_number: 季號，數字
+        :param episode_count: 該季的總集數
+        :return: 該季不存在的集號列表
         """
         if not self.server:
             return None
@@ -115,10 +115,10 @@ class MediaServer:
 
     def get_movies(self, title, year=None):
         """
-        根据标题和年份，检查电影是否在媒体服务器中存在，存在则返回列表
-        :param title: 标题
-        :param year: 年份，可以为空，为空时不按年份过滤
-        :return: 含title、year属性的字典列表
+        根據標題和年份，檢查電影是否在媒體伺服器中存在，存在則返回列表
+        :param title: 標題
+        :param year: 年份，可以為空，為空時不按年份過濾
+        :return: 含title、year屬性的字典列表
         """
         if not self.server:
             return None
@@ -126,8 +126,8 @@ class MediaServer:
 
     def refresh_library_by_items(self, items):
         """
-        按类型、名称、年份来刷新媒体库
-        :param items: 已识别的需要刷新媒体库的媒体信息列表
+        按型別、名稱、年份來重新整理媒體庫
+        :param items: 已識別的需要重新整理媒體庫的媒體資訊列表
         """
         if not self.server:
             return
@@ -135,7 +135,7 @@ class MediaServer:
 
     def get_libraries(self):
         """
-        获取媒体服务器所有媒体库列表
+        獲取媒體伺服器所有媒體庫列表
         """
         if not self.server:
             return []
@@ -143,8 +143,8 @@ class MediaServer:
 
     def get_items(self, parent):
         """
-        获取媒体库中的所有媒体
-        :param parent: 上一级的ID
+        獲取媒體庫中的所有媒體
+        :param parent: 上一級的ID
         """
         if not self.server:
             return []
@@ -152,27 +152,27 @@ class MediaServer:
 
     def sync_mediaserver(self):
         """
-        同步媒体库所有数据到本地数据库
+        同步媒體庫所有資料到本地資料庫
         """
         if not self.server:
             return
         with lock:
-            # 开始进度条
-            log.info("【MEDIASERVER】开始同步媒体库数据...")
+            # 開始進度條
+            log.info("【MEDIASERVER】開始同步媒體庫資料...")
             self.progress.start("mediasync")
-            self.progress.update(ptype="mediasync", text="请稍候...")
-            # 汇总统计
+            self.progress.update(ptype="mediasync", text="請稍候...")
+            # 彙總統計
             medias_count = self.get_medias_count()
             total_media_count = medias_count.get("MovieCount") + medias_count.get("SeriesCount")
             total_count = 0
             movie_count = 0
             tv_count = 0
-            # 清空登记薄
+            # 清空登記薄
             self.mediadb.empty()
             for library in self.get_libraries():
-                # 获取媒体库所有项目
+                # 獲取媒體庫所有專案
                 self.progress.update(ptype="mediasync",
-                                     text="正在获取 %s 数据..." % (library.get("name")))
+                                     text="正在獲取 %s 資料..." % (library.get("name")))
                 for item in self.get_items(library.get("id")):
                     if not item:
                         continue
@@ -185,27 +185,27 @@ class MediaServer:
                         self.progress.update(ptype="mediasync",
                                              text="正在同步 %s，已完成：%s / %s ..." % (library.get("name"), total_count, total_media_count),
                                              value=round(100 * total_count/total_media_count, 1))
-            # 更新总体同步情况
+            # 更新總體同步情況
             self.mediadb.statistics(server_type=self._server_type.value,
                                     total_count=total_count,
                                     movie_count=movie_count,
                                     tv_count=tv_count)
-            # 结束进度条
+            # 結束進度條
             self.progress.update(ptype="mediasync",
                                  value=100,
-                                 text="媒体库数据同步完成，同步数量：%s" % total_count)
+                                 text="媒體庫資料同步完成，同步數量：%s" % total_count)
             self.progress.end("mediasync")
-            log.info("【MEDIASERVER】媒体库数据同步完成，同步数量：%s" % total_count)
+            log.info("【MEDIASERVER】媒體庫資料同步完成，同步數量：%s" % total_count)
 
     def check_item_exists(self, title, year=None, tmdbid=None):
         """
-        检查媒体库是否已存在某项目，非实时同步数据，仅用于展示
+        檢查媒體庫是否已存在某專案，非實時同步資料，僅用於展示
         """
         return self.mediadb.exists(server_type=self._server_type.value, title=title, year=year, tmdbid=tmdbid)
 
     def get_mediasync_status(self):
         """
-        获取当前媒体库同步状态
+        獲取當前媒體庫同步狀態
         """
         status = self.mediadb.get_statistics(server_type=self._server_type.value)
         if not status:

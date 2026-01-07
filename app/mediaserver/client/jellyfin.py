@@ -35,13 +35,13 @@ class Jellyfin(IMediaClient):
 
     def get_status(self):
         """
-        测试连通性
+        測試連通性
         """
         return True if self.get_medias_count() else False
 
     def __get_jellyfin_librarys(self):
         """
-        获取Jellyfin媒体库的信息
+        獲取Jellyfin媒體庫的資訊
         """
         if not self._host or not self._apikey:
             return []
@@ -51,16 +51,16 @@ class Jellyfin(IMediaClient):
             if res:
                 return res.json()
             else:
-                log.error(f"【{self.server_type}】Library/VirtualFolders 未获取到返回数据")
+                log.error(f"【{self.server_type}】Library/VirtualFolders 未獲取到返回資料")
                 return []
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Library/VirtualFolders 出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Library/VirtualFolders 出錯：" + str(e))
             return []
 
     def get_user_count(self):
         """
-        获得用户数量
+        獲得使用者數量
         """
         if not self._host or not self._apikey:
             return 0
@@ -70,16 +70,16 @@ class Jellyfin(IMediaClient):
             if res:
                 return len(res.json())
             else:
-                log.error(f"【{self.server_type}】Users 未获取到返回数据")
+                log.error(f"【{self.server_type}】Users 未獲取到返回資料")
                 return 0
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Users出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Users出錯：" + str(e))
             return 0
 
     def get_admin_user(self):
         """
-        获得管理员用户
+        獲得管理員使用者
         """
         if not self._host or not self._apikey:
             return None
@@ -92,15 +92,15 @@ class Jellyfin(IMediaClient):
                     if user.get("Policy", {}).get("IsAdministrator"):
                         return user.get("Id")
             else:
-                log.error(f"【{self.server_type}】Users 未获取到返回数据")
+                log.error(f"【{self.server_type}】Users 未獲取到返回資料")
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Users出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Users出錯：" + str(e))
         return None
 
     def get_activity_log(self, num):
         """
-        获取Jellyfin活动记录
+        獲取Jellyfin活動記錄
         """
         if not self._host or not self._apikey:
             return []
@@ -126,17 +126,17 @@ class Jellyfin(IMediaClient):
                                     "date": SystemUtils.get_local_time(event_date)}
                         ret_array.append(activity)
             else:
-                log.error(f"【{self.server_type}】System/ActivityLog/Entries 未获取到返回数据")
+                log.error(f"【{self.server_type}】System/ActivityLog/Entries 未獲取到返回資料")
                 return []
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接System/ActivityLog/Entries出错：" + str(e))
+            log.error(f"【{self.server_type}】連線System/ActivityLog/Entries出錯：" + str(e))
             return []
         return ret_array
 
     def get_medias_count(self):
         """
-        获得电影、电视剧、动漫媒体数量
+        獲得電影、電視劇、動漫媒體數量
         :return: MovieCount SeriesCount SongCount
         """
         if not self._host or not self._apikey:
@@ -147,16 +147,16 @@ class Jellyfin(IMediaClient):
             if res:
                 return res.json()
             else:
-                log.error(f"【{self.server_type}】Items/Counts 未获取到返回数据")
+                log.error(f"【{self.server_type}】Items/Counts 未獲取到返回資料")
                 return {}
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Items/Counts出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Items/Counts出錯：" + str(e))
             return {}
 
     def __get_jellyfin_series_id_by_name(self, name, year):
         """
-        根据名称查询Jellyfin中剧集的SeriesId
+        根據名稱查詢Jellyfin中劇集的SeriesId
         """
         if not self._host or not self._apikey or not self._user:
             return None
@@ -173,13 +173,13 @@ class Jellyfin(IMediaClient):
                             return res_item.get('Id')
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Items出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Items出錯：" + str(e))
             return None
         return ""
 
     def __get_jellyfin_season_id_by_name(self, name, year, season):
         """
-        根据名称查询Jellyfin中剧集和季对应季的Id
+        根據名稱查詢Jellyfin中劇集和季對應季的Id
         """
         if not self._host or not self._apikey or not self._user:
             return None, None
@@ -202,16 +202,16 @@ class Jellyfin(IMediaClient):
                             return series_id, res_item.get('Id')
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Shows/Id/Seasons出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Shows/Id/Seasons出錯：" + str(e))
             return None, None
         return "", ""
 
     def get_movies(self, title, year=None):
         """
-        根据标题和年份，检查电影是否在Jellyfin中存在，存在则返回列表
-        :param title: 标题
-        :param year: 年份，为空则不过滤
-        :return: 含title、year属性的字典列表
+        根據標題和年份，檢查電影是否在Jellyfin中存在，存在則返回列表
+        :param title: 標題
+        :param year: 年份，為空則不過濾
+        :return: 含title、year屬性的字典列表
         """
         if not self._host or not self._apikey or not self._user:
             return None
@@ -231,28 +231,28 @@ class Jellyfin(IMediaClient):
                             return ret_movies
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Items出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Items出錯：" + str(e))
             return None
         return []
 
     def __get_jellyfin_tv_episodes(self, title, year=None, tmdb_id=None, season=None):
         """
-        根据标题和年份和季，返回Jellyfin中的剧集列表
-        :param title: 标题
-        :param year: 年份，可以为空，为空时不按年份过滤
+        根據標題和年份和季，返回Jellyfin中的劇集列表
+        :param title: 標題
+        :param year: 年份，可以為空，為空時不按年份過濾
         :param tmdb_id: TMDBID
         :param season: 季
-        :return: 集号的列表
+        :return: 集號的列表
         """
         if not self._host or not self._apikey or not self._user:
             return None
-        # 电视剧
+        # 電視劇
         series_id, season_id = self.__get_jellyfin_season_id_by_name(title, year, season)
         if series_id is None or season_id is None:
             return None
         if not series_id or not season_id:
             return []
-        # 验证tmdbid是否相同
+        # 驗證tmdbid是否相同
         item_tmdbid = self.get_iteminfo(series_id).get("ProviderIds", {}).get("Tmdb")
         if tmdb_id and item_tmdbid:
             if str(tmdb_id) != str(item_tmdbid):
@@ -269,17 +269,17 @@ class Jellyfin(IMediaClient):
                 return exists_episodes
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Shows/Id/Episodes出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Shows/Id/Episodes出錯：" + str(e))
             return None
         return []
 
     def get_no_exists_episodes(self, meta_info, season, total_num):
         """
-        根据标题、年份、季、总集数，查询Jellyfin中缺少哪几集
-        :param meta_info: 已识别的需要查询的媒体信息
-        :param season: 季号，数字
-        :param total_num: 该季的总集数
-        :return: 该季不存在的集号列表
+        根據標題、年份、季、總集數，查詢Jellyfin中缺少哪幾集
+        :param meta_info: 已識別的需要查詢的媒體資訊
+        :param season: 季號，數字
+        :param total_num: 該季的總集數
+        :return: 該季不存在的集號列表
         """
         if not self._host or not self._apikey:
             return None
@@ -291,10 +291,10 @@ class Jellyfin(IMediaClient):
 
     def get_image_by_id(self, item_id, image_type):
         """
-        根据ItemId从Jellyfin查询图片地址
+        根據ItemId從Jellyfin查詢圖片地址
         :param item_id: 在Emby中的ID
-        :param image_type: 图片的类弄地，poster或者backdrop等
-        :return: 图片对应在TMDB中的URL
+        :param image_type: 圖片的類弄地，poster或者backdrop等
+        :return: 圖片對應在TMDB中的URL
         """
         if not self._host or not self._apikey:
             return None
@@ -307,17 +307,17 @@ class Jellyfin(IMediaClient):
                     if image.get("ProviderName") == "TheMovieDb" and image.get("Type") == image_type:
                         return image.get("Url")
             else:
-                log.error(f"【{self.server_type}】Items/RemoteImages 未获取到返回数据")
+                log.error(f"【{self.server_type}】Items/RemoteImages 未獲取到返回資料")
                 return None
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Items/Id/RemoteImages出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Items/Id/RemoteImages出錯：" + str(e))
             return None
         return None
 
     def refresh_root_library(self):
         """
-        通知Jellyfin刷新整个媒体库
+        通知Jellyfin重新整理整個媒體庫
         """
         if not self._host or not self._apikey:
             return False
@@ -327,18 +327,18 @@ class Jellyfin(IMediaClient):
             if res:
                 return True
             else:
-                log.info(f"【{self.server_type}】刷新媒体库失败，无法连接Jellyfin！")
+                log.info(f"【{self.server_type}】重新整理媒體庫失敗，無法連線Jellyfin！")
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Library/Refresh出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Library/Refresh出錯：" + str(e))
             return False
 
     def refresh_library_by_items(self, items):
         """
-        按类型、名称、年份来刷新媒体库，Jellyfin没有刷单个项目的API，这里直接刷新整库
-        :param items: 已识别的需要刷新媒体库的媒体信息列表
+        按型別、名稱、年份來重新整理媒體庫，Jellyfin沒有刷單個專案的API，這裡直接重新整理整庫
+        :param items: 已識別的需要重新整理媒體庫的媒體資訊列表
         """
-        # 没找到单项目刷新的对应的API，先按全库刷新
+        # 沒找到單專案重新整理的對應的API，先按全庫重新整理
         if not items:
             return False
         if not self._host or not self._apikey:
@@ -347,7 +347,7 @@ class Jellyfin(IMediaClient):
 
     def get_libraries(self):
         """
-        获取媒体服务器所有媒体库列表
+        獲取媒體伺服器所有媒體庫列表
         """
         if self._host and self._apikey:
             self._libraries = self.__get_jellyfin_librarys()
@@ -358,7 +358,7 @@ class Jellyfin(IMediaClient):
 
     def get_iteminfo(self, itemid):
         """
-        获取单个项目详情
+        獲取單個專案詳情
         """
         if not itemid:
             return {}
@@ -376,7 +376,7 @@ class Jellyfin(IMediaClient):
 
     def get_items(self, parent):
         """
-        获取媒体服务器所有媒体库列表
+        獲取媒體伺服器所有媒體庫列表
         """
         if not parent:
             yield {}
@@ -407,5 +407,5 @@ class Jellyfin(IMediaClient):
                             yield item
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Users/Items出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Users/Items出錯：" + str(e))
         yield {}

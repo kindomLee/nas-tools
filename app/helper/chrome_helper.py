@@ -40,14 +40,14 @@ class ChromeHelper(object):
             return self._chrome
 
     def get_status(self):
-        # FIXME Widnows下使用浏览器内核会导致启动多份进程，暂时禁用
+        # FIXME Widnows下使用瀏覽器核心會導致啟動多份程序，暫時禁用
         if SystemUtils.is_windows():
             return False
-        # 指定了WebDriver路径的，如果路径不存在则不启用
+        # 指定了WebDriver路徑的，如果路徑不存在則不啟用
         if self._executable_path \
                 and not os.path.exists(self._executable_path):
             return False
-        # 否则自动下载WebDriver
+        # 否則自動下載WebDriver
         return True
 
     def __get_browser(self):
@@ -90,9 +90,9 @@ class ChromeHelper(object):
     def new_tab(self, url, ua=None, cookie=None):
         if not self.browser:
             return
-        # 新开一个标签页
+        # 新開一個標籤頁
         self.browser.switch_to.new_window('tab')
-        # 访问URL
+        # 訪問URL
         self.visit(url=url, ua=ua, cookie=cookie)
 
     def close_tab(self):
@@ -139,14 +139,14 @@ class ChromeHelper(object):
 
     def _fixup_uc_pid_leak(self):
         """
-        uc 在处理退出时为强制kill进程，没有调用wait，会导致出现僵尸进程，此处增加wait，确保系统正常回收
+        uc 在處理退出時為強制kill程序，沒有呼叫wait，會導致出現殭屍程序，此處增加wait，確保系統正常回收
         :return:
         """
         try:
-            # chromedriver 进程
+            # chromedriver 程序
             if hasattr(self._chrome, "service") and getattr(self._chrome.service, "process", None):
                 self._chrome.service.process.wait(3)
-            # chrome 进程
+            # chrome 程序
             os.waitpid(self._chrome.browser_pid, 0)
         except Exception as e:
             ExceptionUtils.exception_traceback(e)

@@ -13,7 +13,7 @@ from app.utils.exception_utils import ExceptionUtils
 
 warnings.filterwarnings('ignore')
 
-# 添加第三方库入口
+# 新增第三方庫入口
 with open(os.path.join(os.path.dirname(__file__),
                        "third_party.txt"), "r") as f:
     third_party = f.readlines()
@@ -22,14 +22,14 @@ with open(os.path.join(os.path.dirname(__file__),
                                      "third_party",
                                      third_party_lib.strip()).replace("\\", "/"))
 
-# 运行环境判断
+# 執行環境判斷
 is_windows_exe = getattr(sys, 'frozen', False) and (os.name == "nt")
 if is_windows_exe:
-    # 托盘相关库
+    # 托盤相關庫
     import threading
     from windows.trayicon import TrayIcon, NullWriter
 
-    # 初始化环境变量
+    # 初始化環境變數
     os.environ["NASTOOL_CONFIG"] = os.path.join(os.path.dirname(sys.executable),
                                                 "config",
                                                 "config.yaml").replace("\\", "/")
@@ -50,7 +50,7 @@ if is_windows_exe:
     except Exception as err:
         ExceptionUtils.exception_traceback(err)
 else:
-    # 第三方代码打补丁
+    # 第三方程式碼打補丁
     shutil.copy2(os.path.join(os.path.dirname(__file__),
                               "third_party",
                               "_selenium.py"),
@@ -80,21 +80,21 @@ from version import APP_VERSION
 
 def sigal_handler(num, stack):
     """
-    信号处理
+    訊號處理
     """
     if SystemUtils.is_docker():
-        log.warn('捕捉到退出信号：%s，开始退出...' % num)
-        # 停止虚拟显示
+        log.warn('捕捉到退出訊號：%s，開始退出...' % num)
+        # 停止虛擬顯示
         DisplayHelper().quit()
         # 停止Chrome
         ChromeHelper().quit()
-        # 退出主进程
+        # 退出主程序
         sys.exit()
 
 
 def get_run_config():
     """
-    获取运行配置
+    獲取執行配置
     """
     _web_host = "::"
     _web_port = 3000
@@ -122,39 +122,39 @@ signal.signal(signal.SIGTERM, sigal_handler)
 
 def init_system():
     # 配置
-    log.console('NAStool 当前版本号：%s' % APP_VERSION)
-    # 数据库初始化
+    log.console('NAStool 當前版本號：%s' % APP_VERSION)
+    # 資料庫初始化
     init_db()
-    # 数据库更新
+    # 資料庫更新
     update_db()
-    # 升级配置文件
+    # 升級配置檔案
     update_config()
-    # 检查配置文件
+    # 檢查配置檔案
     check_config()
 
 
 def start_service():
-    log.console("开始启动服务...")
-    # 启动虚拟显示
+    log.console("開始啟動服務...")
+    # 啟動虛擬顯示
     DisplayHelper()
-    # 启动定时服务
+    # 啟動定時服務
     run_scheduler()
-    # 启动监控服务
+    # 啟動監控服務
     run_monitor()
-    # 启动刷流服务
+    # 啟動刷流服務
     BrushTask()
-    # 启动自定义订阅服务
+    # 啟動自定義訂閱服務
     RssChecker()
-    # 启动自动删种服务
+    # 啟動自動刪種服務
     TorrentRemover()
-    # 加载索引器配置
+    # 載入索引器配置
     IndexerHelper()
 
 
 def monitor_config():
     class _ConfigHandler(FileSystemEventHandler):
         """
-        配置文件变化响应
+        配置檔案變化響應
         """
 
         def __init__(self):
@@ -163,42 +163,42 @@ def monitor_config():
         def on_modified(self, event):
             if not event.is_directory \
                     and os.path.basename(event.src_path) == "config.yaml":
-                # 10秒内只能加载一次
+                # 10秒內只能載入一次
                 if ConfigLoadCache.get(event.src_path):
                     return
                 ConfigLoadCache.set(event.src_path, True)
-                log.console("进程 %s 检测到配置文件已修改，正在重新加载..." % os.getpid())
+                log.console("程序 %s 檢測到配置檔案已修改，正在重新載入..." % os.getpid())
                 time.sleep(1)
-                # 重新加载配置
+                # 重新載入配置
                 Config().init_config()
-                # 重载singleton服务
+                # 過載singleton服務
                 for instance in INSTANCES.values():
                     if hasattr(instance, "init_config"):
                         instance.init_config()
-                # 重启定时服务
+                # 重啟定時服務
                 restart_scheduler()
-                # 重启监控服务
+                # 重啟監控服務
                 restart_monitor()
 
-    # 配置文件监听
+    # 配置檔案監聽
     _observer = Observer(timeout=10)
     _observer.schedule(_ConfigHandler(), path=Config().get_config_path(), recursive=False)
     _observer.daemon = True
     _observer.start()
 
 
-# 系统初始化
+# 系統初始化
 init_system()
 
-# 启动服务
+# 啟動服務
 start_service()
 
-# 监听配置文件变化
+# 監聽配置檔案變化
 monitor_config()
 
-# 本地运行
+# 本地執行
 if __name__ == '__main__':
-    # Windows启动托盘
+    # Windows啟動托盤
     if is_windows_exe:
         homepage = Config().get_config('app').get('domain')
         if not homepage:
@@ -217,5 +217,5 @@ if __name__ == '__main__':
             p1 = threading.Thread(target=traystart, daemon=True)
             p1.start()
 
-    # gunicorn 启动
+    # gunicorn 啟動
     App.run(**get_run_config())

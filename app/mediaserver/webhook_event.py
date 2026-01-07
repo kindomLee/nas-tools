@@ -16,7 +16,7 @@ class WebhookEvent:
     @staticmethod
     def __parse_plex_msg(message):
         """
-        解析Plex报文
+        解析Plex報文
         """
         eventItem = {'event': message.get('event', {}),
                      'item_name': message.get('Metadata', {}).get('title'),
@@ -27,7 +27,7 @@ class WebhookEvent:
     @staticmethod
     def __parse_jellyfin_msg(message):
         """
-        解析Jellyfin报文
+        解析Jellyfin報文
         """
         eventItem = {'event': message.get('NotificationType', {}),
                      'item_name': message.get('Name'),
@@ -38,7 +38,7 @@ class WebhookEvent:
     @staticmethod
     def __parse_emby_msg(message):
         """
-        解析Emby报文
+        解析Emby報文
         """
         eventItem = {'event': message.get('Event', {})}
         if message.get('Item'):
@@ -65,7 +65,7 @@ class WebhookEvent:
 
     def plex_action(self, message):
         """
-        执行Plex webhook动作
+        執行Plex webhook動作
         """
         event_info = self.__parse_plex_msg(message)
         if event_info.get("event") in ["media.play", "media.stop"]:
@@ -73,7 +73,7 @@ class WebhookEvent:
 
     def jellyfin_action(self, message):
         """
-        执行Jellyfin webhook动作
+        執行Jellyfin webhook動作
         """
         event_info = self.__parse_jellyfin_msg(message)
         if event_info.get("event") in ["PlaybackStart", "PlaybackStop"]:
@@ -81,7 +81,7 @@ class WebhookEvent:
 
     def emby_action(self, message):
         """
-        执行Emby webhook动作
+        執行Emby webhook動作
         """
         event_info = self.__parse_emby_msg(message)
         if event_info.get("event") == "system.webhooktest":
@@ -91,17 +91,17 @@ class WebhookEvent:
 
     def send_webhook_message(self, event_info, channel):
         """
-        发送消息
+        傳送訊息
         """
         _webhook_actions = {
-            "system.webhooktest": "测试",
-            "playback.start": "开始播放",
-            "media.play": "开始播放",
-            "PlaybackStart": "开始播放",
+            "system.webhooktest": "測試",
+            "playback.start": "開始播放",
+            "media.play": "開始播放",
+            "PlaybackStart": "開始播放",
             "PlaybackStop": "停止播放",
             "playback.stop": "停止播放",
             "media.stop": "停止播放",
-            "item.rate": "标记了",
+            "item.rate": "標記了",
         }
         _webhook_images = {
             "emby": "https://emby.media/notificationicon.png",
@@ -111,30 +111,30 @@ class WebhookEvent:
 
         if self.is_ignore_webhook_message(event_info.get('user_name'), event_info.get('device_name')):
             return
-        # 消息标题
-        message_title = f"用户 {event_info.get('user_name')} {_webhook_actions.get(event_info.get('event'))} {event_info.get('item_name')}"
-        # 消息内容
+        # 訊息標題
+        message_title = f"使用者 {event_info.get('user_name')} {_webhook_actions.get(event_info.get('event'))} {event_info.get('item_name')}"
+        # 訊息內容
         message_texts = []
         if event_info.get('device_name'):
-            message_texts.append(f"设备：{event_info.get('device_name')}")
+            message_texts.append(f"裝置：{event_info.get('device_name')}")
         if event_info.get('client'):
-            message_texts.append(f"客户端：{event_info.get('client')}")
+            message_texts.append(f"客戶端：{event_info.get('client')}")
         if event_info.get('ip'):
             message_texts.append(f"IP地址：{event_info.get('ip')}")
             message_texts.append(f"位置：{WebUtils.get_location(event_info.get('ip'))}")
-        message_texts.append(f"时间：{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))}")
-        # 消息图片
+        message_texts.append(f"時間：{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))}")
+        # 訊息圖片
         if event_info.get('item_id'):
             image_url = self.mediaserver.get_image_by_id(event_info.get('item_id'), "Backdrop") or _webhook_images.get(
                 channel)
         else:
             image_url = _webhook_images.get(channel)
-        # 发送消息
+        # 傳送訊息
         self.message.send_mediaserver_message(title=message_title, text="\n".join(message_texts), image=image_url)
 
     def is_ignore_webhook_message(self, user_name, device_name):
         """
-        判断是否忽略通知
+        判斷是否忽略通知
         """
         if not user_name and not device_name:
             return False

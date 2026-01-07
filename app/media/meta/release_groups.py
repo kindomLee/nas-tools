@@ -4,7 +4,7 @@ from config import Config
 
 class ReleaseGroupsMatcher(object):
     """
-    识别制作组、字幕组
+    識別製作組、字幕組
     """
     __config = None
     __release_groups = None
@@ -67,7 +67,7 @@ class ReleaseGroupsMatcher(object):
         "ultrahd": [],
         "others": ['B(?:MDru|eyondHD|TN)', 'C(?:fandora|trlhd|MRG)', 'DON', 'EVO', 'FLUX', 'HONE(?:|yG)',
                    'N(?:oGroup|T(?:b|G))', 'PandaMoon', 'SMURF', 'T(?:EPES|aengoo|rollHD )'],
-        "anime": ['ANi', 'HYSUB', 'KTXP', 'LoliHouse', 'MCE', 'Nekomoe kissaten', '(?:Lilith|NC)-Raws', '织梦字幕组']
+        "anime": ['ANi', 'HYSUB', 'KTXP', 'LoliHouse', 'MCE', 'Nekomoe kissaten', '(?:Lilith|NC)-Raws', '織夢字幕組']
     }
 
     def __init__(self):
@@ -89,9 +89,9 @@ class ReleaseGroupsMatcher(object):
 
     def match(self, title=None, groups=None):
         """
-        :param title: 资源标题或文件名
-        :param groups: 制作组/字幕组
-        :return: 匹配结果
+        :param title: 資源標題或檔名
+        :param groups: 製作組/字幕組
+        :return: 匹配結果
         """
         if not title:
             return ""

@@ -1,5 +1,5 @@
 ![logo-blue](https://user-images.githubusercontent.com/51039935/197520391-f35db354-6071-4c12-86ea-fc450f04bc85.png)
-# NAS媒体库资源归集、整理自动化工具
+# NAS媒體庫資源歸集、整理自動化工具
 
 [![GitHub stars](https://img.shields.io/github/stars/kindomLee/nas-tools?style=plastic)](https://github.com/kindomLee/nas-tools/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/kindomLee/nas-tools?style=plastic)](https://github.com/kindomLee/nas-tools/network/members)
@@ -8,7 +8,7 @@
 
 Docker：https://hub.docker.com/repository/docker/jxxghp/nas-tools
 
-TG频道：https://t.me/nastool
+TG頻道：https://t.me/nastool
 
 WIKI：https://github.com/kindomLee/nas-tools/wiki
 
@@ -17,38 +17,38 @@ API: http://localhost:3000/api/v1/
 
 ## 功能：
 
-本软件的初衷是实现影视资源的自动化管理，释放双手、聚焦观影。需要有良好的网络环境及私有站点才能获得较好的使用体验。
+本軟體的初衷是實現影視資源的自動化管理，釋放雙手、聚焦觀影。需要有良好的網路環境及私有站點才能獲得較好的使用體驗。
 
-### 1、资源检索和订阅
-* 站点RSS聚合，想看的加入订阅，资源自动实时追新。
-* 通过微信、Telegram、Slack或者WEB界面聚合资源搜索下载，最新热门资源一键搜索或者订阅。
-* 与豆瓣联动，在豆瓣中标记想看后台自动检索下载，未出全的自动加入订阅。
+### 1、資源檢索和訂閱
+* 站點RSS聚合，想看的加入訂閱，資源自動實時追新。
+* 透過微信、Telegram、Slack或者WEB介面聚合資源搜尋下載，最新熱門資源一鍵搜尋或者訂閱。
+* 與豆瓣聯動，在豆瓣中標記想看後臺自動檢索下載，未出全的自動加入訂閱。
 
-### 2、媒体库整理
-* 监控下载软件，下载完成后自动识别真实名称，硬链接到媒体库并重命名。
-* 对目录进行监控，文件变化时自动识别媒体信息硬链接到媒体库并重命名。
-* 解决保种与媒体库整理冲突的问题，专为中文环境优化，支持国产剧集和动漫，重命名准确率高，改名后Emby/Jellyfin/Plex 100%搜刮。
+### 2、媒體庫整理
+* 監控下載軟體，下載完成後自動識別真實名稱，硬連結到媒體庫並重新命名。
+* 對目錄進行監控，檔案變化時自動識別媒體資訊硬連結到媒體庫並重新命名。
+* 解決保種與媒體庫整理衝突的問題，專為中文環境最佳化，支援國產劇集和動漫，重新命名準確率高，改名後Emby/Jellyfin/Plex 100%搜刮。
 
-### 3、站点养护
-* 全面的站点数据统计，实时监测你的站点流量情况。
-* 全自动化托管养站，支持远程下载器。
-* 站点每日自动登录保号。
+### 3、站點養護
+* 全面的站點資料統計，實時監測你的站點流量情況。
+* 全自動化託管養站，支援遠端下載器。
+* 站點每日自動登入保號。
 
-### 4、消息服务
-* 支持ServerChan、微信、Slack、Telegram、Bark、PushPlus、爱语飞飞等图文消息通知
-* 支持通过微信、Telegram、Slack远程控制订阅和下载。
-* Emby/Jellyfin/Plex播放状态通知。
+### 4、訊息服務
+* 支援ServerChan、微信、Slack、Telegram、Bark、PushPlus、愛語飛飛等圖文訊息通知
+* 支援透過微信、Telegram、Slack遠端控制訂閱和下載。
+* Emby/Jellyfin/Plex播放狀態通知。
 
 
-## 安装
+## 安裝
 ### 1、Docker
 ```
 docker pull jxxghp/nas-tools:latest
 ```
-教程见 [这里](docker/readme.md) ，如无法连接Github，注意不要开启自动更新开关(NASTOOL_AUTO_UPDATE=false)。
+教程見 [這裡](docker/readme.md) ，如無法連線Github，注意不要開啟自動更新開關(NASTOOL_AUTO_UPDATE=false)。
 
-### 2、本地运行
-python3版本，如发现缺少依赖包需额外安装
+### 2、本地執行
+python3版本，如發現缺少依賴包需額外安裝
 ```
 git clone -b master https://github.com/kindomLee/nas-tools --recurse-submodule 
 python3 -m pip install -r requirements.txt
@@ -57,12 +57,12 @@ nohup python3 run.py &
 ```
 
 ### 3、Windows
-下载exe文件，双击运行即可，会自动生成配置文件目录
+下載exe檔案，雙擊執行即可，會自動生成配置檔案目錄
 
 https://github.com/kindomLee/nas-tools/releases
 
-### 4、群晖套件
-添加矿神群晖SPK套件源直接安装：
+### 4、群暉套件
+新增礦神群暉SPK套件源直接安裝：
 
 https://spk.imnks.com/
 
@@ -70,72 +70,72 @@ https://spk7.imnks.com/
 
 
 ## 配置
-### 1、申请相关API KEY
-* 申请TMDB用户，在 https://www.themoviedb.org/ 申请用户，得到API KEY。
+### 1、申請相關API KEY
+* 申請TMDB使用者，在 https://www.themoviedb.org/ 申請使用者，得到API KEY。
 
-* 申请消息通知服务
-  1) 微信（推荐）：在 https://work.weixin.qq.com/ 申请企业微信自建应用，获得企业ID、自建应用secret、agentid
+* 申請訊息通知服務
+  1) 微信（推薦）：在 https://work.weixin.qq.com/ 申請企業微信自建應用，獲得企業ID、自建應用secret、agentid
      
-     微信扫描自建应用二维码可实现在微信中使用消息服务，无需打开企业微信
-  2) Server酱：或者在 https://sct.ftqq.com/ 申请SendKey
-  3) Telegram（推荐）：关注BotFather申请机器人获取token，关注getuserID拿到chat_id
-  4) Bark：安装Bark客户端获得KEY，可以自建Bark服务器或者使用默认的服务器
-  5) Slack：在 https://api.slack.com/apps 申请应用，详情参考频道说明
-  6) 其它：仍然会持续增加对通知渠道的支持，API KEY获取方式类似，不一一说明
+     微信掃描自建應用二維碼可實現在微信中使用訊息服務，無需開啟企業微信
+  2) Server醬：或者在 https://sct.ftqq.com/ 申請SendKey
+  3) Telegram（推薦）：關注BotFather申請機器人獲取token，關注getuserID拿到chat_id
+  4) Bark：安裝Bark客戶端獲得KEY，可以自建Bark伺服器或者使用預設的伺服器
+  5) Slack：在 https://api.slack.com/apps 申請應用，詳情參考頻道說明
+  6) 其它：仍然會持續增加對通知渠道的支援，API KEY獲取方式類似，不一一說明
 
-### 2、基础配置
-* 文件转移模式说明：目前支持六种模式：复制、硬链接、软链接、移动、RCLONE、MINIO。
+### 2、基礎配置
+* 檔案轉移模式說明：目前支援六種模式：複製、硬連結、軟連結、移動、RCLONE、MINIO。
 
-  1) 复制模式下载做种和媒体库是两份，多占用存储（下载盘大小决定能保多少种），好处是媒体库的盘不用24小时运行可以休眠；
+  1) 複製模式下載做種和媒體庫是兩份，多佔用儲存（下載盤大小決定能保多少種），好處是媒體庫的盤不用24小時執行可以休眠；
 
-  2) 硬链接模式不用额外增加存储空间，一份文件两份目录，但需要下载目录和媒体库目录在一个磁盘分区或者存储空间；软链接模式就是快捷方式，需要容器内路径与真实路径一致才能正常使用；
+  2) 硬連結模式不用額外增加儲存空間，一份檔案兩份目錄，但需要下載目錄和媒體庫目錄在一個磁碟分割槽或者儲存空間；軟連結模式就是快捷方式，需要容器內路徑與真實路徑一致才能正常使用；
 
-  3) 移动模式会移动和删除原文件及目录；
+  3) 移動模式會移動和刪除原檔案及目錄；
   
-  4) RCLONE模式只针对RCLONE网盘使用场景，**注意，使用RCLONE模式需要自行映射rclone配置目录到容器中**，具体参考设置项小问号说明； 
+  4) RCLONE模式只針對RCLONE網盤使用場景，**注意，使用RCLONE模式需要自行對映rclone配置目錄到容器中**，具體參考設定項小問號說明； 
   
-  5) MINIO只针对S3/云原生场景，**注意，使用MINIO，媒体库应当设置为/bucket名/类别名**，例如,bucket的名字叫cloud,电影的分类文件夹名叫movie，则媒体库电影路径为：/cloud/movie,最好母集用s3fs挂载到/cloud/movie，只读就行。
+  5) MINIO只針對S3/雲原生場景，**注意，使用MINIO，媒體庫應當設定為/bucket名/類別名**，例如,bucket的名字叫cloud,電影的分類資料夾名叫movie，則媒體庫電影路徑為：/cloud/movie,最好母集用s3fs掛載到/cloud/movie，只讀就行。
 
 
-* 启动程序并配置：Docker默认使用3000端口启动（群晖套件默认3003端口），默认用户密码：admin/password（docker需要参考教程提前映射好端口、下载目录、媒体库目录）。登录管理界面后，在设置中根据每个配置项的提示在WEB页面修改好配置并重启生效（基础设置中有标红星的是必须要配置的，如TMDB APIKEY等），每一个配置项后都有小问号，点击会有详细的配置说明，推荐阅读。
+* 啟動程式並配置：Docker預設使用3000埠啟動（群暉套件預設3003埠），預設使用者密碼：admin/password（docker需要參考教程提前對映好埠、下載目錄、媒體庫目錄）。登入管理介面後，在設定中根據每個配置項的提示在WEB頁面修改好配置並重啟生效（基礎設定中有標紅星的是必須要配置的，如TMDB APIKEY等），每一個配置項後都有小問號，點選會有詳細的配置說明，推薦閱讀。
 
-### 3、设置媒体库服务器
-支持 Emby（推荐）、Jellyfin、Plex，设置媒体服务器后可以对本地资源进行判重避免重复下载，同时能标识本地已存在的资源：
-* 在Emby/Jellyfin/Plex的Webhook插件中，设置地址为：http(s)://IP:PORT/emby、jellyfin、plex，用于接收播放通知（可选）
-* 将Emby/Jellyfin/Plex的相关信息配置到”设置-》媒体服务器“中
-* 如果启用了默认分类，需按如下的目录结构分别设置好媒体库；如是自定义分类，请按自己的定义建立好媒体库目录，分类定义请参考default-category.yaml分类配置文件模板。注意，开启二级分类时，媒体库需要将目录设置到二级分类子目录中（可添加多个子目录到一个媒体库，也可以一个子目录设置一个媒体库），否则媒体库管理软件可能无法正常搜刮识别。
-   > 电影
-   >> 精选
-   >> 华语电影
-   >> 外语电影
-   >> 动画电影
+### 3、設定媒體庫伺服器
+支援 Emby（推薦）、Jellyfin、Plex，設定媒體伺服器後可以對本地資源進行判重避免重複下載，同時能標識本地已存在的資源：
+* 在Emby/Jellyfin/Plex的Webhook外掛中，設定地址為：http(s)://IP:PORT/emby、jellyfin、plex，用於接收播放通知（可選）
+* 將Emby/Jellyfin/Plex的相關資訊配置到”設定-》媒體伺服器“中
+* 如果啟用了預設分類，需按如下的目錄結構分別設定好媒體庫；如是自定義分類，請按自己的定義建立好媒體庫目錄，分類定義請參考default-category.yaml分類配置檔案模板。注意，開啟二級分類時，媒體庫需要將目錄設定到二級分類子目錄中（可新增多個子目錄到一個媒體庫，也可以一個子目錄設定一個媒體庫），否則媒體庫管理軟體可能無法正常搜刮識別。
+   > 電影
+   >> 精選
+   >> 華語電影
+   >> 外語電影
+   >> 動畫電影
    > 
-   > 电视剧
-   >> 国产剧
-   >> 欧美剧
-   >> 日韩剧
-   >> 动漫
-   >> 纪录片
-   >> 综艺
-   >> 儿童
+   > 電視劇
+   >> 國產劇
+   >> 歐美劇
+   >> 日韓劇
+   >> 動漫
+   >> 紀錄片
+   >> 綜藝
+   >> 兒童
 
-### 4、配置下载器及下载目录
-支持qbittorrent（推荐）、transmission、aria2、115网盘等，右上角按钮设置好下载目录。
+### 4、配置下載器及下載目錄
+支援qbittorrent（推薦）、transmission、aria2、115網盤等，右上角按鈕設定好下載目錄。
 
-### 5、配置同步目录
-* 目录同步可以对多个分散的文件夹进行监控，文件夹中有新增媒体文件时会自动进行识别重命名，并按配置的转移方式转移到媒体库目录或指定的目录中。
-* 如将下载软件的下载目录也纳入目录同步范围的，建议关闭下载软件监控功能，否则会触发重复处理。
+### 5、配置同步目錄
+* 目錄同步可以對多個分散的資料夾進行監控，資料夾中有新增媒體檔案時會自動進行識別重新命名，並按配置的轉移方式轉移到媒體庫目錄或指定的目錄中。
+* 如將下載軟體的下載目錄也納入目錄同步範圍的，建議關閉下載軟體監控功能，否則會觸發重複處理。
 
-### 5、配置微信/Slack/Telegram远程控制
-配置好微信、Slack或Telegram机器人后，可以直接通过微信/Slack/Telegram机器人发送名字实现自动检索下载，以及通过菜单控制程序运行。
+### 5、配置微信/Slack/Telegram遠端控制
+配置好微信、Slack或Telegram機器人後，可以直接透過微信/Slack/Telegram機器人傳送名字實現自動檢索下載，以及透過選單控制程式執行。
 
-1) **微信消息推送及回调**
+1) **微信訊息推送及回撥**
 
-  * 配置消息推送代理
+  * 配置訊息推送代理
 
-  由于微信官方限制，2022年6月20日后创建的企业微信应用需要有固定的公网IP地址并加入IP白名单后才能接收到消息，使用有固定公网IP的代理服务器转发可解决该问题
+  由於微信官方限制，2022年6月20日後建立的企業微信應用需要有固定的公網IP地址並加入IP白名單後才能接收到訊息，使用有固定公網IP的代理伺服器轉發可解決該問題
 
-    如使用nginx搭建代理服务，需在配置中增加以下代理配置：
+    如使用nginx搭建代理服務，需在配置中增加以下代理配置：
     ```
     location /cgi-bin/gettoken {
       proxy_pass https://qyapi.weixin.qq.com;
@@ -145,95 +145,95 @@ https://spk7.imnks.com/
     }
     ```
 
-    如使用Caddy搭建代理服务，需在配置中增加以下代理配置（`{upstream_hostport}` 部分不是变量，不要改，原封不动复制粘贴过去即可）。
+    如使用Caddy搭建代理服務，需在配置中增加以下代理配置（`{upstream_hostport}` 部分不是變數，不要改，原封不動複製貼上過去即可）。
     ```
     reverse_proxy https://qyapi.weixin.qq.com {
       header_up Host {upstream_hostport}
     }
     ```
-    注意：代理服务器仅适用于在微信中接收工具推送的消息，消息回调与代理服务器无关。
+    注意：代理伺服器僅適用於在微信中接收工具推送的訊息，訊息回撥與代理伺服器無關。
 
 
-  * 配置微信消息接收服务
-  在企业微信自建应用管理页面-》API接收消息 开启消息接收服务：
+  * 配置微信訊息接收服務
+  在企業微信自建應用管理頁面-》API接收訊息 開啟訊息接收服務：
  
-    1) 在微信页面生成Token和EncodingAESKey，并在NASTool设置->消息通知->微信中填入对应的输入项并保存。
+    1) 在微信頁面生成Token和EncodingAESKey，並在NASTool設定->訊息通知->微信中填入對應的輸入項並儲存。
 
-    2) **重启NASTool**。
+    2) **重啟NASTool**。
 
-    3) 微信页面地址URL填写：http(s)://IP:PORT/wechat，点确定进行认证。
+    3) 微信頁面地址URL填寫：http(s)://IP:PORT/wechat，點確定進行認證。
 
 
-  * 配置微信菜单控制
-  通过菜单远程控制工具运行，在https://work.weixin.qq.com/wework_admin/frame#apps 应用自定义菜单页面按如下图所示维护好菜单，菜单内容为发送消息，消息内容随意。
+  * 配置微信選單控制
+  透過選單遠端控制工具執行，在https://work.weixin.qq.com/wework_admin/frame#apps 應用自定義選單頁面按如下圖所示維護好選單，選單內容為傳送訊息，訊息內容隨意。
 
-   **一级菜单及一级菜单下的前几个子菜单顺序需要一模一样**，在符合截图的示例项后可以自己增加别的二级菜单项。
+   **一級選單及一級選單下的前幾個子選單順序需要一模一樣**，在符合截圖的示例項後可以自己增加別的二級選單項。
 
    ![image](https://user-images.githubusercontent.com/51039935/170855173-cca62553-4f5d-49dd-a255-e132bc0d8c3e.png)
 
 
-2) **Telegram Bot机器人**
+2) **Telegram Bot機器人**
 
-  * 在NASTool设置中设置好本程序的外网访问地址，根据实际网络情况决定是否打开Telegram Webhook开关。
+  * 在NASTool設定中設定好本程式的外網訪問地址，根據實際網路情況決定是否開啟Telegram Webhook開關。
 
-  **注意：WebHook受Telegram限制，程序运行端口需要设置为以下端口之一：443, 80, 88, 8443，且需要有以网认证的Https证书。**
+  **注意：WebHook受Telegram限制，程式執行埠需要設定為以下埠之一：443, 80, 88, 8443，且需要有以網認證的Https證書。**
 
-  * 在Telegram BotFather机器人中按下表维护好bot命令菜单（要选），选择菜单或输入命令运行对应服务，输入其它内容则启动聚合检索。
+  * 在Telegram BotFather機器人中按下表維護好bot命令選單（要選），選擇選單或輸入命令執行對應服務，輸入其它內容則啟動聚合檢索。
 
 3) **Slack**
 
-  * 详情参考频道说明
+  * 詳情參考頻道說明
 
-  **命令与功能对应关系**
+  **命令與功能對應關係**
 
    |  命令   | 功能  |
    |  ----  | ----  |
-   | /rss  | RSS订阅 |
-   | /ptt  | 下载文件转移 |
-   | /ptr  | 删种 |
-   | /pts | 站点签到 |
-   | /rst  | 目录同步 |
+   | /rss  | RSS訂閱 |
+   | /ptt  | 下載檔案轉移 |
+   | /ptr  | 刪種 |
+   | /pts | 站點簽到 |
+   | /rst  | 目錄同步 |
    | /db   | 豆瓣想看 |
    
 
 ### 6、配置索引器
-配置索引器，以支持搜索站点资源：
-  * 本工具内建索引器目前已支持大部分主流PT站点及部分公开站点，建议启用内建索引器。
-  * 同时支持Jackett/Prowlarr，需额外搭建对应服务并获取API Key以及地址等信息，配置到设置->索引器->Jackett/Prowlarr中。
+配置索引器，以支援搜尋站點資源：
+  * 本工具內建索引器目前已支援大部分主流PT站點及部分公開站點，建議啟用內建索引器。
+  * 同時支援Jackett/Prowlarr，需額外搭建對應服務並獲取API Key以及地址等資訊，配置到設定->索引器->Jackett/Prowlarr中。
 
-### 7、配置站点
-本工具的电影电视剧订阅、资源搜索、站点数据统计、刷流、自动签到等功能均依赖于正确配置站点信息，需要在“站点管理->站点维护”中维护好站点RSS链接以及Cookie等。
+### 7、配置站點
+本工具的電影電視劇訂閱、資源搜尋、站點資料統計、刷流、自動簽到等功能均依賴於正確配置站點資訊，需要在“站點管理->站點維護”中維護好站點RSS連結以及Cookie等。
 
-其中站点RSS链接生成时请尽量选择影视类资源分类，且勾选副标题。
+其中站點RSS連結生成時請儘量選擇影視類資源分類，且勾選副標題。
 
-### 8、整理存量媒体资源
-如果你的存量资源所在的目录与你目录同步中配置的源路径目的路径相同，则可以通过WEBUI或微信/Telegram的“目录同步”按钮触发全量同步。 
+### 8、整理存量媒體資源
+如果你的存量資源所在的目錄與你目錄同步中配置的源路徑目的路徑相同，則可以透過WEBUI或微信/Telegram的“目錄同步”按鈕觸發全量同步。 
 
-如果不相同则可以按以下说明操作，手工输入命令整理特定目录下的媒体资源：
+如果不相同則可以按以下說明操作，手工輸入命令整理特定目錄下的媒體資源：
 
-说明：-d 参数为可选，如不输入则会自动区分电影/电视剧/动漫分别存储到对应的媒体库目录中；-d 参数有输入时则不管类型，都往-d目录中转移。
+說明：-d 引數為可選，如不輸入則會自動區分電影/電視劇/動漫分別儲存到對應的媒體庫目錄中；-d 引數有輸入時則不管型別，都往-d目錄中轉移。
 
-* Docker版本，宿主机上运行以下命令，nas-tools修改为你的docker名称，修改源目录和目的目录参数。
+* Docker版本，宿主機上執行以下命令，nas-tools修改為你的docker名稱，修改源目錄和目的目錄引數。
    ```
    docker exec -it nas-tools sh
    python3 -m pip install -r third_party.txt
    python3 /nas-tools/app/filetransfer.py -m link -s /from/path -d /to/path
    ```
-* 群晖套件版本，ssh到后台运行以下命令，同样修改配置文件路径以及源目录、目的目录参数。
+* 群暉套件版本，ssh到後臺執行以下命令，同樣修改配置檔案路徑以及源目錄、目的目錄引數。
    ```
    /var/packages/py3k/target/usr/local/bin/python3 -m pip install -r /var/packages/nastool/target/third_party.txt
    export NASTOOL_CONFIG=/var/packages/nastool/target/config/config.yaml
    /var/packages/py3k/target/usr/local/bin/python3 /var/packages/nastool/target/app/filetransfer.py -m link -s /from/path -d /to/path
    ```
-* 本地直接运行的，cd 到程序根目录，执行以下命令，修改配置文件、源目录和目的目录参数。
+* 本地直接執行的，cd 到程式根目錄，執行以下命令，修改配置檔案、源目錄和目的目錄引數。
    ```
    python3 -m pip install -r third_party.txt
    export NASTOOL_CONFIG=config/config.yaml
    python3 app/filetransfer.py -m link -s /from/path -d /to/path
    ```
 
-## 鸣谢
-* 程序UI模板及图标来源于开源项目<a href="https://github.com/tabler/tabler">tabler</a>，此外项目中还使用到了开源模块：<a href="https://github.com/igorcmoura/anitopy" target="_blank">anitopy</a>、<a href="https://github.com/AnthonyBloomer/tmdbv3api" target="_blank">tmdbv3api</a>、<a href="https://github.com/pkkid/python-plexapi" target="_blank">python-plexapi</a>、<a href="https://github.com/rmartin16/qbittorrent-api">qbittorrent-api</a>、<a href="https://github.com/Trim21/transmission-rpc">transmission-rpc</a>等
-* 感谢 <a href="https://github.com/devome" target="_blank">nevinee</a> 完善docker构建
-* 感谢 <a href="https://github.com/tbc0309" target="_blank">tbc0309</a> 适配群晖套件
-* 感谢 PR 代码、完善WIKI、发布教程的所有大佬
+## 鳴謝
+* 程式UI模板及圖示來源於開源專案<a href="https://github.com/tabler/tabler">tabler</a>，此外專案中還使用到了開源模組：<a href="https://github.com/igorcmoura/anitopy" target="_blank">anitopy</a>、<a href="https://github.com/AnthonyBloomer/tmdbv3api" target="_blank">tmdbv3api</a>、<a href="https://github.com/pkkid/python-plexapi" target="_blank">python-plexapi</a>、<a href="https://github.com/rmartin16/qbittorrent-api">qbittorrent-api</a>、<a href="https://github.com/Trim21/transmission-rpc">transmission-rpc</a>等
+* 感謝 <a href="https://github.com/devome" target="_blank">nevinee</a> 完善docker構建
+* 感謝 <a href="https://github.com/tbc0309" target="_blank">tbc0309</a> 適配群暉套件
+* 感謝 PR 程式碼、完善WIKI、釋出教程的所有大佬

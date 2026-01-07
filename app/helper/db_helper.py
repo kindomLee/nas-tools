@@ -17,7 +17,7 @@ class DbHelper:
     @DbPersist(_db)
     def insert_search_results(self, media_items: list):
         """
-        将返回信息插入数据库
+        將返回資訊插入資料庫
         """
         if not media_items:
             return
@@ -65,19 +65,19 @@ class DbHelper:
 
     def get_search_result_by_id(self, dl_id):
         """
-        根据ID从数据库中查询检索结果的一条记录
+        根據ID從資料庫中查詢檢索結果的一條記錄
         """
         return self._db.query(SEARCHRESULTINFO).filter(SEARCHRESULTINFO.ID == dl_id).all()
 
     def get_search_results(self, ):
         """
-        查询检索结果的所有记录
+        查詢檢索結果的所有記錄
         """
         return self._db.query(SEARCHRESULTINFO).all()
 
     def is_torrent_rssd(self, enclosure):
         """
-        查询RSS是否处理过，根据下载链接
+        查詢RSS是否處理過，根據下載連結
         """
         if not enclosure:
             return True
@@ -88,7 +88,7 @@ class DbHelper:
 
     def is_userrss_finished(self, torrent_name, enclosure):
         """
-        查询RSS是否处理过，根据名称
+        查詢RSS是否處理過，根據名稱
         """
         if not torrent_name and not enclosure:
             return True
@@ -101,14 +101,14 @@ class DbHelper:
     @DbPersist(_db)
     def delete_all_search_torrents(self, ):
         """
-        删除所有搜索的记录
+        刪除所有搜尋的記錄
         """
         self._db.query(SEARCHRESULTINFO).delete()
 
     @DbPersist(_db)
     def insert_rss_torrents(self, media_info):
         """
-        将RSS的记录插入数据库
+        將RSS的記錄插入資料庫
         """
         self._db.insert(
             RSSTORRENTS(
@@ -124,7 +124,7 @@ class DbHelper:
     @DbPersist(_db)
     def simple_insert_rss_torrents(self, title, enclosure):
         """
-        将RSS的记录插入数据库
+        將RSS的記錄插入資料庫
         """
         self._db.insert(
             RSSTORRENTS(
@@ -135,7 +135,7 @@ class DbHelper:
     @DbPersist(_db)
     def simple_delete_rss_torrents(self, title, enclosure):
         """
-        删除RSS的记录
+        刪除RSS的記錄
         """
         self._db.query(RSSTORRENTS).filter(RSSTORRENTS.TORRENT_NAME == title,
                                            RSSTORRENTS.ENCLOSURE == enclosure).delete()
@@ -143,7 +143,7 @@ class DbHelper:
     @DbPersist(_db)
     def insert_douban_media_state(self, media, state):
         """
-        将豆瓣的数据插入数据库
+        將豆瓣的資料插入資料庫
         """
         if not media.year:
             self._db.query(DOUBANMEDIAS).filter(DOUBANMEDIAS.NAME == media.get_name()).delete()
@@ -167,7 +167,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_douban_media_state(self, media, state):
         """
-        标记豆瓣数据的状态
+        標記豆瓣資料的狀態
         """
         self._db.query(DOUBANMEDIAS).filter(DOUBANMEDIAS.NAME == media.title,
                                             DOUBANMEDIAS.YEAR == media.year).update(
@@ -178,14 +178,14 @@ class DbHelper:
 
     def get_douban_search_state(self, title, year):
         """
-        查询未检索的豆瓣数据
+        查詢未檢索的豆瓣資料
         """
         return self._db.query(DOUBANMEDIAS.STATE).filter(DOUBANMEDIAS.NAME == title,
                                                          DOUBANMEDIAS.YEAR == str(year)).all()
 
     def is_transfer_history_exists(self, file_path, file_name, title, se):
         """
-        查询识别转移记录
+        查詢識別轉移記錄
         """
         if not file_path:
             return False
@@ -198,7 +198,7 @@ class DbHelper:
     @DbPersist(_db)
     def insert_transfer_history(self, in_from: Enum, rmt_mode: RmtMode, in_path, out_path, dest, media_info):
         """
-        插入识别转移记录
+        插入識別轉移記錄
         """
         if not media_info or not media_info.tmdb_info:
             return
@@ -243,7 +243,7 @@ class DbHelper:
 
     def get_transfer_history(self, search, page, rownum):
         """
-        查询识别转移记录
+        查詢識別轉移記錄
         """
         if int(page) == 1:
             begin_pos = 0
@@ -264,27 +264,27 @@ class DbHelper:
 
     def get_transfer_path_by_id(self, logid):
         """
-        据logid查询PATH
+        據logid查詢PATH
         """
         return self._db.query(TRANSFERHISTORY).filter(TRANSFERHISTORY.ID == int(logid)).all()
 
     @DbPersist(_db)
     def delete_transfer_log_by_id(self, logid):
         """
-        根据logid删除记录
+        根據logid刪除記錄
         """
         self._db.query(TRANSFERHISTORY).filter(TRANSFERHISTORY.ID == int(logid)).delete()
 
     def get_transfer_unknown_paths(self, ):
         """
-        查询未识别的记录列表
+        查詢未識別的記錄列表
         """
         return self._db.query(TRANSFERUNKNOWN).filter(TRANSFERUNKNOWN.STATE == 'N').all()
 
     @DbPersist(_db)
     def update_transfer_unknown_state(self, path):
         """
-        更新未识别记录为识别
+        更新未識別記錄為識別
         """
         if not path:
             return
@@ -297,7 +297,7 @@ class DbHelper:
     @DbPersist(_db)
     def delete_transfer_unknown(self, tid):
         """
-        删除未识别记录
+        刪除未識別記錄
         """
         if not tid:
             return []
@@ -305,7 +305,7 @@ class DbHelper:
 
     def get_unknown_path_by_id(self, tid):
         """
-        查询未识别记录
+        查詢未識別記錄
         """
         if not tid:
             return []
@@ -313,7 +313,7 @@ class DbHelper:
 
     def is_transfer_unknown_exists(self, path):
         """
-        查询未识别记录是否存在
+        查詢未識別記錄是否存在
         """
         if not path:
             return False
@@ -326,7 +326,7 @@ class DbHelper:
     @DbPersist(_db)
     def insert_transfer_unknown(self, path, dest):
         """
-        插入未识别记录
+        插入未識別記錄
         """
         if not path:
             return
@@ -346,7 +346,7 @@ class DbHelper:
 
     def is_transfer_in_blacklist(self, path):
         """
-        查询是否为黑名单
+        查詢是否為黑名單
         """
         if not path:
             return False
@@ -358,14 +358,14 @@ class DbHelper:
 
     def is_transfer_notin_blacklist(self, path):
         """
-        查询是否为黑名单
+        查詢是否為黑名單
         """
         return not self.is_transfer_in_blacklist(path)
 
     @DbPersist(_db)
     def insert_transfer_blacklist(self, path):
         """
-        插入黑名单记录
+        插入黑名單記錄
         """
         if not path:
             return
@@ -379,7 +379,7 @@ class DbHelper:
     @DbPersist(_db)
     def truncate_transfer_blacklist(self, ):
         """
-        清空黑名单记录
+        清空黑名單記錄
         """
         self._db.query(TRANSFERBLACKLIST).delete()
         self._db.query(SYNCHISTORY).delete()
@@ -387,32 +387,32 @@ class DbHelper:
     @DbPersist(_db)
     def truncate_rss_history(self, ):
         """
-        清空RSS历史记录
+        清空RSS歷史記錄
         """
         self._db.query(RSSTORRENTS).delete()
 
     @DbPersist(_db)
     def truncate_rss_episodes(self, ):
         """
-        清空RSS历史记录
+        清空RSS歷史記錄
         """
         self._db.query(RSSTVEPISODES).delete()
 
     def get_config_site(self, ):
         """
-        查询所有站点信息
+        查詢所有站點資訊
         """
         return self._db.query(CONFIGSITE).order_by(cast(CONFIGSITE.PRI, Integer).asc())
 
     def get_site_by_id(self, tid):
         """
-        查询1个站点信息
+        查詢1個站點資訊
         """
         return self._db.query(CONFIGSITE).filter(CONFIGSITE.ID == int(tid)).all()
 
     def get_site_by_name(self, name):
         """
-        基于站点名称查询站点信息
+        基於站點名稱查詢站點資訊
         :return:
         """
         return self._db.query(CONFIGSITE).filter(CONFIGSITE.NAME == name).all()
@@ -420,7 +420,7 @@ class DbHelper:
     @DbPersist(_db)
     def insert_config_site(self, name, site_pri, rssurl, signurl, cookie, note, rss_uses):
         """
-        插入站点信息
+        插入站點資訊
         """
         if not name:
             return
@@ -437,7 +437,7 @@ class DbHelper:
     @DbPersist(_db)
     def delete_config_site(self, tid):
         """
-        删除站点信息
+        刪除站點資訊
         """
         if not tid:
             return
@@ -446,7 +446,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_config_site(self, tid, name, site_pri, rssurl, signurl, cookie, note, rss_uses):
         """
-        更新站点信息
+        更新站點資訊
         """
         if not tid:
             return
@@ -465,7 +465,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_config_site_note(self, tid, note):
         """
-        更新站点属性
+        更新站點屬性
         """
         if not tid:
             return
@@ -478,7 +478,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_site_cookie_ua(self, tid, cookie, ua):
         """
-        更新站点Cookie和ua
+        更新站點Cookie和ua
         """
         if not tid:
             return
@@ -496,7 +496,7 @@ class DbHelper:
 
     def get_config_filter_group(self, gid=None):
         """
-        查询过滤规则组
+        查詢過濾規則組
         """
         if gid:
             return self._db.query(CONFIGFILTERGROUP).filter(CONFIGFILTERGROUP.ID == int(gid)).all()
@@ -504,7 +504,7 @@ class DbHelper:
 
     def get_config_filter_rule(self, groupid=None):
         """
-        查询过滤规则
+        查詢過濾規則
         """
         if not groupid:
             return self._db.query(CONFIGFILTERRULES).order_by(CONFIGFILTERRULES.GROUP_ID,
@@ -518,7 +518,7 @@ class DbHelper:
 
     def get_rss_movies(self, state=None, rssid=None):
         """
-        查询订阅电影信息
+        查詢訂閱電影資訊
         """
         if rssid:
             return self._db.query(RSSMOVIES).filter(RSSMOVIES.ID == int(rssid)).all()
@@ -530,7 +530,7 @@ class DbHelper:
 
     def get_rss_movie_id(self, title, tmdbid=None):
         """
-        获取订阅电影ID
+        獲取訂閱電影ID
         """
         if not title:
             return ""
@@ -546,7 +546,7 @@ class DbHelper:
 
     def get_rss_movie_sites(self, rssid):
         """
-        获取订阅电影站点
+        獲取訂閱電影站點
         """
         if not rssid:
             return ""
@@ -558,7 +558,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_rss_movie_tmdb(self, rid, tmdbid, title, year, image, desc, note):
         """
-        更新订阅电影的部分信息
+        更新訂閱電影的部分資訊
         """
         if not tmdbid:
             return
@@ -574,7 +574,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_rss_movie_desc(self, rid, desc):
         """
-        更新订阅电影的DESC
+        更新訂閱電影的DESC
         """
         self._db.query(RSSMOVIES).filter(RSSMOVIES.ID == int(rid)).update({
             "DESC": desc
@@ -582,7 +582,7 @@ class DbHelper:
 
     def is_exists_rss_movie(self, title, year):
         """
-        判断RSS电影是否存在
+        判斷RSS電影是否存在
         """
         if not title:
             return False
@@ -609,7 +609,7 @@ class DbHelper:
                          desc=None,
                          note=None):
         """
-        新增RSS电影
+        新增RSS電影
         """
         if search_sites is None:
             search_sites = []
@@ -645,7 +645,7 @@ class DbHelper:
     @DbPersist(_db)
     def delete_rss_movie(self, title=None, year=None, rssid=None, tmdbid=None):
         """
-        删除RSS电影
+        刪除RSS電影
         """
         if not title and not rssid:
             return
@@ -660,7 +660,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_rss_movie_state(self, title=None, year=None, rssid=None, state='R'):
         """
-        更新电影订阅状态
+        更新電影訂閱狀態
         """
         if not title and not rssid:
             return
@@ -679,7 +679,7 @@ class DbHelper:
 
     def get_rss_tvs(self, state=None, rssid=None):
         """
-        查询订阅电视剧信息
+        查詢訂閱電視劇資訊
         """
         if rssid:
             return self._db.query(RSSTVS).filter(RSSTVS.ID == int(rssid)).all()
@@ -691,7 +691,7 @@ class DbHelper:
 
     def get_rss_tv_id(self, title, season=None, tmdbid=None):
         """
-        获取订阅电影ID
+        獲取訂閱電影ID
         """
         if not title:
             return ""
@@ -719,7 +719,7 @@ class DbHelper:
 
     def get_rss_tv_sites(self, rssid):
         """
-        获取订阅电视剧站点
+        獲取訂閱電視劇站點
         """
         if not rssid:
             return ""
@@ -731,7 +731,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_rss_tv_tmdb(self, rid, tmdbid, title, year, total, lack, image, desc, note):
         """
-        更新订阅电影的TMDBID
+        更新訂閱電影的TMDBID
         """
         if not tmdbid:
             return
@@ -751,7 +751,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_rss_tv_desc(self, rid, desc):
         """
-        更新订阅电视剧的DESC
+        更新訂閱電視劇的DESC
         """
         self._db.query(RSSTVS).filter(RSSTVS.ID == int(rid)).update(
             {
@@ -761,7 +761,7 @@ class DbHelper:
 
     def is_exists_rss_tv(self, title, year, season=None):
         """
-        判断RSS电视剧是否存在
+        判斷RSS電視劇是否存在
         """
         if not title:
             return False
@@ -798,7 +798,7 @@ class DbHelper:
                       desc=None,
                       note=None):
         """
-        新增RSS电视剧
+        新增RSS電視劇
         """
         if search_sites is None:
             search_sites = []
@@ -843,7 +843,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_rss_tv_lack(self, title=None, year=None, season=None, rssid=None, lack_episodes: list = None):
         """
-        更新电视剧缺失的集数
+        更新電視劇缺失的集數
         """
         if not title and not rssid:
             return
@@ -870,7 +870,7 @@ class DbHelper:
     @DbPersist(_db)
     def delete_rss_tv(self, title=None, season=None, rssid=None, tmdbid=None):
         """
-        删除RSS电视剧
+        刪除RSS電視劇
         """
         if not title and not rssid:
             return
@@ -882,7 +882,7 @@ class DbHelper:
 
     def is_exists_rss_tv_episodes(self, rid):
         """
-        判断RSS电视剧是否存在
+        判斷RSS電視劇是否存在
         """
         if not rid:
             return False
@@ -895,7 +895,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_rss_tv_episodes(self, rid, episodes):
         """
-        插入或更新电视剧订阅缺失剧集
+        插入或更新電視劇訂閱缺失劇集
         """
         if not rid:
             return
@@ -917,7 +917,7 @@ class DbHelper:
 
     def get_rss_tv_episodes(self, rid):
         """
-        查询电视剧订阅缺失剧集
+        查詢電視劇訂閱缺失劇集
         """
         if not rid:
             return []
@@ -930,7 +930,7 @@ class DbHelper:
     @DbPersist(_db)
     def delete_rss_tv_episodes(self, rid):
         """
-        删除电视剧订阅缺失剧集
+        刪除電視劇訂閱缺失劇集
         """
         if not rid:
             return
@@ -939,7 +939,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_rss_tv_state(self, title=None, year=None, season=None, rssid=None, state='R'):
         """
-        更新电视剧订阅状态
+        更新電視劇訂閱狀態
         """
         if not title and not rssid:
             return
@@ -958,7 +958,7 @@ class DbHelper:
 
     def is_sync_in_history(self, path, dest):
         """
-        查询是否存在同步历史记录
+        查詢是否存在同步歷史記錄
         """
         if not path:
             return False
@@ -972,7 +972,7 @@ class DbHelper:
     @DbPersist(_db)
     def insert_sync_history(self, path, src, dest):
         """
-        插入黑名单记录
+        插入黑名單記錄
         """
         if not path or not dest:
             return
@@ -987,13 +987,13 @@ class DbHelper:
 
     def get_users(self, ):
         """
-        查询用户列表
+        查詢使用者列表
         """
         return self._db.query(CONFIGUSERS).all()
 
     def is_user_exists(self, name):
         """
-        判断用户是否存在
+        判斷使用者是否存在
         """
         if not name:
             return False
@@ -1006,7 +1006,7 @@ class DbHelper:
     @DbPersist(_db)
     def insert_user(self, name, password, pris):
         """
-        新增用户
+        新增使用者
         """
         if not name or not password:
             return
@@ -1022,13 +1022,13 @@ class DbHelper:
     @DbPersist(_db)
     def delete_user(self, name):
         """
-        删除用户
+        刪除使用者
         """
         self._db.query(CONFIGUSERS).filter(CONFIGUSERS.NAME == name).delete()
 
     def get_transfer_statistics(self, days=30):
         """
-        查询历史记录统计
+        查詢歷史記錄統計
         """
         begin_date = (datetime.datetime.now() - datetime.timedelta(days=days)).strftime("%Y-%m-%d %H:%M:%S")
         return self._db.query(TRANSFERHISTORY.TYPE,
@@ -1041,7 +1041,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_site_user_statistics_site_name(self, new_name, old_name):
         """
-        更新站点用户数据中站点名称
+        更新站點使用者資料中站點名稱
         """
         self._db.query(SITEUSERINFOSTATS).filter(SITEUSERINFOSTATS.SITE == old_name).update(
             {
@@ -1052,7 +1052,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_site_user_statistics(self, site_user_infos: list):
         """
-        更新站点用户粒度数据
+        更新站點使用者粒度資料
         """
         if not site_user_infos:
             return
@@ -1109,7 +1109,7 @@ class DbHelper:
 
     def is_exists_site_user_statistics(self, url):
         """
-        判断站点数据是滞存在
+        判斷站點資料是滯存在
         """
         count = self._db.query(SITEUSERINFOSTATS).filter(SITEUSERINFOSTATS.URL == url).count()
         if count > 0:
@@ -1120,7 +1120,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_site_favicon(self, site_user_infos: list):
         """
-        更新站点图标数据
+        更新站點圖示資料
         """
         if not site_user_infos:
             return
@@ -1141,7 +1141,7 @@ class DbHelper:
 
     def is_exists_site_favicon(self, site):
         """
-        判断站点图标是否存在
+        判斷站點圖示是否存在
         """
         count = self._db.query(SITEFAVICON).filter(SITEFAVICON.SITE == site).count()
         if count > 0:
@@ -1151,7 +1151,7 @@ class DbHelper:
 
     def get_site_favicons(self, site=None):
         """
-        查询站点数据历史
+        查詢站點資料歷史
         """
         if site:
             return self._db.query(SITEFAVICON).filter(SITEFAVICON.SITE == site).all()
@@ -1161,9 +1161,9 @@ class DbHelper:
     @DbPersist(_db)
     def update_site_seed_info_site_name(self, new_name, old_name):
         """
-        更新站点做种数据中站点名称
-        :param new_name: 新的站点名称
-        :param old_name: 原始站点名称
+        更新站點做種資料中站點名稱
+        :param new_name: 新的站點名稱
+        :param old_name: 原始站點名稱
         :return:
         """
         self._db.query(SITEUSERSEEDINGINFO).filter(SITEUSERSEEDINGINFO.SITE == old_name).update(
@@ -1175,7 +1175,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_site_seed_info(self, site_user_infos: list):
         """
-        更新站点做种数据
+        更新站點做種資料
         """
         if not site_user_infos:
             return
@@ -1199,7 +1199,7 @@ class DbHelper:
 
     def is_site_user_statistics_exists(self, url):
         """
-        判断站点用户数据是否存在
+        判斷站點使用者資料是否存在
         """
         if not url:
             return False
@@ -1211,7 +1211,7 @@ class DbHelper:
 
     def get_site_user_statistics(self, num=100, strict_urls=None):
         """
-        查询站点数据历史
+        查詢站點資料歷史
         """
         if strict_urls:
             return self._db.query(SITEUSERINFOSTATS).filter(
@@ -1221,7 +1221,7 @@ class DbHelper:
 
     def is_site_statistics_history_exists(self, url, date):
         """
-        判断站点历史数据是否存在
+        判斷站點歷史資料是否存在
         """
         if not url or not date:
             return False
@@ -1235,9 +1235,9 @@ class DbHelper:
     @DbPersist(_db)
     def update_site_statistics_site_name(self, new_name, old_name):
         """
-        更新站点做种数据中站点名称
-        :param new_name: 新站点名称
-        :param old_name: 原始站点名称
+        更新站點做種資料中站點名稱
+        :param new_name: 新站點名稱
+        :param old_name: 原始站點名稱
         :return:
         """
         self._db.query(SITESTATISTICSHISTORY).filter(SITESTATISTICSHISTORY.SITE == old_name).update(
@@ -1249,7 +1249,7 @@ class DbHelper:
     @DbPersist(_db)
     def insert_site_statistics_history(self, site_user_infos: list):
         """
-        插入站点数据
+        插入站點資料
         """
         if not site_user_infos:
             return
@@ -1297,7 +1297,7 @@ class DbHelper:
 
     def get_site_statistics_history(self, site, days=30):
         """
-        查询站点数据历史
+        查詢站點資料歷史
         """
         return self._db.query(SITESTATISTICSHISTORY).filter(
             SITESTATISTICSHISTORY.SITE == site).order_by(
@@ -1306,14 +1306,14 @@ class DbHelper:
 
     def get_site_seeding_info(self, site):
         """
-        查询站点做种信息
+        查詢站點做種資訊
         """
         return self._db.query(SITEUSERSEEDINGINFO.SEEDING_INFO).filter(
             SITEUSERSEEDINGINFO.SITE == site).first()
 
     def is_site_seeding_info_exist(self, url):
         """
-        判断做种数据是否已存在
+        判斷做種資料是否已存在
         """
         count = self._db.query(SITEUSERSEEDINGINFO).filter(
             SITEUSERSEEDINGINFO.URL == url).count()
@@ -1324,9 +1324,9 @@ class DbHelper:
 
     def get_site_statistics_recent_sites(self, days=7, strict_urls=None):
         """
-        查询近期上传下载量
+        查詢近期上傳下載量
         """
-        # 查询最大最小日期
+        # 查詢最大最小日期
         if strict_urls is None:
             strict_urls = []
 
@@ -1341,7 +1341,7 @@ class DbHelper:
             ret_site_uploads = []
             ret_site_downloads = []
             min_date = date_ret[0][1]
-            # 查询开始值
+            # 查詢開始值
             if strict_urls:
                 subquery = self._db.query(SITESTATISTICSHISTORY.SITE.label("SITE"),
                                           SITESTATISTICSHISTORY.DATE.label("DATE"),
@@ -1363,7 +1363,7 @@ class DbHelper:
                                   func.max(subquery.c.UPLOAD),
                                   func.max(subquery.c.DOWNLOAD)).group_by(subquery.c.SITE).all()
             for ret_b in rets:
-                # 如果最小值都是0，可能时由于近几日没有更新数据，或者cookie过期，正常有数据的话，第二天能正常
+                # 如果最小值都是0，可能時由於近幾日沒有更新資料，或者cookie過期，正常有資料的話，第二天能正常
                 ret_b = list(ret_b)
                 if ret_b[1] == 0 and ret_b[2] == 0:
                     ret_b[1] = ret_b[3]
@@ -1385,7 +1385,7 @@ class DbHelper:
 
     def is_exists_download_history(self, title, tmdbid, mtype=None):
         """
-        查询下载历史是否存在
+        查詢下載歷史是否存在
         """
         if not title or not tmdbid:
             return False
@@ -1404,7 +1404,7 @@ class DbHelper:
     @DbPersist(_db)
     def insert_download_history(self, media_info):
         """
-        新增下载历史
+        新增下載歷史
         """
         if not media_info:
             return
@@ -1440,7 +1440,7 @@ class DbHelper:
 
     def get_download_history(self, date=None, hid=None, num=30, page=1):
         """
-        查询下载历史
+        查詢下載歷史
         """
         if hid:
             return self._db.query(DOWNLOADHISTORY).filter(DOWNLOADHISTORY.ID == int(hid)).all()
@@ -1454,7 +1454,7 @@ class DbHelper:
 
     def is_media_downloaded(self, title, tmdbid):
         """
-        根据标题和年份检查是否下载过
+        根據標題和年份檢查是否下載過
         """
         if self.is_exists_download_history(title, tmdbid):
             return True
@@ -1467,7 +1467,7 @@ class DbHelper:
     @DbPersist(_db)
     def insert_brushtask(self, brush_id, item):
         """
-        新增刷流任务
+        新增刷流任務
         """
         if not brush_id:
             self._db.insert(SITEBRUSHTASK(
@@ -1507,14 +1507,14 @@ class DbHelper:
     @DbPersist(_db)
     def delete_brushtask(self, brush_id):
         """
-        删除刷流任务
+        刪除刷流任務
         """
         self._db.query(SITEBRUSHTASK).filter(SITEBRUSHTASK.ID == int(brush_id)).delete()
         self._db.query(SITEBRUSHTORRENTS).filter(SITEBRUSHTORRENTS.TASK_ID == brush_id).delete()
 
     def get_brushtasks(self, brush_id=None):
         """
-        查询刷流任务
+        查詢刷流任務
         """
         if brush_id:
             return self._db.query(SITEBRUSHTASK).filter(SITEBRUSHTASK.ID == int(brush_id)).first()
@@ -1523,7 +1523,7 @@ class DbHelper:
 
     def get_brushtask_totalsize(self, brush_id):
         """
-        查询刷流任务总体积
+        查詢刷流任務總體積
         """
         if not brush_id:
             return 0
@@ -1538,7 +1538,7 @@ class DbHelper:
     @DbPersist(_db)
     def add_brushtask_download_count(self, brush_id):
         """
-        增加刷流下载数
+        增加刷流下載數
         """
         if not brush_id:
             return
@@ -1551,7 +1551,7 @@ class DbHelper:
 
     def get_brushtask_remove_size(self, brush_id):
         """
-        获取已删除种子的上传量
+        獲取已刪除種子的上傳量
         """
         if not brush_id:
             return 0
@@ -1561,7 +1561,7 @@ class DbHelper:
     @DbPersist(_db)
     def add_brushtask_upload_count(self, brush_id, upload_size, download_size, remove_count):
         """
-        更新上传下载量和删除种子数
+        更新上傳下載量和刪除種子數
         """
         if not brush_id:
             return
@@ -1587,7 +1587,7 @@ class DbHelper:
     @DbPersist(_db)
     def insert_brushtask_torrent(self, brush_id, title, enclosure, downloader, download_id, size):
         """
-        增加刷流下载的种子信息
+        增加刷流下載的種子資訊
         """
         if not brush_id:
             return
@@ -1605,7 +1605,7 @@ class DbHelper:
 
     def get_brushtask_torrents(self, brush_id):
         """
-        查询刷流任务所有种子
+        查詢刷流任務所有種子
         """
         if not brush_id:
             return []
@@ -1614,7 +1614,7 @@ class DbHelper:
 
     def is_brushtask_torrent_exists(self, brush_id, title, enclosure):
         """
-        查询刷流任务种子是否已存在
+        查詢刷流任務種子是否已存在
         """
         if not brush_id:
             return False
@@ -1629,7 +1629,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_brushtask_torrent_state(self, ids: list):
         """
-        更新刷流种子的状态
+        更新刷流種子的狀態
         """
         if not ids:
             return
@@ -1645,7 +1645,7 @@ class DbHelper:
     @DbPersist(_db)
     def delete_brushtask_torrent(self, brush_id, download_id):
         """
-        删除刷流种子记录
+        刪除刷流種子記錄
         """
         if not download_id or not brush_id:
             return
@@ -1654,7 +1654,7 @@ class DbHelper:
 
     def get_user_downloaders(self, did=None):
         """
-        查询自定义下载器
+        查詢自定義下載器
         """
         if did:
             return self._db.query(SITEBRUSHDOWNLOADERS).filter(SITEBRUSHDOWNLOADERS.ID == int(did)).first()
@@ -1664,7 +1664,7 @@ class DbHelper:
     @DbPersist(_db)
     def update_user_downloader(self, did, name, dtype, user_config, note):
         """
-        新增自定义下载器
+        新增自定義下載器
         """
         if did:
             self._db.query(SITEBRUSHDOWNLOADERS).filter(SITEBRUSHDOWNLOADERS.ID == int(did)).update(
@@ -1694,14 +1694,14 @@ class DbHelper:
     @DbPersist(_db)
     def delete_user_downloader(self, did):
         """
-        删除自定义下载器
+        刪除自定義下載器
         """
         self._db.query(SITEBRUSHDOWNLOADERS).filter(SITEBRUSHDOWNLOADERS.ID == int(did)).delete()
 
     @DbPersist(_db)
     def add_filter_group(self, name, default='N'):
         """
-        新增规则组
+        新增規則組
         """
         if default == 'Y':
             self.set_default_filtergroup(0)
@@ -1726,7 +1726,7 @@ class DbHelper:
     @DbPersist(_db)
     def set_default_filtergroup(self, groupid):
         """
-        设置默认的规则组
+        設定預設的規則組
         """
         self._db.query(CONFIGFILTERGROUP).filter(CONFIGFILTERGROUP.ID == int(groupid)).update({
             "IS_DEFAULT": 'Y'
@@ -1738,7 +1738,7 @@ class DbHelper:
     @DbPersist(_db)
     def delete_filtergroup(self, groupid):
         """
-        删除规则组
+        刪除規則組
         """
         self._db.query(CONFIGFILTERRULES).filter(CONFIGFILTERRULES.GROUP_ID == groupid).delete()
         self._db.query(CONFIGFILTERGROUP).filter(CONFIGFILTERGROUP.ID == int(groupid)).delete()
@@ -1746,14 +1746,14 @@ class DbHelper:
     @DbPersist(_db)
     def delete_filterrule(self, ruleid):
         """
-        删除规则
+        刪除規則
         """
         self._db.query(CONFIGFILTERRULES).filter(CONFIGFILTERRULES.ID == int(ruleid)).delete()
 
     @DbPersist(_db)
     def insert_filter_rule(self, item, ruleid=None):
         """
-        新增规则
+        新增規則
         """
         if ruleid:
             self._db.query(CONFIGFILTERRULES).filter(CONFIGFILTERRULES.ID == int(ruleid)).update(
@@ -1878,7 +1878,7 @@ class DbHelper:
     @DbPersist(_db)
     def insert_userrss_task_history(self, task_id, title, downloader):
         """
-        增加自定义RSS订阅任务的下载记录
+        增加自定義RSS訂閱任務的下載記錄
         """
         self._db.insert(USERRSSTASKHISTORY(
             TASK_ID=task_id,
@@ -1889,7 +1889,7 @@ class DbHelper:
 
     def get_userrss_task_history(self, task_id):
         """
-        查询自定义RSS订阅任务的下载记录
+        查詢自定義RSS訂閱任務的下載記錄
         """
         if not task_id:
             return []
@@ -1898,7 +1898,7 @@ class DbHelper:
 
     def get_rss_history(self, rtype=None, rid=None):
         """
-        查询RSS历史
+        查詢RSS歷史
         """
         if rid:
             return self._db.query(RSSHISTORY).filter(RSSHISTORY.ID == int(rid)).all()
@@ -1908,7 +1908,7 @@ class DbHelper:
 
     def is_exists_rss_history(self, rssid):
         """
-        判断RSS历史是否存在
+        判斷RSS歷史是否存在
         """
         if not rssid:
             return False
@@ -1921,7 +1921,7 @@ class DbHelper:
     @DbPersist(_db)
     def insert_rss_history(self, rssid, rtype, name, year, tmdbid, image, desc, season=None, total=None, start=None):
         """
-        登记RSS历史
+        登記RSS歷史
         """
         if not self.is_exists_rss_history(rssid):
             self._db.insert(RSSHISTORY(
@@ -1942,7 +1942,7 @@ class DbHelper:
     @DbPersist(_db)
     def delete_rss_history(self, rssid):
         """
-        删除RSS历史
+        刪除RSS歷史
         """
         if not rssid:
             return
@@ -1952,7 +1952,7 @@ class DbHelper:
     def insert_custom_word(self, replaced, replace, front, back, offset, wtype, gid, season, enabled, regex, whelp,
                            note=None):
         """
-        增加自定义识别词
+        增加自定義識別詞
         """
         self._db.insert(CUSTOMWORDS(
             REPLACED=replaced,
@@ -1972,14 +1972,14 @@ class DbHelper:
     @DbPersist(_db)
     def delete_custom_word(self, wid):
         """
-        删除自定义识别词
+        刪除自定義識別詞
         """
         self._db.query(CUSTOMWORDS).filter(CUSTOMWORDS.ID == int(wid)).delete()
 
     @DbPersist(_db)
     def check_custom_word(self, wid, enabled):
         """
-        设置自定义识别词状态
+        設定自定義識別詞狀態
         """
         self._db.query(CUSTOMWORDS).filter(CUSTOMWORDS.ID == int(wid)).update(
             {
@@ -1989,7 +1989,7 @@ class DbHelper:
 
     def get_custom_words(self, wid=None, gid=None, enabled=None, wtype=None, regex=None):
         """
-        查询自定义识别词
+        查詢自定義識別詞
         """
         if wid:
             return self._db.query(CUSTOMWORDS).filter(CUSTOMWORDS.ID == int(wid))\
@@ -2006,7 +2006,7 @@ class DbHelper:
 
     def is_custom_words_existed(self, replaced=None, front=None, back=None):
         """
-        查询自定义识别词
+        查詢自定義識別詞
         """
         if replaced:
             count = self._db.query(CUSTOMWORDS).filter(CUSTOMWORDS.REPLACED == replaced).count()
@@ -2023,7 +2023,7 @@ class DbHelper:
     @DbPersist(_db)
     def insert_custom_word_groups(self, title, year, gtype, tmdbid, season_count, note=None):
         """
-        增加自定义识别词组
+        增加自定義識別片語
         """
         self._db.insert(CUSTOMWORDGROUPS(
             TITLE=title,
@@ -2037,7 +2037,7 @@ class DbHelper:
     @DbPersist(_db)
     def delete_custom_word_group(self, gid):
         """
-        删除自定义识别词组
+        刪除自定義識別片語
         """
         if not gid:
             return
@@ -2046,7 +2046,7 @@ class DbHelper:
 
     def get_custom_word_groups(self, gid=None, tmdbid=None, gtype=None):
         """
-        查询自定义识别词组
+        查詢自定義識別片語
         """
         if gid:
             return self._db.query(CUSTOMWORDGROUPS).filter(CUSTOMWORDGROUPS.ID == int(gid)).all()
@@ -2057,7 +2057,7 @@ class DbHelper:
 
     def is_custom_word_group_existed(self, tmdbid=None, gtype=None):
         """
-        查询自定义识别词组
+        查詢自定義識別片語
         """
         if not gtype or not tmdbid:
             return False
@@ -2071,7 +2071,7 @@ class DbHelper:
     @DbPersist(_db)
     def insert_config_sync_path(self, source, dest, unknown, mode, rename, enabled, note=None):
         """
-        增加目录同步
+        增加目錄同步
         """
         return self._db.insert(CONFIGSYNCPATHS(
             SOURCE=source,
@@ -2086,7 +2086,7 @@ class DbHelper:
     @DbPersist(_db)
     def delete_config_sync_path(self, sid):
         """
-        删除目录同步
+        刪除目錄同步
         """
         if not sid:
             return
@@ -2094,7 +2094,7 @@ class DbHelper:
 
     def get_config_sync_paths(self, sid=None):
         """
-        查询目录同步
+        查詢目錄同步
         """
         if sid:
             return self._db.query(CONFIGSYNCPATHS).filter(CONFIGSYNCPATHS.ID == int(sid)).all()
@@ -2103,7 +2103,7 @@ class DbHelper:
     @DbPersist(_db)
     def check_config_sync_paths(self, sid=None, source=None, rename=None, enabled=None):
         """
-        设置目录同步状态
+        設定目錄同步狀態
         """
         if sid and rename is not None:
             self._db.query(CONFIGSYNCPATHS).filter(CONFIGSYNCPATHS.ID == int(sid)).update(
@@ -2127,7 +2127,7 @@ class DbHelper:
     @DbPersist(_db)
     def delete_download_setting(self, sid):
         """
-        删除下载设置
+        刪除下載設定
         """
         if not sid:
             return
@@ -2135,7 +2135,7 @@ class DbHelper:
 
     def get_download_setting(self, sid=None):
         """
-        查询下载设置
+        查詢下載設定
         """
         if sid:
             return self._db.query(DOWNLOADSETTING).filter(DOWNLOADSETTING.ID == int(sid)).all()
@@ -2155,7 +2155,7 @@ class DbHelper:
                                 seeding_time_limit,
                                 downloader):
         """
-        设置下载设置
+        設定下載設定
         """
         if sid:
             self._db.query(DOWNLOADSETTING).filter(DOWNLOADSETTING.ID == int(sid)).update(
@@ -2189,7 +2189,7 @@ class DbHelper:
     @DbPersist(_db)
     def delete_message_client(self, cid):
         """
-        删除消息服务器
+        刪除訊息伺服器
         """
         if not cid:
             return
@@ -2197,7 +2197,7 @@ class DbHelper:
 
     def get_message_client(self, cid=None):
         """
-        查询消息服务器
+        查詢訊息伺服器
         """
         if cid:
             return self._db.query(MESSAGECLIENT).filter(MESSAGECLIENT.ID == int(cid)).all()
@@ -2213,7 +2213,7 @@ class DbHelper:
                               enabled,
                               note=''):
         """
-        设置消息服务器
+        設定訊息伺服器
         """
         self._db.insert(MESSAGECLIENT(
             NAME=name,
@@ -2228,7 +2228,7 @@ class DbHelper:
     @DbPersist(_db)
     def check_message_client(self, cid=None, interactive=None, enabled=None, ctype=None):
         """
-        设置目录同步状态
+        設定目錄同步狀態
         """
         if cid and interactive is not None:
             self._db.query(MESSAGECLIENT).filter(MESSAGECLIENT.ID == int(cid)).update(
@@ -2253,7 +2253,7 @@ class DbHelper:
     @DbPersist(_db)
     def delete_torrent_remove_task(self, tid):
         """
-        删除自动删种策略
+        刪除自動刪種策略
         """
         if not tid:
             return
@@ -2261,7 +2261,7 @@ class DbHelper:
 
     def get_torrent_remove_tasks(self, tid=None):
         """
-        查询自动删种策略
+        查詢自動刪種策略
         """
         if tid:
             return self._db.query(TORRENTREMOVETASK).filter(TORRENTREMOVETASK.ID == int(tid)).all()
@@ -2279,7 +2279,7 @@ class DbHelper:
                                    config: dict,
                                    note=None):
         """
-        设置自动删种策略
+        設定自動刪種策略
         """
         self._db.insert(TORRENTREMOVETASK(
             NAME=name,
@@ -2296,7 +2296,7 @@ class DbHelper:
     @DbPersist(_db)
     def delete_douban_history(self, hid):
         """
-        删除豆瓣同步记录
+        刪除豆瓣同步記錄
         """
         if not hid:
             return
@@ -2304,6 +2304,6 @@ class DbHelper:
 
     def get_douban_history(self):
         """
-        查询豆瓣同步记录
+        查詢豆瓣同步記錄
         """
         return self._db.query(DOUBANMEDIAS).order_by(DOUBANMEDIAS.ADD_TIME.desc()).all()

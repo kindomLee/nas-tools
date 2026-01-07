@@ -28,15 +28,15 @@ class WordsHelper:
         self.offset_words_info = self.dbhelper.get_custom_words(enabled=1, wtype=4, regex=1)
 
     def process(self, title):
-        # 错误信息
+        # 錯誤資訊
         msg = ""
-        # 应用自定义识别
+        # 應用自定義識別
         used_ignored_words = []
-        # 应用替换
+        # 應用替換
         used_replaced_words = []
-        # 应用集偏移
+        # 應用集偏移
         used_offset_words = []
-        # 屏蔽
+        # 遮蔽
         if self.ignored_words_info:
             try:
                 ignored_words = []
@@ -50,7 +50,7 @@ class WordsHelper:
                     title = re.sub(ignored_words, '', title)
             except Exception as err:
                 ExceptionUtils.exception_traceback(err)
-                msg = "【Meta】自定义屏蔽词设置有误：%s" % str(err)
+                msg = "【Meta】自定義遮蔽詞設定有誤：%s" % str(err)
         if self.ignored_words_noregex_info:
             try:
                 for ignored_word_noregex_info in self.ignored_words_noregex_info:
@@ -60,8 +60,8 @@ class WordsHelper:
                         used_ignored_words.append(ignored_word)
             except Exception as err:
                 ExceptionUtils.exception_traceback(err)
-                msg = "【Meta】自定义屏蔽词设置有误：%s" % str(err)
-        # 替换
+                msg = "【Meta】自定義遮蔽詞設定有誤：%s" % str(err)
+        # 替換
         if self.replaced_words_info:
             for replaced_word_info in self.replaced_words_info:
                 try:
@@ -73,7 +73,7 @@ class WordsHelper:
                         title = re.sub(r'%s' % replaced, r'%s' % replace, title)
                 except Exception as err:
                     ExceptionUtils.exception_traceback(err)
-                    msg = "【Meta】自定义替换词 %s 格式有误：%s" % (replaced_word_info, str(err))
+                    msg = "【Meta】自定義替換詞 %s 格式有誤：%s" % (replaced_word_info, str(err))
         if self.replaced_words_noregex_info:
             for replaced_word_noregex_info in self.replaced_words_noregex_info:
                 try:
@@ -85,8 +85,8 @@ class WordsHelper:
                         title = title.replace(replaced, replace)
                 except Exception as err:
                     ExceptionUtils.exception_traceback(err)
-                    msg = "【Meta】自定义替换词 %s 格式有误：%s" % (replaced_word_noregex_info, str(err))
-        # 替换+集偏移
+                    msg = "【Meta】自定義替換詞 %s 格式有誤：%s" % (replaced_word_noregex_info, str(err))
+        # 替換+集偏移
         if self.replaced_offset_words_info:
             for replaced_offset_word_info in self.replaced_offset_words_info:
                 try:
@@ -102,8 +102,8 @@ class WordsHelper:
                         title, msg = self.episode_offset(front, back, offset, used_offset_words, title)
                 except Exception as err:
                     ExceptionUtils.exception_traceback(err)
-                    msg = "【Meta】自定义替换+集偏移词 %s 格式有误：%s" % (replaced_offset_word_info, str(err))
-        # 集数偏移
+                    msg = "【Meta】自定義替換+集偏移詞 %s 格式有誤：%s" % (replaced_offset_word_info, str(err))
+        # 集數偏移
         if self.offset_words_info:
             for offset_word_info in self.offset_words_info:
                 front = offset_word_info.FRONT
@@ -137,16 +137,16 @@ class WordsHelper:
                 # 向前偏移
                 if episode_num_int > episode_num_offset_int:
                     offset_flag = True
-                # 向后偏移
+                # 向後偏移
                 else:
                     offset_flag = False
                 episode_nums_offset_int.append(episode_num_offset_int)
             episode_nums_dict = dict(zip(episode_nums_str, episode_nums_offset_int))
             used_offset_words.append(offset_word)
-            # 集数向前偏移，集数按升序处理
+            # 集數向前偏移，集數按升序處理
             if offset_flag:
                 episode_nums_list = sorted(episode_nums_dict.items(), key=lambda x: x[1])
-            # 集数向后偏移，集数按降序处理
+            # 集數向後偏移，集數按降序處理
             else:
                 episode_nums_list = sorted(episode_nums_dict.items(), key=lambda x: x[1], reverse=True)
             for episode_num in episode_nums_list:
@@ -156,5 +156,5 @@ class WordsHelper:
             return title, msg
         except Exception as err:
             ExceptionUtils.exception_traceback(err)
-            msg = "自定义集数偏移 %s 格式有误：%s" % (used_offset_words, str(err))
+            msg = "自定義集數偏移 %s 格式有誤：%s" % (used_offset_words, str(err))
             return title, msg

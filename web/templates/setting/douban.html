@@ -10,7 +10,7 @@
     </div>
   </div>
 </div>
-<!-- 业务页面代码 -->
+<!-- 業務頁面程式碼 -->
 <div class="page-body">
   <div class="container-xl">
     <div class="row row-cards">
@@ -20,17 +20,17 @@
             <div class="row">
               <div class="col-xl-3">
                 <div class="mb-3">
-                  <label class="form-label required">豆瓣用户ID <span class="form-help"
-                                                                      title="如有多个豆瓣用户ID，使用英文逗号,分隔"
+                  <label class="form-label required">豆瓣使用者ID <span class="form-help"
+                                                                      title="如有多個豆瓣使用者ID，使用英文逗號,分隔"
                                                                       data-bs-toggle="tooltip">?</span></label>
                   <input type="text" value="{% if Config.douban.users %}{{ Config.douban.users|join(',') }}{% endif %}"
-                         class="form-control" id="douban.users" placeholder="用户1,用户2,用户3" autocomplete="off">
+                         class="form-control" id="douban.users" placeholder="使用者1,使用者2,使用者3" autocomplete="off">
                 </div>
               </div>
               <div class="col-xl-3">
                 <div class="mb-3">
-                  <label class="form-label required">同步周期(天) <span class="form-help"
-                                                                        title="同步多少天内标记的豆瓣数据"
+                  <label class="form-label required">同步週期(天) <span class="form-help"
+                                                                        title="同步多少天內標記的豆瓣資料"
                                                                         data-bs-toggle="tooltip">?</span></label>
                   <input type="text" value="{{ Config.douban.days or '' }}" class="form-control" id="douban.days"
                          placeholder="30" autocomplete="off">
@@ -38,17 +38,17 @@
               </div>
               <div class="col-xl-3">
                 <div class="mb-3">
-                  <label class="form-label required">同步间隔(小时) <span class="form-help"
-                                                                          title="每隔多长时间同步一次豆瓣标记数据"
+                  <label class="form-label required">同步間隔(小時) <span class="form-help"
+                                                                          title="每隔多長時間同步一次豆瓣標記資料"
                                                                           data-bs-toggle="tooltip">?</span></label>
                   <input type="text" value="{{ Config.douban.interval or '' }}" class="form-control"
-                         id="douban.interval" placeholder="留空关闭豆瓣同步" autocomplete="off">
+                         id="douban.interval" placeholder="留空關閉豆瓣同步" autocomplete="off">
                 </div>
               </div>
               <div class="col-xl-3">
                 <div class="mb-3">
-                  <label class="form-label required">同步数据类型 <span class="form-help"
-                                                                        title="同步哪些类型的收藏数据：do 在看，wish 想看，collect 看过，用英文逗号,分隔配置"
+                  <label class="form-label required">同步資料型別 <span class="form-help"
+                                                                        title="同步哪些型別的收藏資料：do 在看，wish 想看，collect 看過，用英文逗號,分隔配置"
                                                                         data-bs-toggle="tooltip">?</span></label>
                   <input type="text" value="{{ Config.douban.types or '' }}" class="form-control" id="douban.types"
                          placeholder="do,wish,collect">
@@ -59,7 +59,7 @@
               <div class="col-12">
                 <div class="mb-3">
                   <label class="form-label required">豆瓣Cookie <span class="form-help"
-                                                                      title="部分电影需要配置Cookie才能同步到数据"
+                                                                      title="部分電影需要配置Cookie才能同步到資料"
                                                                       data-bs-toggle="tooltip">?</span></label>
                   <input type="text" value="{{ Config.douban.cookie or '' }}" class="form-control" id="douban.cookie"
                          placeholder="" autocomplete="off">
@@ -72,8 +72,8 @@
                   <label class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="douban.auto_search" {% if
                       Config.douban.auto_search %}checked{% endif %}>
-                    <span class="form-check-label">自动搜索下载 <span class="form-help"
-                                                                      title="开启后豆瓣同步的数据会自动进行站点聚合检索下载"
+                    <span class="form-check-label">自動搜尋下載 <span class="form-help"
+                                                                      title="開啟後豆瓣同步的資料會自動進行站點聚合檢索下載"
                                                                       data-bs-toggle="tooltip">?</span></span>
                   </label>
                 </div>
@@ -83,8 +83,8 @@
                   <label class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="douban.auto_rss"
                            {% if Config.douban.auto_rss %}checked{% endif %}>
-                    <span class="form-check-label">自动添加订阅 <span class="form-help"
-                                                                      title="开启后未进行搜索下载或搜索下载不完整的将加入RSS订阅"
+                    <span class="form-check-label">自動新增訂閱 <span class="form-help"
+                                                                      title="開啟後未進行搜尋下載或搜尋下載不完整的將加入RSS訂閱"
                                                                       data-bs-toggle="tooltip">?</span></span>
                   </label>
                 </div>
@@ -95,9 +95,9 @@
             <div class="row align-items-center">
               <div class="col-auto">
                 <a href="javascript:void(0)" class="btn d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-douban-history">
-                  历史记录
+                  歷史記錄
                 </a>
-                <a href="javascript:void(0)" class="btn d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#modal-douban-history" title="同步历史">
+                <a href="javascript:void(0)" class="btn d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#modal-douban-history" title="同步歷史">
                   <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-history" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                      <polyline points="12 8 12 12 14 14"></polyline>
@@ -108,7 +108,7 @@
               <div class="col"></div>
               <div class="col-auto">
                 <a id="douban_save_btn" href="javascript:save_douban_config()" class="btn btn-primary">
-                  保存
+                  儲存
                 </a>
               </div>
             </div>
@@ -122,7 +122,7 @@
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">豆瓣历史记录</h5>
+        <h5 class="modal-title">豆瓣歷史記錄</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="table-responsive" style="min-height: 300px">
@@ -130,10 +130,10 @@
           <thead>
           <tr>
             <th></th>
-            <th>标题</th>
-            <th>类型</th>
-            <th>状态</th>
-            <th>添加时间</th>
+            <th>標題</th>
+            <th>型別</th>
+            <th>狀態</th>
+            <th>新增時間</th>
             <th></th>
           </tr>
           </thead>
@@ -151,7 +151,7 @@
                   <div>{{ Item.NAME }} ({{ Item.YEAR }})</div>
                   {% if Item.RATING %}
                     <div class="text-muted text-nowrap">
-                    评份：{{ Item.RATING }}
+                    評份：{{ Item.RATING }}
                     </div>
                   {% endif %}
                 </td>
@@ -160,11 +160,11 @@
                 </td>
                 <td>
                   {% if Item.STATE == 'DOWNLOADED' %}
-                    <span class="badge bg-green">已下载</span>
+                    <span class="badge bg-green">已下載</span>
                   {% elif Item.STATE == 'RSS' %}
-                    <span class="badge bg-blue">已订阅</span>
+                    <span class="badge bg-blue">已訂閱</span>
                   {% else %}
-                    <span class="badge bg-orange">处理中</span>
+                    <span class="badge bg-orange">處理中</span>
                   {% endif %}
                 </td>
                 <td>
@@ -187,7 +187,7 @@
                     <div class="dropdown-menu dropdown-menu-end">
                       <a class="dropdown-item text-danger"
                          href='javascript:delete_douban_history("{{ Item.ID }}")'>
-                        删除
+                        刪除
                       </a>
                     </div>
                   </div>
@@ -196,20 +196,20 @@
             {% endfor %}
           {% else %}
             <tr>
-              <td colspan="6" align="center">没有数据</td>
+              <td colspan="6" align="center">沒有資料</td>
             </tr>
           {% endif %}
           </tbody>
         </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">确定</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">確定</button>
       </div>
     </div>
   </div>
 </div>
 <script type="text/javascript">
-  // 保存设置
+  // 儲存設定
   function save_douban_config() {
     const params = {};
     $("#config_douban input").each(function () {
@@ -222,13 +222,13 @@
       }
       params[key] = value;
     });
-    $("#douban_save_btn").attr("disabled", true).text("保存中...");
+    $("#douban_save_btn").attr("disabled", true).text("儲存中...");
     ajax_post("update_config", params, function (ret) {
-      $("#douban_save_btn").attr("disabled", false).text("保存");
+      $("#douban_save_btn").attr("disabled", false).text("儲存");
     });
   }
 
-  // 删除豆瓣历史记录
+  // 刪除豆瓣歷史記錄
   function delete_douban_history(id){
     ajax_post("delete_douban_history", {"id": id}, function (ret) {
       $("#douban_history_" + id).remove();

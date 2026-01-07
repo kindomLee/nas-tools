@@ -4,7 +4,7 @@
     <div class="row align-items-center">
       <div class="col">
         <h2 class="page-title">
-          站点
+          站點
         </h2>
       </div>
       <!-- Page title actions -->
@@ -17,7 +17,7 @@
               <line x1="12" y1="5" x2="12" y2="19" />
               <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
-            新增站点
+            新增站點
           </a>
           <a href="javascript:show_site_modal()" class="btn btn-primary d-sm-none btn-icon">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
@@ -34,7 +34,7 @@
               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
               <path d="M3 12h4.5l1.5 -6l4 12l2 -9l1.5 3h4.5"></path>
             </svg>
-            站点测试
+            站點測試
           </a>
           <a href="javascript:show_sitetest_modal()" class="btn d-sm-none btn-icon">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-activity-heartbeat" width="24"
@@ -63,7 +63,7 @@
                 %}target="_blank" {% endif %}><strong>{{ Site.name }}</strong></a>
             </h3>
             <div class="card-actions btn-actions">
-              <a href="javascript:edit_site('{{ Site.id }}')" class="btn-action" title="编辑站点">
+              <a href="javascript:edit_site('{{ Site.id }}')" class="btn-action" title="編輯站點">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24" height="24" viewBox="0 0 24 24"
                   stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                   <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -72,7 +72,7 @@
                   <line x1="16" y1="5" x2="19" y2="8" />
                 </svg>
               </a>
-              <a href="javascript:show_site_cookie_ua_modal('{{ Site.id }}', '{{ Site.name }}')" class="btn-action" title="更新站点Cookie和User-Agent">
+              <a href="javascript:show_site_cookie_ua_modal('{{ Site.id }}', '{{ Site.name }}')" class="btn-action" title="更新站點Cookie和User-Agent">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-refresh-dot" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                    <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path>
@@ -80,7 +80,7 @@
                    <circle cx="12" cy="12" r="1"></circle>
                 </svg>
               </a>
-              <a href="javascript:remove_site('{{ Site.name }}', '{{ Site.id }}')" class="btn-action" title="删除站点">
+              <a href="javascript:remove_site('{{ Site.name }}', '{{ Site.id }}')" class="btn-action" title="刪除站點">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
                   stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                   <desc>Download more icon variants from https://tabler-icons.io/i/x</desc>
@@ -94,7 +94,7 @@
           <div class="card-body">
             <dl class="row">
               {% if Site.signurl %}
-              <dt class="col-3">站点地址:</dt>
+              <dt class="col-3">站點地址:</dt>
               <dd class="col-9">{{ Site.signurl }}</dd>
               {% endif %}
               {% if Site.cookie %}
@@ -106,32 +106,32 @@
               <dd class="col-9">***</dd>
               {% endif %}
               {% if Site.rule %}
-              <dt class="col-3">过滤规则:</dt>
+              <dt class="col-3">過濾規則:</dt>
               <dd class="col-9"><span class="badge bg-orange me-2">{{ RuleGroups[Site.rule|string] }}</span></dd>
               {% endif %}
             </dl>
             <div class="row">
               <div class="col">
                 {% if Site.signin_enable and (Site.signurl or Site.rssurl) %}
-                <span class="badge bg-blue-lt mb-1 me-1">签到</span>
+                <span class="badge bg-blue-lt mb-1 me-1">簽到</span>
                 {% endif %}
                 {% if Site.rss_enable and Site.rssurl %}
-                <span class="badge bg-azure-lt mb-1 me-1">订阅</span>
+                <span class="badge bg-azure-lt mb-1 me-1">訂閱</span>
                 {% endif %}
                 {% if Site.brush_enable and Site.rssurl %}
                 <span class="badge bg-indigo-lt mb-1 me-1">刷流</span>
                 {% endif %}
                 {% if Site.statistic_enable and (Site.signurl or Site.rssurl) %}
-                <span class="badge bg-purple-lt mb-1 me-1">数据统计</span>
+                <span class="badge bg-purple-lt mb-1 me-1">資料統計</span>
                 {% endif %}
                 {% if Site.parse == 'Y' %}
                 <span class="badge bg-pink-lt mb-1 me-1">解析</span>
                 {% endif %}
                 {% if Site.unread_msg_notify == 'Y' %}
-                <span class="badge bg-orange-lt mb-1 me-1">消息</span>
+                <span class="badge bg-orange-lt mb-1 me-1">訊息</span>
                 {% endif %}
                 {% if Site.chrome == 'Y' %}
-                <span class="badge bg-yellow-lt mb-1 me-1">仿真</span>
+                <span class="badge bg-yellow-lt mb-1 me-1">模擬</span>
                 {% endif %}
                 {% if Site.proxy == 'Y' %}
                 <span class="badge bg-lime-lt mb-1 me-1">代理</span>
@@ -151,9 +151,9 @@
     <div class="empty">
       <div class="empty-img"><img src="./static/img/sign_in.svg" height="128" alt="">
       </div>
-      <p class="empty-title">没有站点</p>
+      <p class="empty-title">沒有站點</p>
       <p class="empty-subtitle text-muted">
-        没有添加任何站点，请点击”新增站点“按钮。
+        沒有新增任何站點，請點選”新增站點“按鈕。
       </p>
     </div>
   </div>
@@ -164,21 +164,21 @@
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modal-site-title">新增站点</h5>
+        <h5 class="modal-title" id="modal-site-title">新增站點</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="row">
           <div class="col-lg-6">
             <div class="mb-3">
-              <label class="form-label required">名称</label>
+              <label class="form-label required">名稱</label>
               <input type="hidden" id="site_id" />
-              <input type="text" class="form-control" id="site_name" placeholder="自定义站点名称">
+              <input type="text" class="form-control" id="site_name" placeholder="自定義站點名稱">
             </div>
           </div>
           <div class="col-lg-6">
             <div class="mb-3">
-              <label class="form-label">优先级 <span class="form-help" title="多个站点同时命中订阅时选择下载的优先级，数值越小优先级越高"
+              <label class="form-label">優先順序 <span class="form-help" title="多個站點同時命中訂閱時選擇下載的優先順序，數值越小優先順序越高"
                   data-bs-toggle="tooltip">?</span></label>
               <select class="form-select" id="site_pri">
               </select>
@@ -188,24 +188,24 @@
         <div class="row">
           <div class="col-lg-6">
             <div class="mb-3">
-              <label class="form-label required">站点地址 <span class="form-help"
-                  title="站点访问地址，自动签到、站点数据统计、刷流、内置索引器等将使用，有独立签到页面的站点可以配置为签到页面，否则可以配置为首页"
+              <label class="form-label required">站點地址 <span class="form-help"
+                  title="站點訪問地址，自動簽到、站點資料統計、刷流、內建索引器等將使用，有獨立簽到頁面的站點可以配置為簽到頁面，否則可以配置為首頁"
                   data-bs-toggle="tooltip">?</span></label>
-              <input type="text" class="form-control" id="site_signurl" value="" placeholder="站点http地址">
+              <input type="text" class="form-control" id="site_signurl" value="" placeholder="站點http地址">
             </div>
           </div>
           <div class="col-lg-6">
             <div class="mb-3">
-              <label class="form-label required">站点用途 <span class="form-help" title="设置站点使用场景，选中的场景才会使用该站点"
+              <label class="form-label required">站點用途 <span class="form-help" title="設定站點使用場景，選中的場景才會使用該站點"
                   data-bs-toggle="tooltip">?</span></label>
               <div class="form-selectgroup">
                 <label class="form-selectgroup-item">
                   <input type="checkbox" name="site_uses" value="Q" class="form-selectgroup-input" checked>
-                  <span class="form-selectgroup-label">签到</span>
+                  <span class="form-selectgroup-label">簽到</span>
                 </label>
                 <label class="form-selectgroup-item">
                   <input type="checkbox" name="site_uses" value="D" class="form-selectgroup-input" checked>
-                  <span class="form-selectgroup-label">订阅</span>
+                  <span class="form-selectgroup-label">訂閱</span>
                 </label>
                 <label class="form-selectgroup-item">
                   <input type="checkbox" name="site_uses" value="S" class="form-selectgroup-input" checked>
@@ -213,7 +213,7 @@
                 </label>
                 <label class="form-selectgroup-item">
                   <input type="checkbox" name="site_uses" value="T" class="form-selectgroup-input" checked>
-                  <span class="form-selectgroup-label">数据统计</span>
+                  <span class="form-selectgroup-label">資料統計</span>
                 </label>
               </div>
             </div>
@@ -222,24 +222,24 @@
         <div class="col-lg-12">
           <div class="mb-3">
             <label class="form-label">COOKIE <span class="form-help"
-                title="站点的Cookie，用于站点自动签到、站点数据统计、刷流、内置索引器等，需要在浏览器中F12->网络页抓取" data-bs-toggle="tooltip">?</span></label>
-            <textarea class="form-control" id="site_cookie" rows="2" placeholder="站点COOKIE"></textarea>
+                title="站點的Cookie，用於站點自動簽到、站點資料統計、刷流、內建索引器等，需要在瀏覽器中F12->網路頁抓取" data-bs-toggle="tooltip">?</span></label>
+            <textarea class="form-control" id="site_cookie" rows="2" placeholder="站點COOKIE"></textarea>
           </div>
         </div>
         <div class="row">
           <div class="col-lg-12">
             <div class="mb-3">
-              <label class="form-label">RSS订阅地址 <span class="form-help" title="站点订阅源URL地址，用于电影、电视剧订阅、刷流，点击站点RSS图标获取"
+              <label class="form-label">RSS訂閱地址 <span class="form-help" title="站點訂閱源URL地址，用於電影、電視劇訂閱、刷流，點選站點RSS圖示獲取"
                   data-bs-toggle="tooltip">?</span></label>
-              <input type="text" class="form-control" id="site_rssurl" value="" placeholder="站点RSS订阅URL">
+              <input type="text" class="form-control" id="site_rssurl" value="" placeholder="站點RSS訂閱URL">
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col-lg-4">
             <div class="mb-3">
-              <label class="form-label required">RSS解析种子详情 <span class="form-help"
-                  title="选择是时RSS订阅会解析站点种子详情页面获取种子FREE及HR状态，会增加站点访问压力；选择否时无法判断FREE种，无法实现FREE优先规则；刷流不受此限制"
+              <label class="form-label required">RSS解析種子詳情 <span class="form-help"
+                  title="選擇是時RSS訂閱會解析站點種子詳情頁面獲取種子FREE及HR狀態，會增加站點訪問壓力；選擇否時無法判斷FREE種，無法實現FREE優先規則；刷流不受此限制"
                   data-bs-toggle="tooltip">?</span></label>
               <select class="form-select" id="site_parse">
                 <option value="Y" selected>是</option>
@@ -249,11 +249,11 @@
           </div>
           <div class="col-lg-4">
             <div class="mb-3">
-              <label class="form-label">过滤规则 <span class="form-help"
-                  title="选择该站点使用的过滤规则组，在设置->过滤规则中设置规则，选择了过滤规则后该站点只有符合规则的种子才会被命中下载；仅作用于RSS、内建索引自动搜索，刷流等不受此限制"
+              <label class="form-label">過濾規則 <span class="form-help"
+                  title="選擇該站點使用的過濾規則組，在設定->過濾規則中設定規則，選擇了過濾規則後該站點只有符合規則的種子才會被命中下載；僅作用於RSS、內建索引自動搜尋，刷流等不受此限制"
                   data-bs-toggle="tooltip">?</span></label>
               <select class="form-select" id="site_rule">
-                <option value="" selected>请选择</option>
+                <option value="" selected>請選擇</option>
                 {% for Id, Attr in RuleGroups.items() %}
                 <option value="{{ Id }}">{{ Attr }}</option>
                 {% endfor %}
@@ -262,7 +262,7 @@
           </div>
           <div class="col-lg-4">
             <div class="mb-3">
-              <label class="form-label required">发送站点未读消息通知 <span class="form-help" title="选择是时检测到站点有未读消息会通过消息推送通知"
+              <label class="form-label required">傳送站點未讀訊息通知 <span class="form-help" title="選擇是時檢測到站點有未讀訊息會透過訊息推送通知"
                   data-bs-toggle="tooltip">?</span></label>
               <select class="form-select" id="site_unread_msg_notify">
                 <option value="Y" selected>是</option>
@@ -274,8 +274,8 @@
         <div class="row">
           <div class="col-lg-4">
             <div class="mb-3">
-              <label class="form-label required">开启浏览器仿真 <span class="form-help"
-                  title="开启后站点签到、数据统计可以兼容更多站点，但获取数据耗时会大幅增加；需要拉取含浏览器内核的镜像才能使用" data-bs-toggle="tooltip">?</span></label>
+              <label class="form-label required">開啟瀏覽器模擬 <span class="form-help"
+                  title="開啟後站點簽到、資料統計可以相容更多站點，但獲取資料耗時會大幅增加；需要拉取含瀏覽器核心的映象才能使用" data-bs-toggle="tooltip">?</span></label>
               <select class="form-select" id="site_chrome">
                 <option value="Y" selected>是</option>
                 <option value="N">否</option>
@@ -284,8 +284,8 @@
           </div>
           <div class="col-lg-4">
             <div class="mb-3">
-              <label class="form-label required">使用代理服务器 <span class="form-help"
-                  title="开启后该站点的访问将使用代理服务器，代理需在基础设置->系统->代理服务器中设置" data-bs-toggle="tooltip">?</span></label>
+              <label class="form-label required">使用代理伺服器 <span class="form-help"
+                  title="開啟後該站點的訪問將使用代理伺服器，代理需在基礎設定->系統->代理伺服器中設定" data-bs-toggle="tooltip">?</span></label>
               <select class="form-select" id="site_proxy">
                 <option value="Y" selected>是</option>
                 <option value="N">否</option>
@@ -294,8 +294,8 @@
           </div>
           <div class="col-lg-4">
             <div class="mb-3">
-              <label class="form-label required">从详情页下载字幕 <span class="form-help"
-                  title="开启后将查询该种子详情页是否有提供字幕，如有则会自动下载" data-bs-toggle="tooltip">?</span></label>
+              <label class="form-label required">從詳情頁下載字幕 <span class="form-help"
+                  title="開啟後將查詢該種子詳情頁是否有提供字幕，如有則會自動下載" data-bs-toggle="tooltip">?</span></label>
               <select class="form-select" id="site_subtitle">
                 <option value="Y" selected>是</option>
                 <option value="N">否</option>
@@ -307,15 +307,15 @@
           <div class="col">
             <div class="mb-3">
               <label class="form-label">User-Agent <span class="form-help"
-                  title="站点签到/数据获取/搜索请求时使用的User-Agent，为空则使用基础配置中User-Agent设置" data-bs-toggle="tooltip">?</span></label>
-              <input type="text" class="form-control" id="site_ua" value="" placeholder="站点访问User-Agent">
+                  title="站點簽到/資料獲取/搜尋請求時使用的User-Agent，為空則使用基礎配置中User-Agent設定" data-bs-toggle="tooltip">?</span></label>
+              <input type="text" class="form-control" id="site_ua" value="" placeholder="站點訪問User-Agent">
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button id="site_close_btn" class="btn btn-link">
-          关闭
+          關閉
         </button>
         <button id="add_or_edit_site_btn" class="btn btn-primary ms-auto">
           新增
@@ -329,7 +329,7 @@
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">站点连通性测试</h5>
+        <h5 class="modal-title">站點連通性測試</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="table-responsive" style="min-height: 300px">
@@ -337,11 +337,11 @@
           <thead>
             <tr>
               <th class="w-1"><input class="form-check-input m-0 align-middle" id="sitetest_check_all_btn"
-                  type="checkbox" aria-label="全选"></th>
-              <th>站点</th>
-              <th>连通性</th>
-              <th>耗时</th>
-              <th>错误信息</th>
+                  type="checkbox" aria-label="全選"></th>
+              <th>站點</th>
+              <th>連通性</th>
+              <th>耗時</th>
+              <th>錯誤資訊</th>
             </tr>
           </thead>
           <tbody>
@@ -360,7 +360,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-link me-auto" data-bs-dismiss="modal">取消</button>
-        <button id="sitetest_btn" class="btn btn-primary">测试</button>
+        <button id="sitetest_btn" class="btn btn-primary">測試</button>
       </div>
     </div>
   </div>
@@ -370,7 +370,7 @@
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="cookieua_modal_title">更新站点</h5>
+        <h5 class="modal-title" id="cookieua_modal_title">更新站點</h5>
         <input type="hidden" id="cookieua_siteid">
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -378,20 +378,20 @@
         <div class="row">
           <div class="col-lg">
             <div class="mb-3">
-              <label class="form-label required">用户名</label>
-              <input type="text" value="" id="cookieua_username" class="form-control" placeholder="站点登录用户名">
+              <label class="form-label required">使用者名稱</label>
+              <input type="text" value="" id="cookieua_username" class="form-control" placeholder="站點登入使用者名稱">
             </div>
           </div>
           <div class="col-lg">
             <div class="mb-3">
-              <label class="form-label required">密码</label>
-              <input type="password" value="" id="cookieua_password" class="form-control" placeholder="登录密码">
+              <label class="form-label required">密碼</label>
+              <input type="password" value="" id="cookieua_password" class="form-control" placeholder="登入密碼">
             </div>
           </div>
           <div class="col-lg">
             <div class="mb-3">
-              <label class="form-label">两步验证</label>
-              <input type="text" value="" id="cookieua_two_step_code" class="form-control" placeholder="如有设置必须填写">
+              <label class="form-label">兩步驗證</label>
+              <input type="text" value="" id="cookieua_two_step_code" class="form-control" placeholder="如有設定必須填寫">
             </div>
           </div>
         </div>
@@ -400,8 +400,8 @@
             <div class="mb-3">
               <label class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="cookieua_ocrflag">
-                <span class="form-check-label">自动识别验证码 <span class="form-help"
-                                                              title="开启时将自动识别验证码并填入，关闭时将显示验证码图片并要求手动填入"
+                <span class="form-check-label">自動識別驗證碼 <span class="form-help"
+                                                              title="開啟時將自動識別驗證碼並填入，關閉時將顯示驗證碼圖片並要求手動填入"
                                                               data-bs-toggle="tooltip">?</span></span>
               </label>
             </div>
@@ -423,7 +423,7 @@
         <button class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">
           取消
         </button>
-        <button onclick="update_site_cookie_ua()" id="sitecookie_action_btn" class="btn btn-primary">开始更新</button>
+        <button onclick="update_site_cookie_ua()" id="sitecookie_action_btn" class="btn btn-primary">開始更新</button>
       </div>
     </div>
   </div>
@@ -434,7 +434,7 @@
     <div class="modal-content">
       <div class="modal-body">
         <div class="row">
-          <label class="form-label required">请在 30秒 内输入验证码</label>
+          <label class="form-label required">請在 30秒 內輸入驗證碼</label>
           <div class="row mb-3">
             <div class="col-auto">
               <input type="hidden" id="captcha_key" value="">
@@ -453,7 +453,7 @@
   </div>
 </div>
 <script type="text/javascript">
-  //打开新增站点框
+  //開啟新增站點框
   function show_site_modal() {
     $("#site_id").val('');
     $("#site_name").val('');
@@ -468,16 +468,16 @@
     $("#site_parse").val('Y');
     $("#site_subtitle").val('N');
     $("#site_unread_msg_notify").val('Y');
-    $("#site_close_btn").text("关闭");
-    $("#modal-site-title").text("新增站点");
+    $("#site_close_btn").text("關閉");
+    $("#modal-site-title").text("新增站點");
     $("#add_or_edit_site_btn").text("新增");
     $("#modal-site").modal("show");
   }
-  //编辑站点
+  //編輯站點
   function edit_site(tid) {
     $("#site_id").val(tid);
-    $("#site_close_btn").text("删除");
-    //根据ID查询详细信息
+    $("#site_close_btn").text("刪除");
+    //根據ID查詢詳細資訊
     ajax_post("get_site", { "id": tid }, function (ret) {
       if (ret.site) {
         $("#site_id").val(ret.site.id);
@@ -509,7 +509,7 @@
             $(this).prop("checked", true);
           }
         });
-        $("#modal-site-title").text("编辑站点");
+        $("#modal-site-title").text("編輯站點");
         $("#add_or_edit_site_btn").text("修改");
         $("#modal-site").modal("show");
       }
@@ -517,18 +517,18 @@
     });
   }
 
-  //删除站点
+  //刪除站點
   function del_site(tid) {
     ajax_post("del_site", { "id": tid }, function (ret) {
       navmenu('site');
     });
   }
 
-  //新增站点
+  //新增站點
   function add_or_edit_site() {
     //id
     let site_id = $("#site_id").val();
-    //名称
+    //名稱
     let site_name = $("#site_name").val();
     if (site_name == "") {
       $("#site_name").addClass("is-invalid");
@@ -536,7 +536,7 @@
     } else {
       $("#site_name").removeClass("is-invalid");
     }
-    //优先级
+    //優先順序
     let site_pri = $("#site_pri").val();
     if (site_pri) {
       $("#site_pri").removeClass("is-invalid");
@@ -544,7 +544,7 @@
       $("#site_pri").addClass("is-invalid");
       return;
     }
-    //签到URL
+    //簽到URL
     let site_signurl = $("#site_signurl").val();
     if (!site_signurl || site_signurl.startsWith('http')) {
       $("#site_signurl").removeClass("is-invalid");
@@ -602,17 +602,17 @@
       }
     }
 
-    $("#add_or_edit_site_btn").text("处理中...").attr("disabled", true);
-    // 发送请求
+    $("#add_or_edit_site_btn").text("處理中...").attr("disabled", true);
+    // 傳送請求
     ajax_post("update_site", data, function (ret) {
       $("#add_or_edit_site_btn").attr("disabled", false).text("新增");
       $("#modal-site").modal("hide");
-      //刷新页面
+      //重新整理頁面
       navmenu('site');
     });
   }
 
-  //关闭或者删除
+  //關閉或者刪除
   function close_or_del() {
     $("#modal-site").modal("hide");
     tid = $("#site_id").val();
@@ -621,7 +621,7 @@
     }
   }
 
-  //绑定事件
+  //繫結事件
   $("#add_or_edit_site_btn").click(function () {
     add_or_edit_site();
   });
@@ -629,30 +629,30 @@
     close_or_del();
   });
 
-  //删除站点
+  //刪除站點
   function remove_site(name, siteid) {
-    show_ask_modal("是否确认删除站点 " + name + "？", function () {
+    show_ask_modal("是否確認刪除站點 " + name + "？", function () {
       hide_ask_modal();
       del_site(siteid);
     });
   }
 
-  // 优先级
+  // 優先順序
   for (let i = 1; i <= 50; i++) {
     $("#site_pri").append('<option value="' + i + '">' + i + '</option>');
   }
 
-  //全选事件
+  //全選事件
   $("#sitetest_check_all_btn").change(function () {
     $("#modal-sitetest input[type=checkbox]").prop("checked", $(this).prop("checked"));
   });
 
-  //显示测试站点
+  //顯示測試站點
   function show_sitetest_modal() {
     $("#modal-sitetest").modal("show");
   }
 
-  //测试一个站点
+  //測試一個站點
   var total_test_sites = 0
   var finished_test_sites = 0
   function test_one_site(siteid) {
@@ -660,13 +660,13 @@
       return;
     }
     $("#sitetest_btn").attr("disabled", true);
-    $("#sitetest_btn").text("测试中...");
+    $("#sitetest_btn").text("測試中...");
     total_test_sites = total_test_sites + 1;
     ajax_post("test_site", { id: siteid }, function (ret) {
       finished_test_sites = finished_test_sites + 1;
       if (finished_test_sites >= total_test_sites) {
         $("#sitetest_btn").attr("disabled", false);
-        $("#sitetest_btn").text("测试");
+        $("#sitetest_btn").text("測試");
         total_test_sites = 0
         finished_test_sites = 0
       }
@@ -682,19 +682,19 @@
     });
   }
 
-  // 显示更新站点Cookie和UA对话框
+  // 顯示更新站點Cookie和UA對話方塊
   function show_site_cookie_ua_modal(siteid, sitename){
     $("#cookieua_siteid").val(siteid);
-    $("#cookieua_modal_title").text("更新站点Cookie - " + sitename);
+    $("#cookieua_modal_title").text("更新站點Cookie - " + sitename);
     $("#cookieua_result_div").hide();
     $("#sitecookie_process_bar").attr("style", "width: 0").attr("aria-valuenow", 0);
     $("#sitecookie_process_bar_div").hide();
     $("#modal-update-site-cookie").modal("show");
   }
 
-  // 当前正在处理的站点
+  // 當前正在處理的站點
   var refresh_sitecookie_current = "";
-  // 更新站点Cookie和UA
+  // 更新站點Cookie和UA
   function update_site_cookie_ua(){
     $("#cookieua_result_div").hide();
     $("#sitecookie_process_bar").attr("style", "width: 0").attr("aria-valuenow", 0);
@@ -717,12 +717,12 @@
 
     $("#sitecookie_action_btn").text("正在更新...").attr("disabled", true);
     let ocrflag = $("#cookieua_ocrflag").prop("checked");
-    // 刷新进度
+    // 重新整理進度
     refresh_sitecookie_current = siteid;
     refresh_sitecookie_process_flag = true;
     refresh_sitecookie_fail_count = 0;
     refresh_sitecookie_process(siteid);
-    // 发送请求
+    // 傳送請求
     ajax_post("update_sites_cookie_ua", { siteid: siteid,
                                           username: username,
                                           password: password,
@@ -730,7 +730,7 @@
                                           two_step_code: cookieua_two_step_code
                                           }, function (ret) {
       $("#sitecookie_process_bar").attr("style", "width: 100%").attr("aria-valuenow", 100);
-      $("#sitecookie_action_btn").attr("disabled", false).text("开始更新");
+      $("#sitecookie_action_btn").attr("disabled", false).text("開始更新");
       if (ret.code === 0) {
         $("#cookieua_result").removeClass().addClass("alert alert-success").text(ret.messages);
       }else{
@@ -742,11 +742,11 @@
 
   }
 
-  // 刷新进度标志
+  // 重新整理進度標誌
   var refresh_sitecookie_process_flag = false;
-  // 刷新进度失败次数
+  // 重新整理進度失敗次數
   var refresh_sitecookie_fail_count = 0;
-  // 刷新站点更新进度，显示验证码
+  // 重新整理站點更新進度，顯示驗證碼
   function refresh_sitecookie_process(siteid) {
     if (!refresh_sitecookie_process_flag) {
       return;
@@ -757,9 +757,9 @@
     $("#sitecookie_process_bar_div").show();
     ajax_post("refresh_process", {type: "sitecookie"}, function (ret) {
       if (ret.code === 0 && ret.value <= 100) {
-        // 更新进度条
+        // 更新進度條
         $("#sitecookie_process_bar").attr("style", "width: " + ret.value + "%").attr("aria-valuenow", ret.value);
-        // 判断是否要输入验证码
+        // 判斷是否要輸入驗證碼
         if(ret.text.startsWith("data:image")){
           let code_img = ret.text.split("|")[0]
           let code_key = ret.text.split("|")[1]
@@ -778,36 +778,36 @@
     });
   }
 
-  // 超时隐藏验证码对话框并恢复更新进度
+  // 超時隱藏驗證碼對話方塊並恢復更新進度
   function sitecookie_captcha_timeout(siteid) {
     $("#modal-captcha-code").modal("hide");
     if (siteid != refresh_sitecookie_current) {
       return;
     }
-    // 恢复刷新
+    // 恢復重新整理
     refresh_sitecookie_process_flag = true;
     refresh_sitecookie_fail_count = 0;
     refresh_sitecookie_process(siteid);
     $("#modal-update-site-cookie").modal("show");
   }
 
-  // 显示验证码输入框
+  // 顯示驗證碼輸入框
   function show_captcha_code_modal(code_img, code_key, siteid) {
-    // 关闭上一个框
+    // 關閉上一個框
     $("#modal-update-site-cookie").modal("hide");
-    // 暂停获取状态
+    // 暫停獲取狀態
     refresh_sitecookie_process_flag = false;
     refresh_sitecookie_fail_count = 0;
-    // 显示新框
+    // 顯示新框
     $("#captcha_key").val(code_key);
     $("#captcha_code_img").attr("src", code_img);
     $("#captcha_code").val("");
     $("#modal-captcha-code").modal("show");
-    // 超时关闭
+    // 超時關閉
     setTimeout("sitecookie_captcha_timeout("+siteid+")", 30000);
   }
 
-  // 输入验证码
+  // 輸入驗證碼
   function submit_captcha_code(){
     let code = $("#captcha_key").val();
     let value = $("#captcha_code").val();
@@ -819,19 +819,19 @@
     }
     ajax_post("set_site_captcha_code", {code: code, value: value}, function (ret) {
       if (ret.code === 0) {
-        // 重新刷新状态
+        // 重新重新整理狀態
         refresh_sitecookie_process_flag = true;
         refresh_sitecookie_fail_count = 0;
         setTimeout("refresh_sitecookie_process("+refresh_sitecookie_current+")", 2000);
-        // 关闭框
+        // 關閉框
         $("#modal-captcha-code").modal("hide");
-        // 显示原框
+        // 顯示原框
         $("#modal-update-site-cookie").modal("show");
       }
     });
   }
 
-  // 站点测试按钮
+  // 站點測試按鈕
   $("#sitetest_btn").click(function () {
     $("#modal-sitetest input[type=checkbox]").each(function () {
       if ($(this).attr("id").startsWith("check_") && $(this).prop("checked")) {

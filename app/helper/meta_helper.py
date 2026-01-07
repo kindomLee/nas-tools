@@ -42,20 +42,20 @@ class MetaHelper(object):
 
     def clear_meta_data(self):
         """
-        清空所有TMDB缓存
+        清空所有TMDB快取
         """
         with lock:
             self._meta_data = {}
 
     def get_meta_data_path(self):
         """
-        返回TMDB缓存文件路径
+        返回TMDB快取檔案路徑
         """
         return self._meta_path
 
     def get_meta_data_by_key(self, key):
         """
-        根据KEY值获取缓存值
+        根據KEY值獲取快取值
         """
         with lock:
             info: dict = self._meta_data.get(key)
@@ -70,11 +70,11 @@ class MetaHelper(object):
 
     def dump_meta_data(self, search, page, num):
         """
-        分页获取当前缓存列表
-        @param search: 检索的缓存key
-        @param page: 页码
-        @param num: 单页大小
-        @return: 总数, 缓存列表
+        分頁獲取當前快取列表
+        @param search: 檢索的快取key
+        @param page: 頁碼
+        @param num: 單頁大小
+        @return: 總數, 快取列表
         """
         if page == 1:
             begin_pos = 0
@@ -89,22 +89,22 @@ class MetaHelper(object):
                 "media_type": v.get("type").value if isinstance(v.get("type"), Enum) else v.get("type"),
                 "poster_path": v.get("poster_path"),
                 "backdrop_path": v.get("backdrop_path")
-            },  str(k).replace("[电影]", "").replace("[电视剧]", "").replace("[未知]", "").replace("-None", ""))
+            },  str(k).replace("[電影]", "").replace("[電視劇]", "").replace("[未知]", "").replace("-None", ""))
                 for k, v in self._meta_data.items() if search.lower() in k.lower() and v.get("id") != 0]
             return len(search_metas), search_metas[begin_pos: begin_pos + num]
 
     def delete_meta_data(self, key):
         """
-        删除缓存信息
-        @param key: 缓存key
-        @return: 被删除的缓存内容
+        刪除快取資訊
+        @param key: 快取key
+        @return: 被刪除的快取內容
         """
         with lock:
             return self._meta_data.pop(key, None)
 
     def delete_meta_data_by_tmdbid(self, tmdbid):
         """
-        清空对应TMDBID的所有缓存记录，以强制更新TMDB中最新的数据
+        清空對應TMDBID的所有快取記錄，以強制更新TMDB中最新的資料
         """
         for key in list(self._meta_data):
             if str(self._meta_data.get(key, {}).get("id")) == str(tmdbid):
@@ -113,7 +113,7 @@ class MetaHelper(object):
 
     def delete_unknown_meta(self):
         """
-        清除未识别的缓存记录，以便重新检索TMDB
+        清除未識別的快取記錄，以便重新檢索TMDB
         """
         for key in list(self._meta_data):
             if str(self._meta_data.get(key, {}).get("id")) == '0':
@@ -122,10 +122,10 @@ class MetaHelper(object):
 
     def modify_meta_data(self, key, title):
         """
-        删除缓存信息
-        @param key: 缓存key
-        @param title: 标题
-        @return: 被修改后缓存内容
+        刪除快取資訊
+        @param key: 快取key
+        @param title: 標題
+        @return: 被修改後快取內容
         """
         with lock:
             if self._meta_data.get(key):
@@ -136,7 +136,7 @@ class MetaHelper(object):
     @staticmethod
     def __load_meta_data(path):
         """
-        从文件中加载缓存
+        從檔案中載入快取
         """
         try:
             if os.path.exists(path):
@@ -150,7 +150,7 @@ class MetaHelper(object):
 
     def update_meta_data(self, meta_data):
         """
-        新增或更新缓存条目
+        新增或更新快取條目
         """
         if not meta_data:
             return
@@ -162,7 +162,7 @@ class MetaHelper(object):
 
     def save_meta_data(self, force=False):
         """
-        保存缓存数据到文件
+        儲存快取資料到檔案
         """
         meta_data = self.__load_meta_data(self._meta_path)
         new_meta_data = {k: v for k, v in self._meta_data.items() if str(v.get("id")) != '0'}
@@ -177,7 +177,7 @@ class MetaHelper(object):
 
     def _random_sample(self, new_meta_data):
         """
-        采样分析是否需要保存
+        取樣分析是否需要儲存
         """
         ret = False
         if len(new_meta_data) < 25:
@@ -212,7 +212,7 @@ class MetaHelper(object):
 
     def get_cache_title(self, key):
         """
-        获取缓存的标题
+        獲取快取的標題
         """
         cache_media_info = self._meta_data.get(key)
         if not cache_media_info or not cache_media_info.get("id"):
@@ -221,7 +221,7 @@ class MetaHelper(object):
 
     def set_cache_title(self, key, cn_title):
         """
-        重新设置缓存标题
+        重新設定快取標題
         """
         cache_media_info = self._meta_data.get(key)
         if not cache_media_info:

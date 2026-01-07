@@ -37,18 +37,18 @@ class Searcher:
                       match_media=None,
                       in_from: SearchType = None):
         """
-        根据关键字调用索引器检查媒体
-        :param key_word: 检索的关键字，不能为空
-        :param filter_args: 过滤条件
-        :param match_media: 区配的媒体信息
-        :param in_from: 搜索渠道
-        :return: 命中的资源媒体信息列表
+        根據關鍵字呼叫索引器檢查媒體
+        :param key_word: 檢索的關鍵字，不能為空
+        :param filter_args: 過濾條件
+        :param match_media: 區配的媒體資訊
+        :param in_from: 搜尋渠道
+        :return: 命中的資源媒體資訊列表
         """
         if not key_word:
             return []
         if not self.indexer:
             return []
-        # 检索IMDBID
+        # 檢索IMDBID
         if match_media and not match_media.imdb_id:
             match_media.set_tmdb_info(self.media.get_tmdb_info(mtype=match_media.type,
                                                                tmdbid=match_media.tmdb_id))
@@ -64,32 +64,32 @@ class Searcher:
                          filters: dict = None,
                          user_name=None):
         """
-        只检索和下载一个资源，用于精确检索下载，由微信、Telegram或豆瓣调用
-        :param media_info: 已识别的媒体信息
-        :param in_from: 搜索渠道
-        :param no_exists: 缺失的剧集清单
-        :param sites: 检索哪些站点
-        :param filters: 过滤条件，为空则不过滤
-        :param user_name: 用户名
-        :return: 请求的资源是否全部下载完整
-                 请求的资源如果是剧集则返回下载后仍然缺失的季集信息
-                 搜索到的结果数量
-                 下载到的结果数量，如为None则表示未开启自动下载
+        只檢索和下載一個資源，用於精確檢索下載，由微信、Telegram或豆瓣呼叫
+        :param media_info: 已識別的媒體資訊
+        :param in_from: 搜尋渠道
+        :param no_exists: 缺失的劇集清單
+        :param sites: 檢索哪些站點
+        :param filters: 過濾條件，為空則不過濾
+        :param user_name: 使用者名稱
+        :return: 請求的資源是否全部下載完整
+                 請求的資源如果是劇集則返回下載後仍然缺失的季集資訊
+                 搜尋到的結果數量
+                 下載到的結果數量，如為None則表示未開啟自動下載
         """
         if not media_info:
             return False, {}, 0, 0
-        # 进度计数重置
+        # 進度計數重置
         self.progress.start('search')
-        # 查找的季
+        # 查詢的季
         if media_info.begin_season is None:
             search_season = None
         else:
             search_season = media_info.get_season_list()
-        # 查找的集
+        # 查詢的集
         search_episode = media_info.get_episode_list()
         if search_episode and not search_season:
             search_season = [1]
-        # 过滤条件
+        # 過濾條件
         filter_args = {"season": search_season,
                        "episode": search_episode,
                        "year": media_info.year,
@@ -114,7 +114,7 @@ class Searcher:
                 en_info = Media().get_tmdb_info(mtype=media_info.type, tmdbid=media_info.tmdb_id, language="en-US")
                 if en_info:
                     search_en_name = en_info.get("title") if media_info.type == MediaType.MOVIE else en_info.get("name")
-        # 两次搜索名称
+        # 兩次搜尋名稱
         second_search_name = None
         if Config().get_config("laboratory").get("search_en_title"):
             if search_en_name:
@@ -126,52 +126,52 @@ class Searcher:
             first_search_name = search_cn_name
             if search_en_name:
                 second_search_name = search_en_name
-        # 开始搜索
-        log.info("【Searcher】开始检索 %s ..." % first_search_name)
+        # 開始搜尋
+        log.info("【Searcher】開始檢索 %s ..." % first_search_name)
         media_list = self.search_medias(key_word=first_search_name,
                                         filter_args=filter_args,
                                         match_media=media_info,
                                         in_from=in_from)
-        # 使用名称重新搜索
+        # 使用名稱重新搜尋
         if len(media_list) == 0 \
                 and second_search_name \
                 and second_search_name != first_search_name:
-            log.info("【Searcher】%s 未检索到资源,尝试通过 %s 重新检索 ..." % (first_search_name, second_search_name))
+            log.info("【Searcher】%s 未檢索到資源,嘗試透過 %s 重新檢索 ..." % (first_search_name, second_search_name))
             media_list = self.search_medias(key_word=second_search_name,
                                             filter_args=filter_args,
                                             match_media=media_info,
                                             in_from=in_from)
 
         if len(media_list) == 0:
-            log.info("【Searcher】%s 未搜索到任何资源" % second_search_name)
+            log.info("【Searcher】%s 未搜尋到任何資源" % second_search_name)
             return False, no_exists, 0, 0
         else:
             if in_from in [SearchType.WX, SearchType.TG, SearchType.SLACK]:
-                # 保存搜索记录
+                # 儲存搜尋記錄
                 self.dbhelper.delete_all_search_torrents()
-                # 搜索结果排序
+                # 搜尋結果排序
                 media_list = sorted(media_list, key=lambda x: "%s%s%s%s" % (str(x.title).ljust(100, ' '),
                                                                             str(x.res_order).rjust(3, '0'),
                                                                             str(x.site_order).rjust(3, '0'),
                                                                             str(x.seeders).rjust(10, '0')),
                                     reverse=True)
-                # 插入数据库
+                # 插入資料庫
                 self.dbhelper.insert_search_results(media_list)
-                # 微信未开自动下载时返回
+                # 微信未開自動下載時返回
                 if not self._search_auto:
                     return False, no_exists, len(media_list), None
-            # 择优下载
+            # 擇優下載
             download_items, left_medias = self.downloader.batch_download(in_from=in_from,
                                                                          media_list=media_list,
                                                                          need_tvs=no_exists,
                                                                          user_name=user_name)
-            # 统计下载情况，下全了返回True，没下全返回False
+            # 統計下載情況，下全了返回True，沒下全返回False
             if not download_items:
-                log.info("【Searcher】%s 未下载到资源" % media_info.title)
+                log.info("【Searcher】%s 未下載到資源" % media_info.title)
                 return False, left_medias, len(media_list), 0
             else:
-                log.info("【Searcher】实际下载了 %s 个资源" % len(download_items))
-                # 还有剩下的缺失，说明没下完，返回False
+                log.info("【Searcher】實際下載了 %s 個資源" % len(download_items))
+                # 還有剩下的缺失，說明沒下完，返回False
                 if left_medias:
                     return False, left_medias, len(media_list), len(download_items)
                 # 全部下完了

@@ -45,7 +45,7 @@ class Logger:
                 log_server_handler.setFormatter(logging.Formatter('%(filename)s: %(message)s'))
                 self.logger.addHandler(log_server_handler)
         elif logtype == "file":
-            # 记录日志到文件
+            # 記錄日誌到檔案
             logpath = os.environ.get('NASTOOL_LOG') or self.__config.get_config('app').get('logpath') or ""
             if logpath:
                 if not os.path.exists(logpath):
@@ -56,7 +56,7 @@ class Logger:
                                                        encoding='utf-8')
                 log_file_handler.setFormatter(logging.Formatter('%(asctime)s\t%(levelname)s: %(message)s'))
                 self.logger.addHandler(log_file_handler)
-        # 记录日志到终端
+        # 記錄日誌到終端
         log_console_handler = logging.StreamHandler()
         log_console_handler.setFormatter(logging.Formatter('%(asctime)s\t%(levelname)s: %(message)s'))
         self.logger.addHandler(log_console_handler)

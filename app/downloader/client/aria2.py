@@ -15,7 +15,7 @@ class Aria2(IDownloadClient):
     client_type = DownloaderType.Aria2.value
 
     def get_config(self):
-        # 读取配置文件
+        # 讀取配置檔案
         aria2config = Config().get_config('aria2')
         if aria2config:
             self.host = aria2config.get("host")
@@ -87,7 +87,7 @@ class Aria2(IDownloadClient):
         if not self._client:
             return None
         if isinstance(content, str):
-            # 转换为磁力链
+            # 轉換為磁力鏈
             if re.match("^https*://", content):
                 try:
                     p = RequestUtils().get_res(url=content, allow_redirects=False)

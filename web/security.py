@@ -10,7 +10,7 @@ from config import Config
 
 def require_auth(func):
     """
-    API安全认证
+    API安全認證
     """
 
     @wraps(func)
@@ -23,7 +23,7 @@ def require_auth(func):
         return {
             "code": 401,
             "success": False,
-            "message": "安全认证未通过，请检查ApiKey"
+            "message": "安全認證未透過，請檢查ApiKey"
         }
 
     return wrapper
@@ -32,9 +32,9 @@ def require_auth(func):
 def generate_access_token(username: str, algorithm: str = 'HS256', exp: float = 2):
     """
     生成access_token
-    :param username: 用户名(自定义部分)
-    :param algorithm: 加密算法
-    :param exp: 过期时间，默认2小时
+    :param username: 使用者名稱(自定義部分)
+    :param algorithm: 加密演算法
+    :param exp: 過期時間，預設2小時
     :return:token
     """
 
@@ -54,7 +54,7 @@ def generate_access_token(username: str, algorithm: str = 'HS256', exp: float = 
 def __decode_auth_token(token: str, algorithms='HS256'):
     """
     解密token
-    :param token:token字符串
+    :param token:token字串
     :return: 是否有效，playload
     """
     key = Config().get_config("security").get("api_key")
@@ -75,7 +75,7 @@ def __decode_auth_token(token: str, algorithms='HS256'):
 
 def identify(auth_header: str):
     """
-    用户鉴权，返回是否有效、用户名
+    使用者鑑權，返回是否有效、使用者名稱
     """
     flag = False
     if auth_header:
@@ -87,7 +87,7 @@ def identify(auth_header: str):
 
 def login_required(func):
     """
-    登录保护，验证用户是否登录
+    登入保護，驗證使用者是否登入
     :param func:
     :return:
     """
@@ -99,7 +99,7 @@ def login_required(func):
             return {
                 "code": 403,
                 "success": False,
-                "message": "安全认证未通过，请检查Token"
+                "message": "安全認證未透過，請檢查Token"
             }
 
         token = request.headers.get("Authorization", default=None)

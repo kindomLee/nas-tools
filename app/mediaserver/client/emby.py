@@ -37,13 +37,13 @@ class Emby(IMediaClient):
 
     def get_status(self):
         """
-        测试连通性
+        測試連通性
         """
         return True if self.get_medias_count() else False
 
     def __get_emby_librarys(self):
         """
-        获取Emby媒体库列表
+        獲取Emby媒體庫列表
         """
         if not self._host or not self._apikey:
             return []
@@ -53,16 +53,16 @@ class Emby(IMediaClient):
             if res:
                 return res.json()
             else:
-                log.error(f"【{self.server_type}】Library/SelectableMediaFolders 未获取到返回数据")
+                log.error(f"【{self.server_type}】Library/SelectableMediaFolders 未獲取到返回資料")
                 return []
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Library/SelectableMediaFolders 出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Library/SelectableMediaFolders 出錯：" + str(e))
             return []
 
     def get_admin_user(self):
         """
-        获得管理员用户
+        獲得管理員使用者
         """
         if not self._host or not self._apikey:
             return None
@@ -75,15 +75,15 @@ class Emby(IMediaClient):
                     if user.get("Policy", {}).get("IsAdministrator"):
                         return user.get("Id")
             else:
-                log.error(f"【{self.server_type}】Users 未获取到返回数据")
+                log.error(f"【{self.server_type}】Users 未獲取到返回資料")
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Users出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Users出錯：" + str(e))
         return None
 
     def get_user_count(self):
         """
-        获得用户数量
+        獲得使用者數量
         """
         if not self._host or not self._apikey:
             return 0
@@ -93,16 +93,16 @@ class Emby(IMediaClient):
             if res:
                 return res.json().get("TotalRecordCount")
             else:
-                log.error(f"【{self.server_type}】Users/Query 未获取到返回数据")
+                log.error(f"【{self.server_type}】Users/Query 未獲取到返回資料")
                 return 0
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Users/Query出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Users/Query出錯：" + str(e))
             return 0
 
     def get_activity_log(self, num):
         """
-        获取Emby活动记录
+        獲取Emby活動記錄
         """
         if not self._host or not self._apikey:
             return []
@@ -127,17 +127,17 @@ class Emby(IMediaClient):
                         activity = {"type": event_type, "event": event_str, "date": event_date}
                         ret_array.append(activity)
             else:
-                log.error(f"【{self.server_type}】System/ActivityLog/Entries 未获取到返回数据")
+                log.error(f"【{self.server_type}】System/ActivityLog/Entries 未獲取到返回資料")
                 return []
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接System/ActivityLog/Entries出错：" + str(e))
+            log.error(f"【{self.server_type}】連線System/ActivityLog/Entries出錯：" + str(e))
             return []
         return ret_array[:num]
 
     def get_medias_count(self):
         """
-        获得电影、电视剧、动漫媒体数量
+        獲得電影、電視劇、動漫媒體數量
         :return: MovieCount SeriesCount SongCount
         """
         if not self._host or not self._apikey:
@@ -148,19 +148,19 @@ class Emby(IMediaClient):
             if res:
                 return res.json()
             else:
-                log.error(f"【{self.server_type}】Items/Counts 未获取到返回数据")
+                log.error(f"【{self.server_type}】Items/Counts 未獲取到返回資料")
                 return {}
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Items/Counts出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Items/Counts出錯：" + str(e))
             return {}
 
     def __get_emby_series_id_by_name(self, name, year):
         """
-        根据名称查询Emby中剧集的SeriesId
-        :param name: 标题
+        根據名稱查詢Emby中劇集的SeriesId
+        :param name: 標題
         :param year: 年份
-        :return: None 表示连不通，""表示未找到，找到返回ID
+        :return: None 表示連不通，""表示未找到，找到返回ID
         """
         if not self._host or not self._apikey:
             return None
@@ -177,16 +177,16 @@ class Emby(IMediaClient):
                             return res_item.get('Id')
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Items出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Items出錯：" + str(e))
             return None
         return ""
 
     def get_movies(self, title, year=None):
         """
-        根据标题和年份，检查电影是否在Emby中存在，存在则返回列表
-        :param title: 标题
-        :param year: 年份，可以为空，为空时不按年份过滤
-        :return: 含title、year属性的字典列表
+        根據標題和年份，檢查電影是否在Emby中存在，存在則返回列表
+        :param title: 標題
+        :param year: 年份，可以為空，為空時不按年份過濾
+        :return: 含title、year屬性的字典列表
         """
         if not self._host or not self._apikey:
             return None
@@ -206,33 +206,33 @@ class Emby(IMediaClient):
                             return ret_movies
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Items出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Items出錯：" + str(e))
             return None
         return []
 
     def __get_emby_tv_episodes(self, title, year, tmdb_id=None, season=None):
         """
-        根据标题和年份和季，返回Emby中的剧集列表
-        :param title: 标题
-        :param year: 年份，可以为空，为空时不按年份过滤
+        根據標題和年份和季，返回Emby中的劇集列表
+        :param title: 標題
+        :param year: 年份，可以為空，為空時不按年份過濾
         :param tmdb_id: TMDBID
         :param season: 季
-        :return: 集号的列表
+        :return: 集號的列表
         """
         if not self._host or not self._apikey:
             return None
-        # 电视剧
+        # 電視劇
         item_id = self.__get_emby_series_id_by_name(title, year)
         if item_id is None:
             return None
         if not item_id:
             return []
-        # 验证tmdbid是否相同
+        # 驗證tmdbid是否相同
         item_tmdbid = self.get_iteminfo(item_id).get("ProviderIds", {}).get("Tmdb")
         if tmdb_id and item_tmdbid:
             if str(tmdb_id) != str(item_tmdbid):
                 return []
-        # /Shows/Id/Episodes 查集的信息
+        # /Shows/Id/Episodes 查集的資訊
         if not season:
             season = 1
         req_url = "%semby/Shows/%s/Episodes?Season=%s&IsMissing=false&api_key=%s" % (
@@ -247,17 +247,17 @@ class Emby(IMediaClient):
                 return exists_episodes
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Shows/Id/Episodes出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Shows/Id/Episodes出錯：" + str(e))
             return None
         return []
 
     def get_no_exists_episodes(self, meta_info, season, total_num):
         """
-        根据标题、年份、季、总集数，查询Emby中缺少哪几集
-        :param meta_info: 已识别的需要查询的媒体信息
-        :param season: 季号，数字
-        :param total_num: 该季的总集数
-        :return: 该季不存在的集号列表
+        根據標題、年份、季、總集數，查詢Emby中缺少哪幾集
+        :param meta_info: 已識別的需要查詢的媒體資訊
+        :param season: 季號，數字
+        :param total_num: 該季的總集數
+        :return: 該季不存在的集號列表
         """
         if not self._host or not self._apikey:
             return None
@@ -269,10 +269,10 @@ class Emby(IMediaClient):
 
     def get_image_by_id(self, item_id, image_type):
         """
-        根据ItemId从Emby查询图片地址
+        根據ItemId從Emby查詢圖片地址
         :param item_id: 在Emby中的ID
-        :param image_type: 图片的类弄地，poster或者backdrop等
-        :return: 图片对应在TMDB中的URL
+        :param image_type: 圖片的類弄地，poster或者backdrop等
+        :return: 圖片對應在TMDB中的URL
         """
         if not self._host or not self._apikey:
             return None
@@ -285,17 +285,17 @@ class Emby(IMediaClient):
                     if image.get("ProviderName") == "TheMovieDb" and image.get("Type") == image_type:
                         return image.get("Url")
             else:
-                log.error(f"【{self.server_type}】Items/RemoteImages 未获取到返回数据")
+                log.error(f"【{self.server_type}】Items/RemoteImages 未獲取到返回資料")
                 return None
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Items/Id/RemoteImages出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Items/Id/RemoteImages出錯：" + str(e))
             return None
         return None
 
     def __refresh_emby_library_by_id(self, item_id):
         """
-        通知Emby刷新一个项目的媒体库
+        通知Emby重新整理一個專案的媒體庫
         """
         if not self._host or not self._apikey:
             return False
@@ -305,16 +305,16 @@ class Emby(IMediaClient):
             if res:
                 return True
             else:
-                log.info(f"【{self.server_type}】刷新媒体库对象 {item_id} 失败，无法连接Emby！")
+                log.info(f"【{self.server_type}】重新整理媒體庫物件 {item_id} 失敗，無法連線Emby！")
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Items/Id/Refresh出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Items/Id/Refresh出錯：" + str(e))
             return False
         return False
 
     def refresh_root_library(self):
         """
-        通知Emby刷新整个媒体库
+        通知Emby重新整理整個媒體庫
         """
         if not self._host or not self._apikey:
             return False
@@ -324,22 +324,22 @@ class Emby(IMediaClient):
             if res:
                 return True
             else:
-                log.info(f"【{self.server_type}】刷新媒体库失败，无法连接Emby！")
+                log.info(f"【{self.server_type}】重新整理媒體庫失敗，無法連線Emby！")
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Library/Refresh出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Library/Refresh出錯：" + str(e))
             return False
         return False
 
     def refresh_library_by_items(self, items):
         """
-        按类型、名称、年份来刷新媒体库
-        :param items: 已识别的需要刷新媒体库的媒体信息列表
+        按型別、名稱、年份來重新整理媒體庫
+        :param items: 已識別的需要重新整理媒體庫的媒體資訊列表
         """
         if not items:
             return
-        # 收集要刷新的媒体库信息
-        log.info(f"【{self.server_type}】开始刷新Emby媒体库...")
+        # 收集要重新整理的媒體庫資訊
+        log.info(f"【{self.server_type}】開始重新整理Emby媒體庫...")
         library_ids = []
         for item in items:
             if not item:
@@ -347,34 +347,34 @@ class Emby(IMediaClient):
             library_id = self.__get_emby_library_id_by_item(item)
             if library_id and library_id not in library_ids:
                 library_ids.append(library_id)
-        # 开始刷新媒体库
+        # 開始重新整理媒體庫
         if "/" in library_ids:
             self.refresh_root_library()
             return
         for library_id in library_ids:
             if library_id != "/":
                 self.__refresh_emby_library_by_id(library_id)
-        log.info(f"【{self.server_type}】Emby媒体库刷新完成")
+        log.info(f"【{self.server_type}】Emby媒體庫重新整理完成")
 
     def __get_emby_library_id_by_item(self, item):
         """
-        根据媒体信息查询在哪个媒体库，返回要刷新的位置的ID
-        :param item: 由title、year、type组成的字典
+        根據媒體資訊查詢在哪個媒體庫，返回要重新整理的位置的ID
+        :param item: 由title、year、type組成的字典
         """
         if not item.get("title") or not item.get("year") or not item.get("type"):
             return None
         if item.get("type") == MediaType.TV:
             item_id = self.__get_emby_series_id_by_name(item.get("title"), item.get("year"))
             if item_id:
-                # 存在电视剧，则直接刷新这个电视剧就行
+                # 存在電視劇，則直接重新整理這個電視劇就行
                 return item_id
         else:
             if self.get_movies(item.get("title"), item.get("year")):
-                # 已存在，不用刷新
+                # 已存在，不用重新整理
                 return None
-        # 查找需要刷新的媒体库ID
+        # 查詢需要重新整理的媒體庫ID
         for library in self._libraries:
-            # 找同级路径最多的媒体库（要求容器内映射路径与实际一致）
+            # 找同級路徑最多的媒體庫（要求容器內對映路徑與實際一致）
             max_equal_path_id = None
             max_path_len = 0
             equal_path_num = 0
@@ -393,16 +393,16 @@ class Emby(IMediaClient):
                     continue
             if max_equal_path_id:
                 return max_equal_path_id if equal_path_num == 1 else library.get("Id")
-            # 如果找不到，只要路径中有分类目录名就命中
+            # 如果找不到，只要路徑中有分類目錄名就命中
             for folder in library.get("SubFolders"):
                 if folder.get("Path") and re.search(r"[/\\]%s" % item.get("category"), folder.get("Path")):
                     return library.get("Id")
-        # 刷新根目录
+        # 重新整理根目錄
         return "/"
 
     def get_libraries(self):
         """
-        获取媒体服务器所有媒体库列表
+        獲取媒體伺服器所有媒體庫列表
         """
         if self._host and self._apikey:
             self._libraries = self.__get_emby_librarys()
@@ -413,7 +413,7 @@ class Emby(IMediaClient):
 
     def get_iteminfo(self, itemid):
         """
-        获取单个项目详情
+        獲取單個專案詳情
         """
         if not itemid:
             return {}
@@ -430,7 +430,7 @@ class Emby(IMediaClient):
 
     def get_items(self, parent):
         """
-        获取媒体服务器所有媒体库列表
+        獲取媒體伺服器所有媒體庫列表
         """
         if not parent:
             yield {}
@@ -461,5 +461,5 @@ class Emby(IMediaClient):
                             yield item
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
-            log.error(f"【{self.server_type}】连接Users/Items出错：" + str(e))
+            log.error(f"【{self.server_type}】連線Users/Items出錯：" + str(e))
         yield {}

@@ -4,7 +4,7 @@
     <div class="row align-items-center">
       <div class="col">
         <h2 class="page-title">
-          下载设置
+          下載設定
         </h2>
       </div>
       <div class="col-auto ms-auto d-print-none">
@@ -16,7 +16,7 @@
               <line x1="12" y1="5" x2="12" y2="19" />
               <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
-            新增下载设置
+            新增下載設定
           </a>
           <a href="javascript:show_add_download_setting_modal()" class="btn btn-primary d-sm-none btn-icon">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
@@ -48,7 +48,7 @@
     </div>
   </div>
 </div>
-<!-- 业务页面代码 -->
+<!-- 業務頁面程式碼 -->
 <div class="page-body">
   <div class="container-xl">
     <div class="row row-cards">
@@ -65,7 +65,7 @@
               </svg>
             </a>
             {% if Attr.id > 0 %}
-            <a href="javascript:show_edit_download_setting_modal('{{ Attr.id }}')" class="btn-action" title="编辑设置">
+            <a href="javascript:show_edit_download_setting_modal('{{ Attr.id }}')" class="btn-action" title="編輯設定">
               <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24" height="24" viewBox="0 0 24 24"
                 stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -74,7 +74,7 @@
                 <line x1="16" y1="5" x2="19" y2="8" />
               </svg>
             </a>
-            <a href="javascript:delete_download_setting('{{ Attr.id }}', '{{ Attr.name }}')" class="btn-action" title="删除设置">
+            <a href="javascript:delete_download_setting('{{ Attr.id }}', '{{ Attr.name }}')" class="btn-action" title="刪除設定">
               <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
                 stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <desc>Download more icon variants from https://tabler-icons.io/i/x</desc>
@@ -90,13 +90,13 @@
             style="display: {% if Count > 3 %}none{% else %}block{% endif %};">
           <div class="datagrid">
             <div class="datagrid-item">
-              <div class="datagrid-title">下载器</div>
+              <div class="datagrid-title">下載器</div>
               <div class="datagrid-content">
-                <span class="badge me-2 bg-blue">{{ Attr.downloader or '默认' }}</span>
+                <span class="badge me-2 bg-blue">{{ Attr.downloader or '預設' }}</span>
               </div>
             </div>
             <div class="datagrid-item">
-              <div class="datagrid-title">分类</div>
+              <div class="datagrid-title">分類</div>
               <div class="datagrid-content">
                 {% if Attr.category %}
                 <span class="badge me-2">{{ Attr.category }}</span>
@@ -104,7 +104,7 @@
               </div>
             </div>
             <div class="datagrid-item">
-              <div class="datagrid-title">标签</div>
+              <div class="datagrid-title">標籤</div>
               <div class="datagrid-content">
                 {% if Attr.tags %}
                 {% for Tag in Attr.tags.split(";") %}
@@ -114,34 +114,34 @@
               </div>
             </div>
             <div class="datagrid-item">
-              <div class="datagrid-title">布局</div>
+              <div class="datagrid-title">佈局</div>
               <div class="datagrid-content">
                 {% if Attr.content_layout == 0 %}
-                <span class="badge me-2">全局</span>
+                <span class="badge me-2">全域性</span>
                 {% endif %}
                 {% if Attr.content_layout == 1 %}
                 <span class="badge me-2">原始</span>
                 {% endif %}
                 {% if Attr.content_layout == 2 %}
-                <span class="badge me-2">创建子文件夹</span>
+                <span class="badge me-2">建立子資料夾</span>
                 {% endif %}
                 {% if Attr.content_layout == 3 %}
-                <span class="badge me-2">不建子文件夹</span>
+                <span class="badge me-2">不建子資料夾</span>
                 {% endif %}
               </div>
             </div>
             <div class="datagrid-item">
-              <div class="datagrid-title">动作</div>
+              <div class="datagrid-title">動作</div>
               <div class="datagrid-content">
                 {% if Attr.is_paused %}
-                <span class="badge me-2 bg-orange">添加后暂停</span>
+                <span class="badge me-2 bg-orange">新增後暫停</span>
                 {% else %}
-                <span class="badge me-2 bg-green">添加后开始</span>
+                <span class="badge me-2 bg-green">新增後開始</span>
                 {% endif %}
               </div>
             </div>
             <div class="datagrid-item">
-              <div class="datagrid-title">上传速度限制</div>
+              <div class="datagrid-title">上傳速度限制</div>
               <div class="datagrid-content">
               {% if Attr.upload_limit %}
                 {{ Attr.upload_limit|string + ' KB/s' or '' }}
@@ -149,7 +149,7 @@
               </div>
             </div>
             <div class="datagrid-item">
-              <div class="datagrid-title">下载速度限制</div>
+              <div class="datagrid-title">下載速度限制</div>
               <div class="datagrid-content">
               {% if Attr.download_limit %}
                 {{ Attr.download_limit|string + ' KB/s' or ''}}
@@ -163,10 +163,10 @@
               </div>
             </div>
             <div class="datagrid-item">
-              <div class="datagrid-title">做种时间限制</div>
+              <div class="datagrid-title">做種時間限制</div>
               <div class="datagrid-content">
               {% if Attr.seeding_time_limit %}
-                {{ Attr.seeding_time_limit|string + ' 分钟' or '' }}
+                {{ Attr.seeding_time_limit|string + ' 分鐘' or '' }}
               {% endif %}
               </div>
             </div>
@@ -182,7 +182,7 @@
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modal-download-setting-title">新增下载设置</h5>
+        <h5 class="modal-title" id="modal-download-setting-title">新增下載設定</h5>
         <input type="hidden" id="download_setting_id" />
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -190,15 +190,15 @@
         <div class="row">
           <div class="col-md">
             <div class="mb-3">
-              <label class="form-label required">名称</label>
-              <input type="text" id="name" class="form-control" placeholder="别名">
+              <label class="form-label required">名稱</label>
+              <input type="text" id="name" class="form-control" placeholder="別名">
             </div>
           </div>
           <div class="col-md">
             <div class="mb-3">
-              <label class="form-label required">下载器</label>
+              <label class="form-label required">下載器</label>
               <select class="form-select" id="downloader">
-                <option value="" selected>默认</option>
+                <option value="" selected>預設</option>
                 {% for downloader_type in DownloaderTypes %}
                 <option value="{{ downloader_type.value }}">{{ downloader_type.value }}</option>
                 {% endfor %}
@@ -209,39 +209,39 @@
         <div class="row">
           <div class="col-md">
             <div class="mb-3">
-              <label class="form-label">分类 <span class="form-help" title="仅适用于Qbittorrent" data-bs-toggle="tooltip">?</span></label>
-              <input type="text" id="category" class="form-control" placeholder="下载器分类名称">
+              <label class="form-label">分類 <span class="form-help" title="僅適用於Qbittorrent" data-bs-toggle="tooltip">?</span></label>
+              <input type="text" id="category" class="form-control" placeholder="下載器分類名稱">
             </div>
           </div>
           <div class="col-md">
             <div class="mb-3">
-              <label class="form-label">标签 <span class="form-help" title="若启用只管理NASTool添加的下载且应用该下载设置的种子需要被管理，请添加NASTOOL标签"
+              <label class="form-label">標籤 <span class="form-help" title="若啟用只管理NASTool新增的下載且應用該下載設定的種子需要被管理，請新增NASTOOL標籤"
                 data-bs-toggle="tooltip">?</span></label>
-              <input type="text" id="tags" class="form-control" placeholder="多个标签用;分隔">
+              <input type="text" id="tags" class="form-control" placeholder="多個標籤用;分隔">
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col-md">
             <div class="mb-3">
-              <label class="form-label">上传速度限制 </label>
-              <input type="text" id="upload_limit" class="form-control" placeholder="KB/s，留空或0为不限速">
+              <label class="form-label">上傳速度限制 </label>
+              <input type="text" id="upload_limit" class="form-control" placeholder="KB/s，留空或0為不限速">
             </div>
           </div>
           <div class="col-md">
             <div class="mb-3">
-              <label class="form-label">下载速度限制 </label>
-              <input type="text" id="download_limit" class="form-control" placeholder="KB/s，留空或0为不限速">
+              <label class="form-label">下載速度限制 </label>
+              <input type="text" id="download_limit" class="form-control" placeholder="KB/s，留空或0為不限速">
             </div>
           </div>
           <div class="col-md">
             <div class="mb-3">
-              <label class="form-label">布局 <span class="form-help" title="仅适用于Qbittorrent" data-bs-toggle="tooltip">?</span></label>
+              <label class="form-label">佈局 <span class="form-help" title="僅適用於Qbittorrent" data-bs-toggle="tooltip">?</span></label>
               <select class="form-select" id="content_layout">
-                <option value="0" selected>全局</option>
+                <option value="0" selected>全域性</option>
                 <option value="1">原始</option>
-                <option value="2">创建子文件夹</option>
-                <option value="3">不建子文件夹</option>
+                <option value="2">建立子資料夾</option>
+                <option value="3">不建子資料夾</option>
               </select>
             </div>
           </div>
@@ -249,22 +249,22 @@
         <div class="row">
           <div class="col-md">
             <div class="mb-3">
-              <label class="form-label">分享率限制 <span class="form-help" title="仅适用于Qbittorrent" data-bs-toggle="tooltip">?</span></label>
-              <input type="text" id="ratio_limit" class="form-control" placeholder="留空或0为无限制">
+              <label class="form-label">分享率限制 <span class="form-help" title="僅適用於Qbittorrent" data-bs-toggle="tooltip">?</span></label>
+              <input type="text" id="ratio_limit" class="form-control" placeholder="留空或0為無限制">
             </div>
           </div>
           <div class="col-md">
             <div class="mb-3">
-              <label class="form-label">做种时间限制 <span class="form-help" title="仅适用于Qbittorrent" data-bs-toggle="tooltip">?</span></label>
-              <input type="text" id="seeding_time_limit" class="form-control" placeholder="分钟，留空或0为无限制">
+              <label class="form-label">做種時間限制 <span class="form-help" title="僅適用於Qbittorrent" data-bs-toggle="tooltip">?</span></label>
+              <input type="text" id="seeding_time_limit" class="form-control" placeholder="分鐘，留空或0為無限制">
             </div>
           </div>
           <div class="col-md">
             <div class="mb-3">
-              <label class="form-label">动作 </label>
+              <label class="form-label">動作 </label>
               <select class="form-select" id="is_paused">
-                <option value="0" selected>添加后开始</option>
-                <option value="1">添加后暂停</option>
+                <option value="0" selected>新增後開始</option>
+                <option value="1">新增後暫停</option>
               </select>
             </div>
           </div>
@@ -276,17 +276,17 @@
         </button>
         <button id="add_or_edit_download_setting_btn" class="btn btn-primary ms-auto"
           onclick="add_or_edit_download_setting()">
-          保存
+          儲存
         </button>
       </div>
     </div>
   </div>
 </div>
 <script type="text/javascript">
-  // 显示新增下载设置
+  // 顯示新增下載設定
   function show_add_download_setting_modal(){
     $("#download_setting_id").val('');
-    $("#modal-download-setting-title").val('新增下载设置');
+    $("#modal-download-setting-title").val('新增下載設定');
     $("#name").val('');
     $("#category").val('');
     $("#tags").val('');
@@ -300,12 +300,12 @@
     $("#modal-download-setting").modal('show');
   }
 
-  // 显示编辑下载设置
+  // 顯示編輯下載設定
   function show_edit_download_setting_modal(sid){
     $("#download_setting_id").val(sid);
     ajax_post("get_download_setting", { sid: sid }, function (ret) {
       if (ret.code == 0) {
-        $("#modal-download-setting-title").val('编辑下载设置');
+        $("#modal-download-setting-title").val('編輯下載設定');
         $("#name").val(ret.data.name);
         $("#category").val(ret.data.category);
         $("#tags").val(ret.data.tags);
@@ -321,7 +321,7 @@
     });
   }
 
-  // 保存新建/编辑下载设置
+  // 儲存新建/編輯下載設定
   function add_or_edit_download_setting(){
     let sid = $("#download_setting_id").val();
     let name = $("#name").val();
@@ -377,17 +377,17 @@
       seeding_time_limit: seeding_time_limit,
       downloader: downloader
     };
-    $("#add_or_edit_download_setting_btn").text("保存中").attr("disabled", true);
+    $("#add_or_edit_download_setting_btn").text("儲存中").attr("disabled", true);
     ajax_post("update_download_setting", params, function (ret) {
       $("#modal-download-setting").modal('hide');
-      $("#add_or_edit_download_setting_btn").text("保存").attr("disabled", false);
+      $("#add_or_edit_download_setting_btn").text("儲存").attr("disabled", false);
       navmenu('download_setting');
     });
   }
 
-  // 删除下载设置
+  // 刪除下載設定
   function delete_download_setting(sid, name){
-    show_confirm_modal("删除下载设置 " + name + " ？", function () {
+    show_confirm_modal("刪除下載設定 " + name + " ？", function () {
       hide_confirm_modal();
       ajax_post("delete_download_setting", { "sid": sid }, function (ret) {
         navmenu('download_setting');

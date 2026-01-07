@@ -50,7 +50,7 @@
     </div>
   </div>
 </div>
-<!-- 业务页面代码 -->
+<!-- 業務頁面程式碼 -->
 <div class="page-body">
   <div class="container-xl">
     <div class="row row-cards">
@@ -59,7 +59,7 @@
           <div class="card-body border-bottom py-3">
             <div class="d-flex">
               <div class="text-muted">
-                共 {{ Count }} 条记录
+                共 {{ Count }} 條記錄
               </div>
             </div>
           </div>
@@ -67,9 +67,9 @@
             <table class="table table-vcenter card-table">
               <thead>
               <tr>
-                <th>名称</th>
-                <th>类型</th>
-                <th>附加参数</th>
+                <th>名稱</th>
+                <th>型別</th>
+                <th>附加引數</th>
                 <th class="w-3"></th>
               </tr>
               </thead>
@@ -83,7 +83,7 @@
                     <td>
                       <div class="d-flex">
                         <a href="javascript:show_edit_rssparser_modal('{{ RssParser.id }}')" class="btn-action"
-                           title="编辑">
+                           title="編輯">
                           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler" width="24" height="24"
                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                                stroke-linecap="round"
@@ -94,7 +94,7 @@
                             <line x1="16" y1="5" x2="19" y2="8"/>
                           </svg>
                         </a>
-                        <a href="javascript:delete_rssparser('{{ RssParser.id }}')" class="btn-action" title="删除">
+                        <a href="javascript:delete_rssparser('{{ RssParser.id }}')" class="btn-action" title="刪除">
                           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24"
                                height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                                stroke-linecap="round" stroke-linejoin="round">
@@ -109,7 +109,7 @@
                 {% endfor %}
               {% else %}
                 <tr>
-                  <td colspan="4" align="center">没有数据</td>
+                  <td colspan="4" align="center">沒有資料</td>
                 </tr>
               {% endif %}
               </tbody>
@@ -133,14 +133,14 @@
         <div class="row">
           <div class="col-lg-6">
             <div class="mb-3">
-              <label class="form-label required">名称</label>
-              <input type="text" class="form-control" id="rssparser_name" placeholder="自定义名称">
+              <label class="form-label required">名稱</label>
+              <input type="text" class="form-control" id="rssparser_name" placeholder="自定義名稱">
             </div>
           </div>
           <div class="col-lg-6">
             <div class="mb-3">
-              <label class="form-label">类型 <span class="form-help"
-                                                   title="支持XML及JSON，需要分别按XPath及JsonPath的语法维护解析格式"
+              <label class="form-label">型別 <span class="form-help"
+                                                   title="支援XML及JSON，需要分別按XPath及JsonPath的語法維護解析格式"
                                                    data-bs-toggle="tooltip">?</span></label>
               <select class="form-select" id="rssparser_type">
                 <option value="XML" selected>XML</option>
@@ -153,7 +153,7 @@
           <div class="col">
             <div class="mb-3">
               <label class="form-label">解析格式 <span class="form-help"
-                                                       title="根据RSS报文的内容，编辑Json格式解析配置，以获取报文中的数据以供订阅程序处理；如类型为XML则需要是XPath语法，如类型为JSON则需要是JsonPath语法；支持的解析内容包括：list(获取列表) title(标题) enclosure(种子下载链接) description(种子描述) size(种子大小) type(类型：movie/tv) year(发行年份)，没有或不需要的可不配置或配置为空，具体参考现有示例；解析器可以尽可能解析更多的信息，由订阅程序将按需使用"
+                                                       title="根據RSS報文的內容，編輯Json格式解析配置，以獲取報文中的資料以供訂閱程式處理；如型別為XML則需要是XPath語法，如型別為JSON則需要是JsonPath語法；支援的解析內容包括：list(獲取列表) title(標題) enclosure(種子下載連結) description(種子描述) size(種子大小) type(型別：movie/tv) year(發行年份)，沒有或不需要的可不配置或配置為空，具體參考現有示例；解析器可以儘可能解析更多的資訊，由訂閱程式將按需使用"
                                                        data-bs-toggle="tooltip">?</span></label>
               <textarea class="form-control" id="rssparser_format" rows="10">
 {
@@ -186,7 +186,7 @@
         <div class="row">
           <div class="col">
             <div class="mb-3">
-              <label class="form-label">附加参数 <span class="form-help" title="需要附加到RSS链接中的参数"
+              <label class="form-label">附加引數 <span class="form-help" title="需要附加到RSS連結中的引數"
                                                        data-bs-toggle="tooltip">?</span></label>
               <input type="text" class="form-control" id="rssparser_params" value="" placeholder="">
             </div>
@@ -206,14 +206,14 @@
   </div>
 </div>
 <script type="text/javascript">
-  // 打开新增窗口
+  // 開啟新增視窗
   function show_add_rssparser_modal() {
     $("#rssparser_id").val('');
     $("#add_or_edit_rssparser_btn").text('新增');
     $("#modal-userrss-parser").modal('show');
   }
 
-  // 新增下载器
+  // 新增下載器
   function add_or_edit_rssparser() {
     if (!$("#rssparser_name").val()) {
       $("#rssparser_name").addClass("is-invalid");
@@ -234,9 +234,9 @@
     });
   }
 
-  // 删除下载器
+  // 刪除下載器
   function delete_rssparser(id) {
-    show_ask_modal("是否确认删除该解析器？ ", function () {
+    show_ask_modal("是否確認刪除該解析器？ ", function () {
       hide_ask_modal();
       const params = {"id": id};
       ajax_post("delete_rssparser", params, function (ret) {
@@ -245,7 +245,7 @@
     });
   }
 
-  // 编辑下载器
+  // 編輯下載器
   function show_edit_rssparser_modal(id) {
     $("#rssparser_id").val(id);
     ajax_post("get_rssparser", {id: id}, function (ret) {
@@ -254,7 +254,7 @@
         $("#rssparser_type").val(ret.detail.type);
         $("#rssparser_format").val(ret.detail.format);
         $("#rssparser_params").val(ret.detail.params);
-        $("#add_or_edit_rssparser_btn").text('保存');
+        $("#add_or_edit_rssparser_btn").text('儲存');
         $("#modal-userrss-parser").modal('show');
       }
     });

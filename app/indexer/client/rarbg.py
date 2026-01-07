@@ -31,7 +31,7 @@ class Rarbg:
             return []
         self.__get_token()
         if not self._token:
-            log.warn(f"【INDEXER】{indexer.name} 未获取到token，无法搜索")
+            log.warn(f"【INDEXER】{indexer.name} 未獲取到token，無法搜尋")
             return []
         params = {'app_id': self._appid, 'mode': 'search', 'token': self._token, 'format': 'json_extended', 'limit': 100}
         if imdb_id:
@@ -58,9 +58,9 @@ class Rarbg:
                            'imdbid': result.get('episode_info').get('imdb') if result.get('episode_info') else ''}
                 torrents.append(torrent)
         elif res:
-            log.warn("【INDEXER】{indexer.name} 搜索失败，错误码：%s" % res.status_code)
+            log.warn("【INDEXER】{indexer.name} 搜尋失敗，錯誤碼：%s" % res.status_code)
             return []
         else:
-            log.warn("【INDEXER】{indexer.name} 搜索失败，无法连接 torrentapi.org")
+            log.warn("【INDEXER】{indexer.name} 搜尋失敗，無法連線 torrentapi.org")
             return []
         return torrents

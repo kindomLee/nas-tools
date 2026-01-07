@@ -4,13 +4,13 @@
     <div class="row align-items-center">
       <div class="col">
         <h2 class="page-title">
-          服务
+          服務
         </h2>
       </div>
     </div>
   </div>
 </div>
-<!-- 业务页面代码 -->
+<!-- 業務頁面程式碼 -->
 {% if Count > 0 %}
 <div class="page-body">
   <div class="container-xl">
@@ -57,9 +57,9 @@
     <div class="empty">
       <div class="empty-img"><img src="./static/img/sign_in.svg" height="128" alt="">
       </div>
-      <p class="empty-title">没有服务</p>
+      <p class="empty-title">沒有服務</p>
       <p class="empty-subtitle text-muted">
-        没有开启任何后台服务。
+        沒有開啟任何後臺服務。
       </p>
     </div>
   </div>
@@ -70,16 +70,16 @@
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">名称识别测试</h5>
+        <h5 class="modal-title">名稱識別測試</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="row">
           <div class="col">
             <div class="mb-3">
-              <label class="form-label">资源名称 <span class="form-help"
-                  title="用于测试名称识别情况，如命名太离谱实在难于兼容，合理范围内无法识别的可在Github反馈" data-bs-toggle="tooltip">?</span></label>
-              <input type="text" value="" id="test_name" class="form-control" placeholder="种子名/文件名等">
+              <label class="form-label">資源名稱 <span class="form-help"
+                  title="用於測試名稱識別情況，如命名太離譜實在難於相容，合理範圍內無法識別的可在Github反饋" data-bs-toggle="tooltip">?</span></label>
+              <input type="text" value="" id="test_name" class="form-control" placeholder="種子名/檔名等">
             </div>
           </div>
         </div>
@@ -92,7 +92,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-link me-auto" data-bs-dismiss="modal">取消</button>
-        <button id="nametest_btn" class="btn btn-primary">识别</button>
+        <button id="nametest_btn" class="btn btn-primary">識別</button>
       </div>
     </div>
   </div>
@@ -102,29 +102,29 @@
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">过滤规则测试</h5>
+        <h5 class="modal-title">過濾規則測試</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="row">
           <div class="col-lg-7">
             <div class="mb-3">
-              <label class="form-label required">标题</label>
-              <input type="text" value="" id="test_title" class="form-control" placeholder="种子名称">
+              <label class="form-label required">標題</label>
+              <input type="text" value="" id="test_title" class="form-control" placeholder="種子名稱">
             </div>
           </div>
           <div class="col-lg-2">
             <div class="mb-3">
               <label class="form-label required">大小(GB)</label>
-              <input type="text" value="" id="test_size" class="form-control" placeholder="种子大小">
+              <input type="text" value="" id="test_size" class="form-control" placeholder="種子大小">
             </div>
           </div>
           <div class="col-lg-3">
             <div class="mb-3">
-              <label class="form-label required">过滤规则</label>
+              <label class="form-label required">過濾規則</label>
               <select class="form-select" id="test_rulegroup">
                   {% if RuleGroups %}
-                  <option value="0">请选择</option>
+                  <option value="0">請選擇</option>
                   {% for RuleGroup in RuleGroups %}
                   <option value="{{ RuleGroup.id }}">{{ RuleGroup.name }}</option>
                   {% endfor %}
@@ -138,8 +138,8 @@
         <div class="row">
           <div class="col">
             <div class="mb-3">
-              <label class="form-label">副标题</label>
-              <textarea rows="3" id="test_subtitle" class="form-control" placeholder="种子描述"></textarea>
+              <label class="form-label">副標題</label>
+              <textarea rows="3" id="test_subtitle" class="form-control" placeholder="種子描述"></textarea>
             </div>
           </div>
         </div>
@@ -152,7 +152,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-link me-auto" data-bs-dismiss="modal">取消</button>
-        <button id="ruletest_btn" class="btn btn-primary">测试</button>
+        <button id="ruletest_btn" class="btn btn-primary">測試</button>
       </div>
     </div>
   </div>
@@ -162,16 +162,16 @@
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">网络连通性测试</h5>
+        <h5 class="modal-title">網路連通性測試</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="table-responsive">
         <table class="table table-vcenter card-table">
           <thead>
             <tr>
-              <th>测试对象</th>
-              <th>连通性</th>
-              <th>耗时</th>
+              <th>測試物件</th>
+              <th>連通性</th>
+              <th>耗時</th>
             </tr>
           </thead>
           <tbody>
@@ -187,7 +187,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-link me-auto" data-bs-dismiss="modal">取消</button>
-        <button id="nettest_btn" class="btn btn-primary">测试</button>
+        <button id="nettest_btn" class="btn btn-primary">測試</button>
       </div>
     </div>
   </div>
@@ -197,7 +197,7 @@
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">备份&恢复</h5>
+        <h5 class="modal-title">備份&恢復</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -206,20 +206,20 @@
             <input name="file" type="file" accept="*.zip" />
           </div>
           <div class="dz-message">
-            <h3 class="dropzone-msg-title">上传备份文件</h3>
-            <span class="dropzone-msg-desc">点击或者拖动备份文件到此处</span>
+            <h3 class="dropzone-msg-title">上傳備份檔案</h3>
+            <span class="dropzone-msg-desc">點選或者拖動備份檔案到此處</span>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button id="backup_btn" class="btn btn-primary">备份当前配置</button>
-        <button id="restore_btn" class="btn btn-danger">恢复配置</button>
+        <button id="backup_btn" class="btn btn-primary">備份當前配置</button>
+        <button id="restore_btn" class="btn btn-danger">恢復配置</button>
       </div>
     </div>
   </div>
 </div>
 <script type="text/javascript">
-  // 显示服务提示框
+  // 顯示服務提示框
   function show_service_modal(id, name) {
     if (id == "nametest") {
       $('#modal-nametest').modal('show');
@@ -228,80 +228,80 @@
     } else if (id == "nettest") {
       $('#modal-nettest').modal('show');
     } else if (id == "blacklist") {
-      show_confirm_modal("清理文件整理缓存后，已转移过的文件允许重新转移（包括识别错误的文件），是否确认？", function () {
+      show_confirm_modal("清理檔案整理快取後，已轉移過的檔案允許重新轉移（包括識別錯誤的檔案），是否確認？", function () {
         hide_confirm_modal();
         ajax_post("truncate_blacklist", {}, function (ret) {
-          show_success_modal("文件缓存清理完成！");
+          show_success_modal("檔案快取清理完成！");
         });
       });
     } else if (id == "rsshistory") {
-      show_confirm_modal("清理RSS缓存后，已订阅下载但未入库的资源可能会被重新下载，是否确认？", function () {
+      show_confirm_modal("清理RSS快取後，已訂閱下載但未入庫的資源可能會被重新下載，是否確認？", function () {
         hide_confirm_modal();
         ajax_post("truncate_rsshistory", {}, function (ret) {
-          show_success_modal("RSS缓存清理完成！");
+          show_success_modal("RSS快取清理完成！");
         });
       });
     } else if (id == "backup") {
       $('#modal-backup').modal('show');
     } else {
-      show_ask_modal("是否立即运行 " + name + "？", function () {
+      show_ask_modal("是否立即執行 " + name + "？", function () {
         hide_ask_modal();
         run_scheduler(id, name);
       });
     }
   }
 
-  // 运行服务
+  // 執行服務
   function run_scheduler(id, name) {
     const data = {"item": id};
     ajax_post("sch", data, function (ret) {
-      show_success_modal(name + " 服务启动成功，正在后台运行");
+      show_success_modal(name + " 服務啟動成功，正在後臺執行");
     });
   }
 
-  // 名称测试
+  // 名稱測試
   $("#nametest_btn").click(function () {
     name_test();
   });
 
-  // 规则测试
+  // 規則測試
   $("#ruletest_btn").click(function () {
     rule_test();
   });
 
-  // 网络测试
+  // 網路測試
   $("#nettest_btn").click(function () {
     net_test();
   });
 
-  // 备份
+  // 備份
   $("#backup_btn").click(function () {
-    $("#backup_btn").text("备份中...").attr("disabled", true);
+    $("#backup_btn").text("備份中...").attr("disabled", true);
     ajax_backup(function () {
-      $("#backup_btn").attr("disabled", false).text("备份当前配置");
+      $("#backup_btn").attr("disabled", false).text("備份當前配置");
     });
   });
 
-  // 恢复备份
+  // 恢復備份
   $("#restore_btn").click(function () {
     if (!dropzone || !dropzone.files || !dropzone.files[0]) {
       return;
     }
-    $("#restore_btn").text("恢复中...").attr("disabled", true);
+    $("#restore_btn").text("恢復中...").attr("disabled", true);
     ajax_post("restory_backup", { file_name: dropzone.files[dropzone.files.length - 1].name }, function (ret) {
-      $("#restore_btn").attr("disabled", false).text("恢复配置");
+      $("#restore_btn").attr("disabled", false).text("恢復配置");
       $("#modal-backup").modal('hide');
       if (ret.code == 0) {
-        show_success_modal("备份恢复成功，请完整重启整个系统（非内置重启功能），否则配置信息可能不生效！");
+        show_success_modal("備份恢復成功，請完整重啟整個系統（非內建重啟功能），否則配置資訊可能不生效！");
       } else {
-        show_fail_modal(`备份恢复失败：${ret.msg}`, function() {
+        show_fail_modal(`備份恢復失敗：${ret.msg}`, function() {
           $("#modal-backup").modal('show');
         });
       }
     });
   });
 
-  //名称识别测试
+  //名稱識別測試
   function name_test() {
     const name = $("#test_name").val();
     if (!name) {
@@ -310,15 +310,15 @@
     } else {
       $("#test_name").removeClass("is-invalid");
     }
-    $("#nametest_btn").text("识别中...");
+    $("#nametest_btn").text("識別中...");
     $("#nametest_btn").attr("disabled", true);
     media_name_test(name, "test_result", function () {
-      $("#nametest_btn").text("识别");
+      $("#nametest_btn").text("識別");
       $("#nametest_btn").attr("disabled", false);
     });
   }
 
-  //过滤规则测试
+  //過濾規則測試
   function rule_test() {
     const title = $("#test_title").val();
     if (!title) {
@@ -343,7 +343,7 @@
     }
 
     const subtitle = $("#test_subtitle").val();
-    $("#ruletest_btn").text("测试中...").attr("disabled", true);
+    $("#ruletest_btn").text("測試中...").attr("disabled", true);
     const params = {
       "title": title,
       "size": size,
@@ -351,31 +351,31 @@
       "subtitle": subtitle
     };
     ajax_post("rule_test", params, function (ret) {
-      $("#ruletest_btn").text("测试").attr("disabled", false);
+      $("#ruletest_btn").text("測試").attr("disabled", false);
       if (ret.code == 0) {
         $("#testrule_result").empty();
         if (ret.flag) {
           $("#testrule_result").append(`<span class="badge bg-green me-1 mb-1">${ret.text}</span>`)
-                  .append(`<span class="badge badge-outline text-blue me-1 mb-1" title="命中规则在规则组内的序号">优先级：${ret.order}</span>`);
+                  .append(`<span class="badge badge-outline text-blue me-1 mb-1" title="命中規則在規則組內的序號">優先順序：${ret.order}</span>`);
         } else {
           $("#testrule_result").append(`<span class="badge bg-red me-1 mb-1">${ret.text}</span>`);
         }
       }
     });
   }
-  //网络连通性测试
+  //網路連通性測試
   function net_test() {
     const targets = {{ SchedulerTasks[-2].targets | safe }};
     const currentIndex = 0;
     const stopindex = targets.length;
-    $("#nettest_btn").text("测试中...").attr("disabled", true);
+    $("#nettest_btn").text("測試中...").attr("disabled", true);
     net_test_ajax(targets, currentIndex, stopindex);
   }
 
-  //递归轮询测试结果
+  //遞迴輪詢測試結果
   function net_test_ajax(targets, currentIndex, stopindex) {
     if (currentIndex >= stopindex) {
-      $("#nettest_btn").text("测试").attr("disabled", false);
+      $("#nettest_btn").text("測試").attr("disabled", false);
       return;
     }
     let target = '';

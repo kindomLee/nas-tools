@@ -4,13 +4,13 @@
     <div class="row align-items-center">
       <div class="col">
         <h2 class="page-title">
-          媒体服务器
+          媒體伺服器
         </h2>
       </div>
     </div>
   </div>
 </div>
-<!-- 业务页面代码 -->
+<!-- 業務頁面程式碼 -->
 <div class="page-body">
   <div class="container-xl">
     <div class="row row-cards">
@@ -24,7 +24,7 @@
           <div class="card-body text-center">
             <div class="card-title mb-1">Emby</div>
             <div class="text-muted">{% if Config.media.media_server == "emby" %}<span class="badge bg-green"
-                                                                                      title="已开启"></span>
+                                                                                      title="已開啟"></span>
               正在使用{% endif %}</div>
           </div>
         </a>
@@ -39,7 +39,7 @@
           <div class="card-body text-center">
             <div class="card-title mb-1">Jellyfin</div>
             <div class="text-muted">{% if Config.media.media_server == "jellyfin" %}<span class="badge bg-green"
-                                                                                          title="已开启"></span>
+                                                                                          title="已開啟"></span>
               正在使用{% endif %}</div>
           </div>
         </a>
@@ -54,7 +54,7 @@
           <div class="card-body text-center">
             <div class="card-title mb-1">Plex</div>
             <div class="text-muted">{% if Config.media.media_server == "plex" %}<span class="badge bg-green"
-                                                                                      title="已开启"></span>
+                                                                                      title="已開啟"></span>
               正在使用{% endif %}</div>
           </div>
         </a>
@@ -74,8 +74,8 @@
         <div class="row">
           <div class="col-lg-6">
             <div class="mb-3">
-              <label class="form-label required">服务器地址 <span class="form-help"
-                                                                  title="配置IP地址和端口，如为https则需要增加https://前缀"
+              <label class="form-label required">伺服器地址 <span class="form-help"
+                                                                  title="配置IP地址和埠，如為https則需要增加https://字首"
                                                                   data-bs-toggle="tooltip">?</span></label>
               <input type="text" value="{% if Config.emby %}{{ Config.emby.host or '' }}{% endif %}" id="emby.host"
                      class="form-control" placeholder="http://127.0.0.1:8096">
@@ -84,7 +84,7 @@
           <div class="col-lg-6">
             <div class="mb-3">
               <label class="form-label required">Api Key <span class="form-help"
-                                                               title="在Emby设置->高级->API密钥处生成，注意不要复制到了应用名称"
+                                                               title="在Emby設定->高階->API金鑰處生成，注意不要複製到了應用名稱"
                                                                data-bs-toggle="tooltip">?</span></label>
               <input type="text" value="{% if Config.emby %}{{ Config.emby.api_key or '' }}{% endif %}"
                      id="emby.api_key" class="form-control">
@@ -94,9 +94,9 @@
       </div>
       <div class="modal-footer">
         <a href="javascript:test_mediaserver_config('emby')" id="emby_test_btn" class="btn me-auto">
-          测试
+          測試
         </a>
-        <a href="javascript:save_mediaserver_config('emby')" id="emby_save_btn" class="btn btn-primary">确定</a>
+        <a href="javascript:save_mediaserver_config('emby')" id="emby_save_btn" class="btn btn-primary">確定</a>
       </div>
     </div>
   </div>
@@ -113,8 +113,8 @@
         <div class="row">
           <div class="col-lg-6">
             <div class="mb-3">
-              <label class="form-label required">服务器地址 <span class="form-help"
-                                                                  title="配置IP地址和端口，如为https则需要增加https://前缀"
+              <label class="form-label required">伺服器地址 <span class="form-help"
+                                                                  title="配置IP地址和埠，如為https則需要增加https://字首"
                                                                   data-bs-toggle="tooltip">?</span></label>
               <input type="text" value="{% if Config.jellyfin %}{{ Config.jellyfin.host or '' }}{% endif %}"
                      id="jellyfin.host" class="form-control" placeholder="http://127.0.0.1:8096">
@@ -123,7 +123,7 @@
           <div class="col-lg-6">
             <div class="mb-3">
               <label class="form-label required">Api Key <span class="form-help"
-                                                               title="在Jellyfin设置->高级->API密钥处生成"
+                                                               title="在Jellyfin設定->高階->API金鑰處生成"
                                                                data-bs-toggle="tooltip">?</span></label>
               <input type="text" value="{% if Config.jellyfin %}{{ Config.jellyfin.api_key or '' }}{% endif %}"
                      id="jellyfin.api_key" class="form-control">
@@ -133,9 +133,9 @@
       </div>
       <div class="modal-footer">
         <a href="javascript:test_mediaserver_config('jellyfin')" id="jellyfin_test_btn" class="btn me-auto">
-          测试
+          測試
         </a>
-        <a href="javascript:save_mediaserver_config('jellyfin')" id="jellyfin_save_btn" class="btn btn-primary">确定</a>
+        <a href="javascript:save_mediaserver_config('jellyfin')" id="jellyfin_save_btn" class="btn btn-primary">確定</a>
       </div>
     </div>
   </div>
@@ -152,8 +152,8 @@
         <div class="row">
           <div class="col-lg-6">
             <div class="mb-3">
-              <label class="form-label required">服务器地址 <span class="form-help"
-                                                                  title="配置IP地址和端口，如为https则需要增加https://前缀"
+              <label class="form-label required">伺服器地址 <span class="form-help"
+                                                                  title="配置IP地址和埠，如為https則需要增加https://字首"
                                                                   data-bs-toggle="tooltip">?</span></label>
               <input type="text" value="{% if Config.plex %}{{ Config.plex.host or '' }}{% endif %}" id="plex.host"
                      class="form-control" placeholder="http://127.0.0.1:32400">
@@ -162,18 +162,18 @@
           <div class="col-lg-6">
             <div class="mb-3">
               <label class="form-label required">X-Plex-Token <span class="form-help"
-                                                                    title="Plex网页Cookie中的X-Plex-Token，通过浏览器F12->网络中获取，如填写将优先使用；Token与服务器名称、用户名及密码 二选一，推荐使用Token，连接速度更快"
+                                                                    title="Plex網頁Cookie中的X-Plex-Token，透過瀏覽器F12->網路中獲取，如填寫將優先使用；Token與伺服器名稱、使用者名稱及密碼 二選一，推薦使用Token，連線速度更快"
                                                                     data-bs-toggle="tooltip">?</span></label>
               <input type="text" value="{% if Config.plex %}{{ Config.plex.token or '' }}{% endif %}" id="plex.token"
-                     class="form-control" placeholder="X-Plex-Token与其它认证信息二选一">
+                     class="form-control" placeholder="X-Plex-Token與其它認證資訊二選一">
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col-lg-4">
             <div class="mb-3">
-              <label class="form-label">服务器名称 <span class="form-help"
-                                                         title="配置Plex设置->左侧下拉框中看到的服务器名称；如填写了Token则无需填写服务器名称、用户名及密码"
+              <label class="form-label">伺服器名稱 <span class="form-help"
+                                                         title="配置Plex設定->左側下拉框中看到的伺服器名稱；如填寫了Token則無需填寫伺服器名稱、使用者名稱及密碼"
                                                          data-bs-toggle="tooltip">?</span></label>
               <input type="text" value="{% if Config.plex %}{{ Config.plex.servername or '' }}{% endif %}"
                      id="plex.servername" class="form-control">
@@ -181,14 +181,14 @@
           </div>
           <div class="col-lg-4">
             <div class="mb-3">
-              <label class="form-label">用户名</label>
+              <label class="form-label">使用者名稱</label>
               <input type="text" value="{% if Config.plex %}{{ Config.plex.username or '' }}{% endif %}"
                      id="plex.username" class="form-control" placeholder="">
             </div>
           </div>
           <div class="col-lg-4">
             <div class="mb-3">
-              <label class="form-label">密码</label>
+              <label class="form-label">密碼</label>
               <input type="password" value="{% if Config.plex %}{{ Config.plex.password or '' }}{% endif %}"
                      id="plex.password" class="form-control">
             </div>
@@ -197,18 +197,18 @@
       </div>
       <div class="modal-footer">
         <a href="javascript:test_mediaserver_config('plex')" id="plex_test_btn" class="btn me-auto">
-          测试
+          測試
         </a>
-        <a href="javascript:save_mediaserver_config('plex')" id="plex_save_btn" class="btn btn-primary">确定</a>
+        <a href="javascript:save_mediaserver_config('plex')" id="plex_save_btn" class="btn btn-primary">確定</a>
       </div>
     </div>
   </div>
 </div>
 <script type="text/javascript">
-  // 当前处理的类型
+  // 當前處理的型別
   var currType = "";
 
-  // 保存配置
+  // 儲存配置
   function save_config(type, func, test) {
     currType = type;
     const params = {"test": test || false};
@@ -226,7 +226,7 @@
     ajax_post("update_config", params, func);
   }
 
-  //保存配置、关闭和刷新页面
+  //儲存配置、關閉和重新整理頁面
   function save_mediaserver_config(type) {
     $("#modal-" + type).modal('hide');
     save_config(type, function (ret) {
@@ -234,9 +234,9 @@
     });
   }
 
-  //保存配置和测试配置
+  //儲存配置和測試配置
   function test_mediaserver_config(type) {
-    $("#" + type + "_test_btn").text("测试中...");
+    $("#" + type + "_test_btn").text("測試中...");
     save_config(type, function (ret) {
       let command;
       if (currType === "emby") {
@@ -248,9 +248,9 @@
       }
       ajax_post("test_connection", {"command": command}, function (ret) {
         if (ret.code === 0) {
-          $("#" + currType + "_test_btn").text("测试成功");
+          $("#" + currType + "_test_btn").text("測試成功");
         } else {
-          $("#" + currType + "_test_btn").text("测试失败！");
+          $("#" + currType + "_test_btn").text("測試失敗！");
         }
       });
     }, true);

@@ -9,9 +9,9 @@ class JsonUtils:
     @staticmethod
     def json_serializable(obj):
         """
-        将普通对象转化为支持json序列化的对象
-        @param obj: 待转化的对象
-        @return: 支持json序列化的对象
+        將普通物件轉化為支援json序列化的物件
+        @param obj: 待轉化的物件
+        @return: 支援json序列化的物件
         """
 
         def _try(o):
